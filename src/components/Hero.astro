@@ -57,7 +57,10 @@ const strip = [
             mask-image: radial-gradient(closest-side, #000 35%, transparent), linear-gradient(to bottom, #000 40%, transparent 75%);
             mask-composite: intersect;
   }
-  .g { position: absolute; left: 50%; top: 50%; border-radius: 50%; }
+  /* will-change keeps each blurred layer on its own GPU layer, so spinning it doesn't redo the blur;
+     the spin pauses while the hero is off screen */
+  .g { position: absolute; left: 50%; top: 50%; border-radius: 50%; will-change: transform; animation-play-state: paused; }
+  .hero.inview .g { animation-play-state: running; }
   /* heavy grain over the glow for a textured, premium look */
   .glow-box::after { content: ""; position: absolute; inset: 0; background-image: var(--noise); background-size: 180px; opacity: .55; mix-blend-mode: overlay; }
   /* Outer: big multi-tone conic in LPC oranges, heavy blur */
@@ -113,3 +116,8 @@ const strip = [
     @keyframes h-in { from { opacity: 0; transform: translateY(18px); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
   }
 </style>
+
+<script>
+  import { markInView } from "../lib/scroll";
+  markInView(document.getElementById("top")!);
+</script>

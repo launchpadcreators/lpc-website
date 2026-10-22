@@ -105,12 +105,14 @@ const pad = (n: number) => String(n).padStart(2, "0");
     position: absolute; left: 50%; top: 0; width: 6px; height: 6px; margin-left: -3px; border-radius: 99px; background: #fff;
     box-shadow: 0 0 10px 2px var(--accent); animation: gf-flow 3.5s cubic-bezier(.4, 0, .6, 1) infinite; animation-delay: var(--d);
   }
+  /* falls the funnel's height (--fh, set by the script) with transform, which is cheaper than animating top */
   @keyframes gf-flow {
-    0% { top: 0; translate: calc(var(--x) * 6) 0; opacity: 0; }
+    0% { transform: translateY(0); translate: calc(var(--x) * 6) 0; opacity: 0; }
     10% { opacity: .9; }
     90% { opacity: .9; }
-    100% { top: 100%; translate: calc(var(--x) * .6) 0; opacity: 0; }
+    100% { transform: translateY(var(--fh, 300px)); translate: calc(var(--x) * .6) 0; opacity: 0; }
   }
+  .gf:not(.inview) .flow i { animation-play-state: paused; }
 
   /* Phones / tablet portrait: no pin, text then funnel then the button */
   @media (max-width: 899px) {
@@ -142,6 +144,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
 </style>
 
 <script>
+  import { markInView, onScrollInView } from "../lib/scroll";
   const sec = document.getElementById("growth-funnel")!;
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const mobile = matchMedia("(max-width: 899px)");
@@ -162,6 +165,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
   const R = 14;
   function shapeBands() {
     const total = funnel.clientHeight;
+    funnel.style.setProperty("--fh", `${total}px`);
     const taper = parseFloat(getComputedStyle(funnel).getPropertyValue("--taper")) / 100;
     bands.forEach((b) => {
       const svg = b.querySelector<SVGSVGElement>(".shape")!;
@@ -184,6 +188,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
     });
   }
   shapeBands();
+  markInView(sec);
   new ResizeObserver(shapeBands).observe(funnel);
 
   // Phones: build once when the funnel comes into view (CSS handles the stagger)
@@ -233,7 +238,6 @@ const pad = (n: number) => String(n).padStart(2, "0");
   if (mobile.matches) setActive(0);
   if (!reduce) {
     render();
-    addEventListener("scroll", render, { passive: true });
-    addEventListener("resize", render);
+    onScrollInView(sec, render);
   }
 </script>

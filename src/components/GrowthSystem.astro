@@ -61,6 +61,7 @@ import { applyUrl, stages } from "../data/growth-stages";
     transition: background-color .5s var(--ease-out-soft), border-color .5s var(--ease-out-soft), box-shadow .5s var(--ease-out-soft);
     will-change: transform, opacity;
   }
+  @media (hover: none) and (pointer: coarse) { .card { background: color-mix(in srgb, var(--surface) 94%, transparent); backdrop-filter: none; } }
   .num { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-variant-numeric: tabular-nums; transition: color .5s; }
   .name { margin-top: 14px; font-size: clamp(19px, 1.6vw, 23px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; color: var(--text); }
   .line { margin-top: 10px; font-size: 14px; line-height: 1.5; color: var(--text-2); transition: color .5s; }
@@ -103,6 +104,7 @@ import { applyUrl, stages } from "../data/growth-stages";
 </style>
 
 <script>
+  import { onScrollInView } from "../lib/scroll";
   const sec = document.getElementById("growth-system")!;
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const mobile = matchMedia("(max-width: 899px)");
@@ -152,7 +154,6 @@ import { applyUrl, stages } from "../data/growth-stages";
     cards[cards.length - 1].classList.add("on");
   } else {
     render();
-    addEventListener("scroll", render, { passive: true });
-    addEventListener("resize", render);
+    onScrollInView(sec, render);
   }
 </script>

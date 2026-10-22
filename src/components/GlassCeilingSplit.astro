@@ -192,6 +192,7 @@ const orange = "M324 172 C380 172 414 152 452 120 S536 48 576 36";
 </style>
 
 <script>
+  import { onScrollInView } from "../lib/scroll";
   const sec = document.getElementById("glass-ceiling-split")!;
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const mobile = matchMedia("(max-width: 899px)");
@@ -291,7 +292,6 @@ const orange = "M324 172 C380 172 414 152 452 120 S536 48 576 36";
 
   if (!reduce) {
     render();
-    addEventListener("scroll", render, { passive: true });
-    addEventListener("resize", render);
+    onScrollInView(sec, render);
   }
 </script>

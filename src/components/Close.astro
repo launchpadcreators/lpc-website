@@ -44,7 +44,7 @@ import { applyUrl } from "../data/growth-stages";
   .frame { padding: 20px; border-radius: 22px; background: color-mix(in srgb, var(--surface) 55%, var(--bg)); border: 1px solid var(--line); }
 
   .card {
-    position: relative; overflow: hidden; border-radius: 16px;
+    position: relative; overflow: hidden; isolation: isolate; border-radius: 16px;
     display: grid; grid-template-columns: 1.15fr 1fr; align-items: center; gap: 40px;
     padding: clamp(36px, 5vw, 64px);
     /* the brand orange, light-to-deep, with grain (no rings) */

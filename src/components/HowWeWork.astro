@@ -43,7 +43,8 @@ const models = [
       <span class="pill" aria-hidden="true"></span>
     </div>
 
-    <div class="cards" data-reveal>
+    <!-- Phones: the two cards sit side by side in a swipe row (native scroll-snap); the toggle follows it -->
+    <div class="cards" data-reveal data-lenis-prevent>
       {models.map((m, i) => (
         <article class={`card c-${m.key}${i === 0 ? " show" : ""}`} data-k={m.key}>
           <div class="card-head">
@@ -74,7 +75,7 @@ const models = [
   .cards { margin-top: clamp(40px, 6vh, 64px); display: grid; grid-template-columns: 1fr 1fr; column-gap: 20px; row-gap: 0; }
   .card {
     display: grid; grid-row: span 6; grid-template-rows: subgrid;
-    position: relative; overflow: hidden; padding: 32px; border-radius: 18px;
+    position: relative; overflow: hidden; isolation: isolate; padding: 32px; border-radius: 18px;
     background: var(--surface); border: 1px solid var(--line);
     transition: border-color .4s, box-shadow .4s, transform .4s var(--ease-out-soft);
   }
@@ -122,14 +123,18 @@ const models = [
     }
     .toggle button { position: relative; z-index: 1; padding: 10px 8px; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--text-2); transition: color .3s; }
     .toggle button.on { color: var(--accent-ink); }
-    .pill { position: absolute; top: 4px; bottom: 4px; left: 4px; width: calc(50% - 4px); border-radius: 999px; background: var(--accent); transition: transform .4s var(--ease-out-soft); }
-    .toggle.second .pill { transform: translateX(100%); }
-    .cards { grid-template-columns: 1fr; margin-top: 20px; }
-    .card { display: none; padding: 24px; grid-row: auto; }
-    .card.show { display: block; animation: cardIn .45s var(--ease-out-soft); }
+    /* pill slides with the swipe (--p: 0 = first card, 1 = second) */
+    .pill { position: absolute; top: 4px; bottom: 4px; left: 4px; width: calc(50% - 4px); border-radius: 999px; background: var(--accent); transform: translateX(calc(var(--p, 0) * 100%)); }
+    .cards {
+      display: flex; gap: 12px; margin: 20px -24px 0; padding: 0 24px 4px; scroll-padding-inline: 24px;
+      overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none;
+    }
+    .cards::-webkit-scrollbar { display: none; }
+    /* 88% wide so the next card peeks in and says "swipe" */
+    .card { display: block; flex: 0 0 88%; padding: 24px; grid-row: auto; scroll-snap-align: start; }
+    .card:hover { transform: none; }
     .rows { display: block; }
   }
-  @keyframes cardIn { from { opacity: 0; transform: translateY(10px); } }
 </style>
 
 <script>
@@ -140,13 +145,20 @@ const models = [
   goal.addEventListener("mouseenter", () => growth.classList.add("lit"));
   goal.addEventListener("mouseleave", () => growth.classList.remove("lit"));
 
-  // Mobile toggle
+  // Phones: swipe row of the two cards. Tabs scroll to a card; the pill and active tab follow the swipe.
   const toggle = sec.querySelector<HTMLElement>(".toggle")!;
   const tabs = [...toggle.querySelectorAll<HTMLButtonElement>("button")];
-  const cards = [...sec.querySelectorAll<HTMLElement>(".card")];
-  tabs.forEach((t, i) => t.addEventListener("click", () => {
-    tabs.forEach((x, j) => { x.classList.toggle("on", i === j); x.setAttribute("aria-selected", String(i === j)); });
-    cards.forEach((c, j) => c.classList.toggle("show", i === j));
-    toggle.classList.toggle("second", i === 1);
-  }));
+  const row = sec.querySelector<HTMLElement>(".cards")!;
+  const cards = [...row.querySelectorAll<HTMLElement>(".card")];
+  let frame = 0;
+  const sync = () => {
+    frame = 0;
+    const max = row.scrollWidth - row.clientWidth;
+    const p = max > 0 ? Math.min(1, Math.max(0, row.scrollLeft / max)) : 0;
+    toggle.style.setProperty("--p", p.toFixed(3));
+    const active = p > 0.5 ? 1 : 0;
+    tabs.forEach((x, j) => { x.classList.toggle("on", j === active); x.setAttribute("aria-selected", String(j === active)); });
+  };
+  row.addEventListener("scroll", () => { if (!frame) frame = requestAnimationFrame(sync); }, { passive: true });
+  tabs.forEach((t, i) => t.addEventListener("click", () => row.scrollTo({ left: cards[i].offsetLeft - cards[0].offsetLeft, behavior: "smooth" })));
 </script>

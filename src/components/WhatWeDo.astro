@@ -3,7 +3,7 @@
 // filled only with our copy: the services from brief/04-copy-deck.md, section 5, grouped by type of service.
 // Each tile = a small working visual of that service (labelled with our service names, no made-up numbers)
 // + a ticked list of every service in the group.
-// Phones: each tile is an accordion (header only until tapped), so the page stays short.
+// Phones: each tile is an accordion that opens by itself as it scrolls into view (tap the toggle to close / reopen).
 //  Row 1: Ads and content (3 cols) + Funnels (1 col)
 //  Row 2: Email and webinars (2 cols) + Sales (2 cols)
 //  Row 3: Product and retention (full width)
@@ -149,7 +149,7 @@ const tick = "M3.5 8.5l3 3 6-7";
   .s1 { grid-column: span 1; } .s2 { grid-column: span 2; } .s3 { grid-column: span 3; } .s4 { grid-column: span 4; }
 
   .tile {
-    position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 20px; padding: 24px;
+    position: relative; overflow: hidden; isolation: isolate; display: flex; flex-direction: column; gap: 20px; padding: 24px;
     border-radius: 12px; background: var(--surface); border: 1px solid var(--line);
     transition: translate .8s var(--ease-out-soft) var(--d), opacity .8s var(--ease-out-soft) var(--d), border-color .3s;
   }
@@ -206,6 +206,7 @@ const tick = "M3.5 8.5l3 3 6-7";
     position: absolute; left: 16px; right: 16px; bottom: 16px; z-index: 3; padding: 12px 14px; border-radius: 10px;
     background: color-mix(in srgb, var(--surface) 85%, transparent); border: 1px solid var(--line); backdrop-filter: blur(8px);
   }
+  @media (hover: none) and (pointer: coarse) { .ab { background: color-mix(in srgb, var(--surface) 95%, transparent); backdrop-filter: none; } }
   .ab-title { font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
   .ab-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; font-size: 11px; font-weight: 700; color: var(--text-2); }
   .ab-row i { flex: 1; height: 7px; border-radius: 99px; background: var(--raised); position: relative; overflow: hidden; }
@@ -262,10 +263,11 @@ const tick = "M3.5 8.5l3 3 6-7";
   .st .s2 { color: var(--accent); animation: st2 7.5s linear infinite; }
   .st .s3 { color: #34D399; animation: st3 7.5s linear infinite; }
   .s3 svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  /* one column step = the card's own width + the 8px gap, so translateX(100% + 8px) moves exactly one column */
   @keyframes deal {
-    0% { left: 0; opacity: 0; transform: translateY(6px); } 5% { opacity: 1; transform: none; }
-    27% { left: 0; } 35% { left: calc((100% + 8px) / 3); } 60% { left: calc((100% + 8px) / 3); }
-    68% { left: calc((100% + 8px) * 2 / 3); } 93% { left: calc((100% + 8px) * 2 / 3); opacity: 1; } 100% { left: calc((100% + 8px) * 2 / 3); opacity: 0; }
+    0% { opacity: 0; transform: translate(0, 6px); } 5% { opacity: 1; transform: translate(0, 0); }
+    27% { transform: translate(0, 0); } 35% { transform: translate(calc(100% + 8px), 0); } 60% { transform: translate(calc(100% + 8px), 0); }
+    68% { transform: translate(calc(200% + 16px), 0); } 93% { transform: translate(calc(200% + 16px), 0); opacity: 1; } 100% { transform: translate(calc(200% + 16px), 0); opacity: 0; }
   }
   @keyframes st1 { 0%, 30% { opacity: 1; } 33%, 100% { opacity: 0; } }
   @keyframes st2 { 0%, 31% { opacity: 0; } 34%, 63% { opacity: 1; } 66%, 100% { opacity: 0; } }
@@ -282,10 +284,10 @@ const tick = "M3.5 8.5l3 3 6-7";
   .bento.in .col { height: calc(24% + var(--i) * 17%); }
   .sl { font-size: 11px; font-weight: 600; line-height: 1.25; text-align: center; color: var(--text-2); }
 
-  /* pause looping motion until the grid is on screen */
+  /* looping motion only runs while the grid is on screen (paused before it first appears and whenever it's scrolled away) */
   /* (Sales parts share one clock: they all start together when the grid comes into view) */
   .bento :is(.ad, .drop, .seq-line i, .live, .deal, .col-h, .st i) { animation-play-state: paused; }
-  .bento.in :is(.ad, .drop, .seq-line i, .live, .deal, .col-h, .st i) { animation-play-state: running; }
+  .bento.in.inview :is(.ad, .drop, .seq-line i, .live, .deal, .col-h, .st i) { animation-play-state: running; }
 
   @media (max-width: 1023px) {
     .bento { grid-template-columns: 1fr 1fr; }
@@ -295,7 +297,9 @@ const tick = "M3.5 8.5l3 3 6-7";
   @media (max-width: 767px) {
     .bento { grid-template-columns: 1fr; padding: 12px; gap: 12px; }
     .s1, .s2, .s3, .s4 { grid-column: span 1; }
-    .t-ads, .t-product { grid-template-columns: 1fr; }
+    /* minmax(0, 1fr): the column may shrink below its content's natural width, so nothing pushes past the tile edge */
+    .t-ads, .t-product { grid-template-columns: minmax(0, 1fr); }
+    .tile > *, .txt { min-width: 0; }
     /* two columns of services on phones */
     .tile { padding: 20px 18px; }
     .list { grid-template-columns: repeat(auto-fill, minmax(min(100%, 112px), 1fr)); gap: 9px 12px; font-size: 13px; }
@@ -307,8 +311,8 @@ const tick = "M3.5 8.5l3 3 6-7";
     /* Accordions (Tom's review): each tile shows just its header until tapped, so the page stays short.
        The toggle's hit area stretches over the whole header row. */
     .head { position: relative; }
-    .name { font-size: 18px; }
-    @media (min-width: 360px) { .name { white-space: nowrap; } } /* one-line titles; tiny phones may wrap */
+    /* the title takes the space left beside the icon and toggle, wrapping on narrow phones rather than pushing the toggle out */
+    .name { flex: 1; min-width: 0; font-size: 18px; }
     .acc { display: grid; place-items: center; margin-left: auto; width: 32px; height: 32px; border-radius: 999px; color: var(--text-2); border: 1px solid var(--line); background: var(--raised); transition: transform .35s var(--ease-out-soft), color .3s, border-color .3s; }
     .acc::after { content: ""; position: absolute; inset: -12px -10px; }
     .acc svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
@@ -323,18 +327,21 @@ const tick = "M3.5 8.5l3 3 6-7";
   @media (prefers-reduced-motion: reduce) {
     :global(.reveal-ready) .tile { opacity: 1; translate: none; }
     .ad, .drop, .seq-line i, .live, .deal, .col-h, .st i { animation: none !important; }
-    .deal { left: calc((100% + 8px) * 2 / 3); }
+    .deal { transform: translateX(calc(200% + 16px)); }
     .s3 { opacity: 1; }
     .seq-line i { width: 100%; }
   }
 </style>
 
 <script>
+  import { markInView } from "../lib/scroll";
   // Tiles rise in one after another when the grid scrolls into view; visuals start then
   const bento = document.querySelector<HTMLElement>("#what-we-do .bento")!;
   new IntersectionObserver(([en], o) => { if (en.isIntersecting) { bento.classList.add("in"); o.disconnect(); } }, { threshold: 0.15 }).observe(bento);
+  markInView(bento);
 
-  // Mobile accordions: one tile open at a time, the first one open to start
+  // Mobile accordions: each tile opens by itself as it scrolls up into view (and stays open, so nothing above
+  // the reader ever jumps). The toggle still opens / closes a tile by hand; a tile closed by hand stays closed.
   const tiles = [...bento.querySelectorAll<HTMLElement>(".tile")];
   const setOpen = (tile: HTMLElement, on: boolean) => {
     tile.classList.toggle("open", on);
@@ -344,7 +351,14 @@ const tick = "M3.5 8.5l3 3 6-7";
   };
   tiles.forEach((t, i) => setOpen(t, i === 0));
   tiles.forEach((t) => t.querySelector(".acc")!.addEventListener("click", () => {
-    const opening = !t.classList.contains("open");
-    tiles.forEach((o) => setOpen(o, o === t && opening));
+    t.dataset.manual = "1";
+    setOpen(t, !t.classList.contains("open"));
   }));
+  const auto = new IntersectionObserver((entries) => entries.forEach((en) => {
+    const t = en.target as HTMLElement;
+    if (!en.isIntersecting || t.dataset.manual) return;
+    setOpen(t, true);
+    auto.unobserve(t);
+  }), { rootMargin: "0px 0px -30% 0px" }); // opens once its header is in the top 70% of the screen
+  tiles.forEach((t) => auto.observe(t));
 </script>

@@ -89,7 +89,7 @@ const specialisms = ["Paid media", "Creative", "Content", "Funnels and AI", "Sal
   .f-b { grid-area: fb; }
   .team { grid-area: team; }
   .card {
-    position: relative; overflow: hidden; display: flex; flex-direction: column; padding: 28px; border-radius: 16px;
+    position: relative; overflow: hidden; isolation: isolate; display: flex; flex-direction: column; padding: 28px; border-radius: 16px;
     background: var(--surface); border: 1px solid var(--line);
     transition: translate .8s var(--ease-out-soft) var(--d), opacity .8s var(--ease-out-soft) var(--d), border-color .3s, transform .4s var(--ease-out-soft);
   }

@@ -160,6 +160,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
 </style>
 
 <script>
+  import { onScrollInView } from "../lib/scroll";
   const sec = document.getElementById("growth-eclipse")!;
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const eclipse = sec.querySelector<HTMLElement>(".eclipse")!;
@@ -231,7 +232,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
   } else {
     measure();
     render();
-    addEventListener("scroll", render, { passive: true });
-    addEventListener("resize", () => { measure(); render(); });
+    addEventListener("resize", measure);
+    onScrollInView(sec, render);
   }
 </script>

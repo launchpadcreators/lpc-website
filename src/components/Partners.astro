@@ -95,9 +95,10 @@ const parts = (s: string) => s.split(/(\d+(?:\.\d+)?)/).map((t, i) => (i % 2 ? {
   /* Pager under the row: ‹ dots › */
   .pager { margin-top: 28px; display: flex; align-items: center; justify-content: center; gap: 18px; }
   .dots { display: flex; align-items: center; gap: 8px; }
-  .dot { width: 8px; height: 8px; padding: 0; border-radius: 99px; background: var(--line); cursor: pointer; transition: width .35s var(--ease-out-soft), background-color .3s; }
-  .dot:hover { background: var(--muted); }
-  .dot.on { width: 24px; background: var(--accent); }
+  /* dots are created by the script, so they need :global (scoped styles only reach elements in the markup) */
+  .dots :global(.dot) { width: 8px; height: 8px; padding: 0; border-radius: 99px; background: var(--line); cursor: pointer; transition: width .35s var(--ease-out-soft), background-color .3s; }
+  .dots :global(.dot:hover) { background: var(--muted); }
+  .dots :global(.dot.on) { width: 24px; background: var(--accent); }
   .arrow {
     width: 44px; height: 44px; display: grid; place-items: center; border-radius: 999px; cursor: pointer;
     color: var(--text); border: 1px solid var(--line); background: color-mix(in srgb, var(--surface) 80%, transparent);
@@ -130,7 +131,7 @@ const parts = (s: string) => s.split(/(\d+(?:\.\d+)?)/).map((t, i) => (i % 2 ? {
   .card:hover { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
 
   /* Media: 3:2 photo (329x219 at desktop), cover-cropped; no photo animation */
-  .media { position: relative; aspect-ratio: 3 / 2; overflow: hidden; background: var(--raised); }
+  .media { position: relative; aspect-ratio: 3 / 2; overflow: hidden; isolation: isolate; background: var(--raised); }
   .photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   /* light grade only (the photo ends in a clean edge like LeverBrands): soft top shade for the chip, faint grain */
   .media::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(180deg, rgb(0 0 0 / .28), transparent 35%); }

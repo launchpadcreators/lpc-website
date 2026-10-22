@@ -205,12 +205,15 @@ const blockers = [
     background: color-mix(in srgb, var(--surface) 75%, transparent); backdrop-filter: blur(6px);
     transition: opacity .6s var(--ease-out-soft), transform .6s var(--ease-out-soft);
   }
+  @media (hover: none) and (pointer: coarse) { .blocker { background: color-mix(in srgb, var(--surface) 92%, transparent); backdrop-filter: none; } }
   .blocker.on { opacity: 1; transform: translate(-50%, 0) scale(1); }
   .blocker.gone { opacity: 0; transform: translate(-50%, -8px) scale(.96); }
 
   @media (max-width: 767px) {
     .gc { height: 540vh; }
     .gc-inner { padding-top: 96px; }
+    /* touch scrolling has no resistance, and the hint would sit on the quotes caption */
+    .push-hint { display: none; }
     .blocker { white-space: normal; width: 168px; text-align: center; font-size: 12px; padding: 8px 12px; }
     /* caption sits just above the chart; quotes zig-zag and leave the ceiling line (~45%) clear */
     .quotes-cap { top: -10px; transform: translate(-50%, calc(-100% + 6px)); }
@@ -240,6 +243,7 @@ const blockers = [
 </style>
 
 <script>
+  import { onScrollInView } from "../lib/scroll";
   const sec = document.getElementById("glass-ceiling")!;
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const steps = [...sec.querySelectorAll<HTMLElement>(".step")];
@@ -352,6 +356,6 @@ const blockers = [
   new ResizeObserver(() => { layout(); if (!reduce) render(); }).observe(svg);
   if (!reduce) {
     render();
-    window.addEventListener("scroll", render, { passive: true });
+    onScrollInView(sec, render);
   }
 </script>
