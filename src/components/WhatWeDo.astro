@@ -3,6 +3,7 @@
 // filled only with our copy: the services from brief/04-copy-deck.md, section 5, grouped by type of service.
 // Each tile = a small working visual of that service (labelled with our service names, no made-up numbers)
 // + a ticked list of every service in the group.
+// Phones: each tile is an accordion (header only until tapped), so the page stays short.
 //  Row 1: Ads and content (3 cols) + Funnels (1 col)
 //  Row 2: Email and webinars (2 cols) + Sales (2 cols)
 //  Row 3: Product and retention (full width)
@@ -47,7 +48,7 @@ const tick = "M3.5 8.5l3 3 6-7";
       <!-- Ads and content -->
       <article class="tile s3 t-ads" style="--d:0ms">
         <div class="txt">
-          <div class="head"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={icons.ads} /></svg></span><h3 class="name">Ads and content</h3></div>
+          <div class="head"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={icons.ads} /></svg></span><h3 class="name">Ads and content</h3><button class="acc" type="button" aria-expanded="false" aria-label="Show services"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" /></svg></button></div>
           <ul class="list">{groups.ads.map((v) => <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={tick} /></svg>{v}</li>)}</ul>
         </div>
         <div class="vis vis-ads" aria-hidden="true">
@@ -69,7 +70,7 @@ const tick = "M3.5 8.5l3 3 6-7";
 
       <!-- Funnels -->
       <article class="tile s1 t-funnel" style="--d:90ms">
-        <div class="head"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={icons.funnels} /></svg></span><h3 class="name">Funnels</h3></div>
+        <div class="head"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={icons.funnels} /></svg></span><h3 class="name">Funnels</h3><button class="acc" type="button" aria-expanded="false" aria-label="Show services"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" /></svg></button></div>
         <div class="vis vis-funnel" aria-hidden="true">
           {funnel.map((f, i) => <div class="fstep" style={`--i:${i}`}>{f}</div>)}
           {[0, 1, 2, 3].map((k) => <span class="drop" style={`--k:${k}`}></span>)}
@@ -79,7 +80,7 @@ const tick = "M3.5 8.5l3 3 6-7";
 
       <!-- Email and webinars -->
       <article class="tile s2 t-email" style="--d:180ms">
-        <div class="head"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={icons.email} /></svg></span><h3 class="name">Email and webinars</h3></div>
+        <div class="head"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={icons.email} /></svg></span><h3 class="name">Email and webinars</h3><button class="acc" type="button" aria-expanded="false" aria-label="Show services"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" /></svg></button></div>
         <div class="vis vis-seq" aria-hidden="true">
           <span class="seq-line"><i></i></span>
           {sequence.map((s, i) => (
@@ -94,7 +95,7 @@ const tick = "M3.5 8.5l3 3 6-7";
 
       <!-- Sales -->
       <article class="tile s2 t-sales" style="--d:270ms">
-        <div class="head"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={icons.sales} /></svg></span><h3 class="name">Sales</h3></div>
+        <div class="head"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={icons.sales} /></svg></span><h3 class="name">Sales</h3><button class="acc" type="button" aria-expanded="false" aria-label="Show services"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" /></svg></button></div>
         <!-- A lead moves through the sales team: the setter books the call, the closer gets the yes, checkout takes payment -->
         <div class="vis vis-deal" aria-hidden="true">
           <div class="cols">
@@ -120,7 +121,7 @@ const tick = "M3.5 8.5l3 3 6-7";
       <!-- Product and retention -->
       <article class="tile s4 t-product" style="--d:360ms">
         <div class="txt">
-          <div class="head"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={icons.product} /></svg></span><h3 class="name">Product and retention</h3></div>
+          <div class="head"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={icons.product} /></svg></span><h3 class="name">Product and retention</h3><button class="acc" type="button" aria-expanded="false" aria-label="Show services"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" /></svg></button></div>
           <ul class="list two">{groups.product.map((v) => <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={tick} /></svg>{v}</li>)}</ul>
         </div>
         <div class="vis vis-ladder" aria-hidden="true">
@@ -175,7 +176,7 @@ const tick = "M3.5 8.5l3 3 6-7";
   /* Visual wells share one look: inset dark panel with a warm glow */
   .vis {
     position: relative; border-radius: 10px; overflow: hidden;
-    background: radial-gradient(80% 90% at 85% 110%, rgb(255 90 1 / .22), transparent 70%), color-mix(in srgb, #000 30%, var(--surface));
+    background: radial-gradient(80% 90% at 85% 110%, rgb(255 61 0 / .22), transparent 70%), color-mix(in srgb, #000 30%, var(--surface));
     border: 1px solid var(--line);
   }
 
@@ -195,7 +196,7 @@ const tick = "M3.5 8.5l3 3 6-7";
   .pf { color: var(--accent); letter-spacing: .06em; text-transform: uppercase; }
   .kind { color: var(--muted); }
   .ad-media { margin-top: 8px; height: 92px; border-radius: 8px; display: grid; place-items: center; background: linear-gradient(135deg, #2a2a2f, #1c1c20); }
-  .ad-media.video { background: radial-gradient(70% 80% at 30% 20%, rgb(255 140 60 / .45), transparent 70%), #222226; }
+  .ad-media.video { background: radial-gradient(70% 80% at 30% 20%, rgb(255 115 55 / .45), transparent 70%), #222226; }
   .playmini { width: 28px; height: 28px; border-radius: 999px; display: grid; place-items: center; background: #fff; }
   .playmini svg { width: 12px; height: 12px; fill: #0E0E10; margin-left: 2px; }
   .bar { display: block; height: 6px; margin-top: 8px; border-radius: 99px; background: var(--raised); }
@@ -209,7 +210,7 @@ const tick = "M3.5 8.5l3 3 6-7";
   .ab-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; font-size: 11px; font-weight: 700; color: var(--text-2); }
   .ab-row i { flex: 1; height: 7px; border-radius: 99px; background: var(--raised); position: relative; overflow: hidden; }
   .ab-row i::after { content: ""; position: absolute; inset: 0 auto 0 0; width: 0; border-radius: inherit; background: var(--muted); transition: width 1.4s var(--ease-out-soft) .6s; }
-  .ab-row.win i::after { background: var(--accent); box-shadow: 0 0 12px rgb(255 90 1 / .7); }
+  .ab-row.win i::after { background: var(--accent); box-shadow: 0 0 12px rgb(255 61 0 / .7); }
   .ab-row.win span { color: var(--accent); }
   .bento.in .ab-row i::after { width: var(--w); }
 
@@ -226,7 +227,7 @@ const tick = "M3.5 8.5l3 3 6-7";
   /* --- Email and webinars: sequence timeline --- */
   .vis-seq { display: grid; grid-template-columns: repeat(4, 1fr); padding: 26px 10px 16px; }
   .seq-line { position: absolute; left: 12.5%; right: 12.5%; top: 37px; height: 2px; background: var(--line); }
-  .seq-line i { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--accent); box-shadow: 0 0 10px rgb(255 90 1 / .8); animation: travel 4s var(--ease-out-soft) infinite; }
+  .seq-line i { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--accent); box-shadow: 0 0 10px rgb(255 61 0 / .8); animation: travel 4s var(--ease-out-soft) infinite; }
   @keyframes travel { 0% { width: 0; opacity: 1; } 80% { width: 100%; opacity: 1; } 100% { width: 100%; opacity: 0; } }
   .node { position: relative; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
   .node .dot { position: relative; width: 24px; height: 24px; border-radius: 999px; background: var(--surface); border: 2px solid var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--surface) 80%, transparent); }
@@ -252,7 +253,7 @@ const tick = "M3.5 8.5l3 3 6-7";
   .deal > * { position: relative; }
   .deal::before { content: ""; position: absolute; inset: 0 2px; border-radius: 9px; background: var(--surface); border: 1px solid var(--line); box-shadow: 0 10px 24px -12px rgb(0 0 0 / .8); }
   .deal { display: flex; align-items: center; gap: 9px; height: 58px; }
-  .av { width: 26px; height: 26px; flex-shrink: 0; margin-left: 4px; border-radius: 99px; background: linear-gradient(135deg, #FFB070, var(--accent)); }
+  .av { width: 26px; height: 26px; flex-shrink: 0; margin-left: 4px; border-radius: 99px; background: linear-gradient(135deg, #FF9A6A, var(--accent)); }
   .deal-txt { display: grid; gap: 3px; min-width: 0; }
   .deal-txt b { font-size: 12px; font-weight: 600; color: var(--text); }
   .st { position: relative; height: 15px; }
@@ -302,7 +303,23 @@ const tick = "M3.5 8.5l3 3 6-7";
     .list svg { width: 13px; height: 13px; }
     .ad { width: 104px; left: calc(50% - 52px + (var(--i) - 1) * 50px); }
     .ad-media { height: 72px; }
+
+    /* Accordions (Tom's review): each tile shows just its header until tapped, so the page stays short.
+       The toggle's hit area stretches over the whole header row. */
+    .head { position: relative; }
+    .name { font-size: 18px; }
+    @media (min-width: 360px) { .name { white-space: nowrap; } } /* one-line titles; tiny phones may wrap */
+    .acc { display: grid; place-items: center; margin-left: auto; width: 32px; height: 32px; border-radius: 999px; color: var(--text-2); border: 1px solid var(--line); background: var(--raised); transition: transform .35s var(--ease-out-soft), color .3s, border-color .3s; }
+    .acc::after { content: ""; position: absolute; inset: -12px -10px; }
+    .acc svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .tile.open .acc { transform: rotate(180deg); color: var(--accent); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+    .tile:not(.open) :is(.vis, .list) { display: none; }
+    .tile.open :is(.vis, .list) { animation: acc-in .45s var(--ease-out-soft) both; }
+    @keyframes acc-in { from { opacity: 0; transform: translateY(-6px); } }
+    .tile:not(.open) { gap: 0; }
   }
+  /* toggle only exists on phones */
+  @media (min-width: 768px) { .acc { display: none; } }
   @media (prefers-reduced-motion: reduce) {
     :global(.reveal-ready) .tile { opacity: 1; translate: none; }
     .ad, .drop, .seq-line i, .live, .deal, .col-h, .st i { animation: none !important; }
@@ -316,4 +333,18 @@ const tick = "M3.5 8.5l3 3 6-7";
   // Tiles rise in one after another when the grid scrolls into view; visuals start then
   const bento = document.querySelector<HTMLElement>("#what-we-do .bento")!;
   new IntersectionObserver(([en], o) => { if (en.isIntersecting) { bento.classList.add("in"); o.disconnect(); } }, { threshold: 0.15 }).observe(bento);
+
+  // Mobile accordions: one tile open at a time, the first one open to start
+  const tiles = [...bento.querySelectorAll<HTMLElement>(".tile")];
+  const setOpen = (tile: HTMLElement, on: boolean) => {
+    tile.classList.toggle("open", on);
+    const btn = tile.querySelector<HTMLButtonElement>(".acc")!;
+    btn.setAttribute("aria-expanded", String(on));
+    btn.setAttribute("aria-label", on ? "Hide services" : "Show services");
+  };
+  tiles.forEach((t, i) => setOpen(t, i === 0));
+  tiles.forEach((t) => t.querySelector(".acc")!.addEventListener("click", () => {
+    const opening = !t.classList.contains("open");
+    tiles.forEach((o) => setOpen(o, o === t && opening));
+  }));
 </script>

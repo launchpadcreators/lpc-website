@@ -13,6 +13,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
       <h2 class="text-[clamp(30px,3.6vw,52px)] font-semibold leading-[1.05] tracking-[-0.04em] text-text">
         The way through is full-funnel marketing,<br class="hidden md:block" /> run as <em class="accent">one system.</em>
       </h2>
+      <h3 class="ge-sub">Scale to 7 and 8 figures through the <em class="accent">Launchpad Growth System</em></h3>
     </div>
 
     <div class="ge-stage">
@@ -55,6 +56,8 @@ const pad = (n: number) => String(n).padStart(2, "0");
   /* header sits at the same height as the other pinned headers; the script sets --ge-top from the Growth System one */
   .ge-head { padding-top: var(--ge-top, clamp(124px, 17vh, 176px)); }
 
+  /* Tom's review: a heading for the levels, right above them */
+  .ge-sub { margin-top: clamp(14px, 2vh, 22px); font-size: clamp(18px, 1.6vw, 24px); font-weight: 600; letter-spacing: -0.025em; line-height: 1.25; color: var(--text-2); }
   .ge-stage { position: relative; flex: 1; }
 
   /* The planet: a huge circle whose top cap shows; --r (radius) is read by the badge maths.
@@ -69,18 +72,18 @@ const pad = (n: number) => String(n).padStart(2, "0");
   .disc-mask { position: absolute; inset: -160px; }
   .disc {
     position: absolute; inset: 160px; border-radius: 50%;
-    background: radial-gradient(60% 18% at 50% 0%, rgb(255 90 1 / .16), transparent 70%);
-    border: 1px solid rgb(255 186 140 / .9);
+    background: radial-gradient(60% 18% at 50% 0%, rgb(255 61 0 / .16), transparent 70%);
+    border: 1px solid rgb(255 170 135 / .9);
     box-shadow:
-      0 0 0 1px rgb(255 90 1 / .35),
-      0 0 26px 3px rgb(255 90 1 / .55),
-      0 0 120px 24px rgb(255 90 1 / .2),
-      inset 0 24px 70px -28px rgb(255 120 40 / .45);
+      0 0 0 1px rgb(255 61 0 / .35),
+      0 0 26px 3px rgb(255 61 0 / .55),
+      0 0 120px 24px rgb(255 61 0 / .2),
+      inset 0 24px 70px -28px rgb(255 95 35 / .45);
   }
   /* "Diamond ring" bloom where the light breaks over the top of the planet, with grain */
   .flare {
     position: absolute; left: 50%; top: -46px; width: min(620px, 60vw); height: 92px; transform: translateX(-50%);
-    background: radial-gradient(closest-side, rgb(255 150 70 / .5), rgb(255 90 1 / .22) 55%, transparent);
+    background: radial-gradient(closest-side, rgb(255 125 70 / .5), rgb(255 61 0 / .22) 55%, transparent);
     filter: blur(14px); pointer-events: none;
   }
   .flare::after {
@@ -100,7 +103,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
     background: color-mix(in srgb, var(--surface) 92%, transparent); border: 1px solid var(--line);
     transition: background-color .4s var(--ease-out-soft), color .4s, border-color .4s, box-shadow .4s;
   }
-  .badge.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); box-shadow: 0 0 0 6px rgb(255 90 1 / .14), 0 10px 40px -6px rgb(255 90 1 / .8); }
+  .badge.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); box-shadow: 0 0 0 6px rgb(255 61 0 / .14), 0 10px 40px -6px rgb(255 61 0 / .8); }
 
   .ge-content {
     position: absolute; left: 50%; top: clamp(64px, 9vh, 96px); width: min(600px, calc(100vw - 40px)); transform: translateX(-50%);

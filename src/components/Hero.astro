@@ -1,17 +1,16 @@
 ---
 // Hero: centred headline with one serif accent word, sub-copy, two CTAs,
-// then a looping strip of partner faces with names (Tom's review: "Partnering with the world's best creators and entrepreneurs").
+// then social proof (Tom's review): overlapping partner faces + "Partnering with the world's best creators and entrepreneurs."
 import { url } from "../config/paths";
 const applyUrl = "https://form.typeform.com/to/yWBgS4vK";
-// Tom's order. Tobi Oluwole goes after Jo once we have his photo. Square face crops live in public/partners/avatars/.
+// Tom's order. Square face crops live in public/partners/avatars/.
 const strip = [
   { name: "Chris Donnelly", img: "partners/avatars/chris-donnelly.jpg" },
   { name: "Joseph McClendon III", img: "partners/avatars/joseph-mcclendon.jpg" },
   { name: "Nicolas Boucher", img: "partners/avatars/nicolas-boucher.jpg" },
   { name: "Jo Bird", img: "partners/avatars/jo-bird.jpg" },
+  { name: "Tobi Oluwole", img: "partners/avatars/tobi-oluwole.jpg" },
 ];
-// One group must be wider than the widest screen, so the set repeats; two identical groups make the loop seamless
-const loop = [...strip, ...strip, ...strip];
 ---
 <section id="top" class="hero relative flex min-h-svh flex-col items-center justify-center overflow-hidden px-5 pt-[104px] pb-[56px]">
   <!-- Glow (Conversion-template style): stacked blurred conic gradients, clipped in a box below the CTAs -->
@@ -34,24 +33,15 @@ const loop = [...strip, ...strip, ...strip];
       <a href={applyUrl} target="_blank" rel="noopener" class="hbtn hbtn-primary">Work with us</a>
       <a href="#newsletter" class="hbtn hbtn-ghost">Join our mailing list</a>
     </div>
-  </div>
 
-  <!-- Social proof: partner faces loop sideways and pause on hover; the edges fade out -->
-  <div class="proof h-in" style="--d:360ms">
-    <p class="proof-line">Partnering with the world's best creators and entrepreneurs.</p>
-    <div class="marquee">
-      <div class="marquee-track">
-        {[0, 1].map((g) => (
-          <ul class="marquee-group">
-            {loop.map((p, i) => (
-              <li aria-hidden={g === 1 || i >= strip.length ? "true" : undefined}>
-                <img src={url(p.img)} alt="" width="160" height="160" decoding="async" draggable="false" />
-                <span>{p.name}</span>
-              </li>
-            ))}
-          </ul>
+    <!-- Social proof: overlapping faces, then the line (no names in the line, per Tom). Stacks on phones. -->
+    <div class="proof h-in" style="--d:360ms">
+      <ul class="faces">
+        {strip.map((p, i) => (
+          <li style={`--i:${i}`}><img src={url(p.img)} alt={p.name} title={p.name} width="160" height="160" decoding="async" draggable="false" /></li>
         ))}
-      </div>
+      </ul>
+      <p class="proof-line">Partnering with the world's best creators and entrepreneurs.</p>
     </div>
   </div>
 </section>
@@ -73,13 +63,13 @@ const loop = [...strip, ...strip, ...strip];
   /* Outer: big multi-tone conic in LPC oranges, heavy blur */
   .g-outer {
     width: 760px; height: 560px; margin: -280px 0 0 -380px; filter: blur(110px);
-    background: conic-gradient(#FF3D00 0deg, #FF2A10 55deg, #FFB070 107deg, #FF8A3D 162deg, #8A2A00 252deg, #FF7A00 306deg, #FF3D00 360deg);
+    background: conic-gradient(#FF3D00 0deg, #FF2A10 55deg, #FF9A6A 107deg, #FF6A2E 162deg, #8A1E00 252deg, #FF5A1A 306deg, #FF3D00 360deg);
     animation: spin 18s linear infinite;
   }
   /* Inner: warm hot core */
   .g-inner {
     width: 440px; height: 340px; margin: -170px 0 0 -220px; filter: blur(70px);
-    background: conic-gradient(#FFE2C2 0deg, #FF5A01 180deg, #FFB070 360deg);
+    background: conic-gradient(#FFE2C2 0deg, #FF3D00 180deg, #FF9A6A 360deg);
     animation: spin 12s linear infinite reverse;
   }
   .g-blend { mix-blend-mode: overlay; animation-duration: 9s; animation-direction: normal; }
@@ -100,27 +90,22 @@ const loop = [...strip, ...strip, ...strip];
   .hbtn-ghost:hover { border-color: color-mix(in srgb, var(--text) 25%, transparent); }
   @media (max-width: 639px) { .hbtn { width: 100%; min-width: 260px; } }
 
-  /* Partner strip: each item has a fixed width (no gap) so moving by exactly half the track loops seamlessly */
-  .proof { position: relative; z-index: 10; width: 100%; max-width: 1240px; margin-top: clamp(48px, 8vh, 88px); text-align: center; }
-  .proof-line { font-size: 14px; color: var(--muted); }
-  .marquee {
-    margin-top: 26px; overflow: hidden;
-    -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
-            mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+  /* Social proof row: overlapping faces + one line, centred under the buttons */
+  .proof { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: clamp(36px, 6vh, 56px); }
+  .faces { display: flex; }
+  .faces li { position: relative; margin-left: -12px; transition: transform .25s var(--ease-out-soft); }
+  .faces li:first-child { margin-left: 0; }
+  .faces li:hover { transform: translateY(-3px); z-index: 1; }
+  /* thin light outline on each face, like the cards' hairline border */
+  .faces img {
+    display: block; width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: var(--raised);
+    border: 1px solid color-mix(in srgb, var(--text) 26%, transparent);
   }
-  .marquee-track { display: flex; width: max-content; animation: marquee 45s linear infinite; }
-  .marquee:hover .marquee-track { animation-play-state: paused; }
-  .marquee-group { display: flex; }
-  .marquee-group li { flex: none; width: 176px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
-  .marquee-group img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 1px solid var(--line); background: var(--raised); }
-  .marquee-group span { font-size: 14px; font-weight: 500; color: var(--text); white-space: nowrap; text-shadow: 0 1px 8px rgb(0 0 0 / .35); }
-  @keyframes marquee { to { transform: translateX(-50%); } }
+  .proof-line { font-size: 14px; line-height: 1.45; color: #fff; text-align: left; }
   @media (max-width: 639px) {
-    .marquee-group li { width: 140px; gap: 10px; }
-    .marquee-group img { width: 60px; height: 60px; }
-    .marquee-group span { font-size: 12px; }
+    .proof { flex-direction: column; gap: 12px; }
+    .proof-line { text-align: center; max-width: 260px; }
   }
-  @media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; } }
 
   /* Load-in: staggered fade-up (content visible if JS/animation is off) */
   @media (prefers-reduced-motion: no-preference) {

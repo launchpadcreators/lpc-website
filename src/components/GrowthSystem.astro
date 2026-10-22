@@ -15,6 +15,9 @@ import { applyUrl, stages } from "../data/growth-stages";
         <p class="mt-4 text-[clamp(15px,1.3vw,18px)] text-text-2">Every stage from first impression to repeat customer, built and run together. That is what a great growth partner does.</p>
       </div>
 
+      <!-- Tom's review: a heading for the levels, under the header on desktop and right above the levels on mobile -->
+      <h3 class="gs-sub">Scale to 7 and 8 figures through the <em class="accent">Launchpad Growth System</em></h3>
+
       <ol class="cards">
         {stages.map((s, i) => (
           <li class="card" data-i={i} style={`--i:${i}`}>
@@ -41,9 +44,13 @@ import { applyUrl, stages } from "../data/growth-stages";
   .gs-head { text-align: center; max-width: 1080px; margin: 0 auto; }
 
   /* Five cards in one level row, all the same height */
+  .gs-sub {
+    margin-top: clamp(28px, 5vh, 52px); text-align: center;
+    font-size: clamp(18px, 1.6vw, 24px); font-weight: 600; letter-spacing: -0.025em; line-height: 1.25; color: var(--text);
+  }
   .cards {
     display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; align-items: stretch;
-    margin-top: clamp(28px, 5vh, 56px);
+    margin-top: clamp(16px, 2.4vh, 24px);
   }
   /* Every card has the same rhythm: level label, name, one line */
   .card {
@@ -78,7 +85,8 @@ import { applyUrl, stages } from "../data/growth-stages";
     .gs-pin { position: relative; height: auto; display: block; overflow: visible; padding: 40px 0 80px; }
     .gs-inner { padding-top: 0; }
     .gs-head { text-align: left; }
-    .cards { grid-template-columns: 1fr; gap: 12px; padding: 0 0 0 26px; position: relative; margin-top: 32px; }
+    .gs-sub { margin-top: 32px; text-align: left; }
+    .cards { grid-template-columns: 1fr; gap: 12px; padding: 0 0 0 26px; position: relative; margin-top: 16px; }
     .cards::before, .cards::after { content: ""; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 2px; border-radius: 2px; }
     .cards::before { background: var(--line); }
     .cards::after { background: var(--accent); transform-origin: top; transform: scaleY(var(--fill, 0)); }

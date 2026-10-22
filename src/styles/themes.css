@@ -14,13 +14,13 @@
   --text: #F4F4F5;        /* headings, primary text */
   --text-2: #A1A1AA;      /* body copy */
   --muted: #71717A;       /* labels, captions */
-  --accent: #FF5A01;      /* buttons, highlights */
+  --accent: #FF3D00;      /* buttons, highlights */
   --accent-ink: #FFFFFF;  /* text on accent buttons */
   --data: #34D399;        /* money / growth numbers */
-  --glow-warm: #FF5A01;   /* hero / CTA glow */
+  --glow-warm: #FF3D00;   /* hero / CTA glow */
   --glow-cool: #3F3F46;   /* secondary glow */
   --star: 245 247 252;    /* starfield base colour (r g b) */
-  --star-accent: 255 122 61; /* starfield accent colour (r g b) */
+  --star-accent: 255 100 50; /* starfield accent colour (r g b) */
 }
 
 /* Original blue */
@@ -32,11 +32,11 @@
   --text: #F5F7FC;
   --text-2: #AEB8CF;
   --muted: #7783A3;
-  --accent: #FF5A01;
+  --accent: #FF3D00;
   --accent-ink: #FFFFFF;
   --data: #34D399;
-  --glow-warm: #FF5A01;
+  --glow-warm: #FF3D00;
   --glow-cool: #1D3A8A;
   --star: 245 247 252;
-  --star-accent: 255 122 61;
+  --star-accent: 255 100 50;
 }

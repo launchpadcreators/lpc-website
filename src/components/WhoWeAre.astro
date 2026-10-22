@@ -3,15 +3,17 @@
 // 12-strong team card underneath them. Copy: brief/04-copy-deck.md, section 7.
 // Founder facts are still marked [CONFIRM] in the copy deck.
 import { url } from "../config/paths";
-// Same order as the founders photo: Tom (left), Dan (right)
+// Same order as the founders photo: Tom (left), Dan (right).
+// LinkedIn URLs are the ones linked from launchpadcreators.com ("DM us directly", per Tom's review).
+const liIcon = "M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z";
 const founders = [
   {
-    name: "Tom Pestridge", area: "f-a",
+    name: "Tom Pestridge", area: "f-a", linkedin: "https://www.linkedin.com/in/tom-pestridge/",
     line: "Marketing leader and agency founder. Took a travel company to £7M a year as its growth partner.", // [CONFIRM: "£500K to £7M" or "£0 to £7M"]
     stats: [{ v: "£7M", l: "A year, as growth partner" }, { v: "~200K", l: "LinkedIn followers" }],
   },
   {
-    name: "Dan Mian", area: "f-b",
+    name: "Dan Mian", area: "f-b", linkedin: "https://www.linkedin.com/in/danmian/",
     line: "Performance marketer (Forbes, BT). Founded Gradvance and grew it to $500K.", // [CONFIRM]
     stats: [{ v: "200K+", l: "LinkedIn followers" }, { v: "$500K", l: "Grew Gradvance to" }],
   },
@@ -48,6 +50,10 @@ const specialisms = ["Paid media", "Creative", "Content", "Funnels and AI", "Sal
           <div class="stats">
             {f.stats.map((s) => <div><p class="sv">{s.v}</p><p class="sl">{s.l}</p></div>)}
           </div>
+          <a class="li" href={f.linkedin} target="_blank" rel="noopener" aria-label={`Message ${f.name} on LinkedIn`}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d={liIcon} /></svg>
+            Message on LinkedIn <span aria-hidden="true">→</span>
+          </a>
         </article>
       ))}
 
@@ -88,7 +94,7 @@ const specialisms = ["Paid media", "Creative", "Content", "Funnels and AI", "Sal
   :global(.reveal-ready) .grid3.in .card { opacity: 1; translate: 0 0; }
   .card:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
   .card::after { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: var(--noise); background-size: 180px; opacity: .1; mix-blend-mode: overlay; }
-  .team { background: radial-gradient(90% 70% at 0% 100%, rgb(255 90 1 / .2), transparent 65%), var(--surface); flex-direction: row; align-items: flex-start; gap: 28px; }
+  .team { background: radial-gradient(90% 70% at 0% 100%, rgb(255 61 0 / .2), transparent 65%), var(--surface); flex-direction: row; align-items: flex-start; gap: 28px; }
   .team-num { flex-shrink: 0; }
   .team-txt .desc { margin-top: 0; }
   .team .spec { padding-top: 16px; }
@@ -114,6 +120,13 @@ const specialisms = ["Paid media", "Creative", "Content", "Funnels and AI", "Sal
   .card .stats { margin-top: 24px; }
   .sv { font-size: 26px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; color: var(--accent); }
   .sl { margin-top: 6px; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+
+  /* LinkedIn link under the stats */
+  .li { margin-top: 20px; display: inline-flex; align-items: center; gap: 9px; align-self: flex-start; font-size: 14px; font-weight: 600; color: var(--text); transition: color .2s; }
+  .li svg { width: 16px; height: 16px; fill: currentColor; color: var(--text-2); transition: color .2s; }
+  .li span { transition: transform .2s var(--ease-out-soft); }
+  .li:hover, .li:hover svg { color: var(--accent); }
+  .li:hover span { transform: translateX(3px); }
 
   @media (max-width: 1023px) {
     .grid3 { grid-template-columns: 1fr 1fr; grid-template-areas: "photo photo" "fa fb" "team team"; }

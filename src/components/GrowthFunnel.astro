@@ -1,0 +1,239 @@
+---
+// Growth System, funnel variant: the five levels drawn as a real funnel infographic (bands narrow from top to bottom).
+// Bands are compact (level + name); a band opens to show its one line only while it is active. Kept beside the cards and eclipse versions for comparison; keep one.
+// Desktop: the section pins. First the funnel builds itself: bands drop in from above and stack from the bottom up
+// (Deliver and scale lands first, Attract last). Then it walks the levels top to bottom: the active band turns
+// orange and opens, a progress bar fills on the left, and leads flow down through the funnel.
+// Phones: no pin; the funnel stacks in as it scrolls into view and you tap a band to open it (one at a time).
+import { applyUrl, stages } from "../data/growth-stages";
+const pad = (n: number) => String(n).padStart(2, "0");
+---
+<section id="growth-funnel" class="gf relative" aria-label="The Launchpad Growth System (funnel)">
+  <div class="gf-pin">
+    <div class="gf-inner mx-auto w-full max-w-[1240px] px-5">
+
+      <div class="gf-text">
+        <h2 class="text-[clamp(28px,min(3.3vw,5.6vh),48px)] font-semibold leading-[1.06] tracking-[-0.04em] text-text">
+          The way through is full-funnel marketing, run as <em class="accent">one system.</em>
+        </h2>
+        <p class="sub">Every stage from first impression to repeat customer, built and run together. That is what a great growth partner does.</p>
+        <div class="rail" aria-hidden="true">
+          <div class="segs">{stages.map(() => <span class="seg"><i></i></span>)}</div>
+          <span class="count"><b class="cur">01</b> / {pad(stages.length)}</span>
+        </div>
+        <a href={applyUrl} target="_blank" rel="noopener" class="cta">See if you're a fit <span aria-hidden="true">→</span></a>
+      </div>
+
+      <div class="gf-visual">
+        <h3 class="gf-title">Scale to 7 and 8 figures through the <em class="accent">Launchpad Growth System</em></h3>
+        <ol class="funnel">
+          {stages.map((s, i) => (
+            <li class="band" data-i={i} style={`--k:${stages.length - 1 - i}`} aria-expanded="false">
+              <svg class="shape" aria-hidden="true"><path /></svg>
+              <div class="b-in">
+                <p class="b-head"><span class="b-lvl">Level {pad(i + 1)}</span><span class="b-name">{s.name}</span></p>
+                <div class="b-more"><p class="b-line">{s.line}</p></div>
+              </div>
+            </li>
+          ))}
+          <!-- leads flowing down through the funnel once it's built -->
+          <li class="flow" aria-hidden="true">
+            {[-26, 18, -10, 30, 4, -20, 12].map((x, k) => <i style={`--x:${x}%;--d:${k * -0.5}s`}></i>)}
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .gf { height: 520vh; }
+  .gf-pin { position: sticky; top: 0; height: 100svh; display: flex; align-items: center; overflow: hidden; }
+  .gf-inner { display: grid; grid-template-columns: .9fr 1.2fr; gap: clamp(36px, 5vw, 80px); align-items: center; padding-top: 72px; }
+
+  .sub { margin-top: 16px; max-width: 460px; font-size: clamp(15px, 1.3vw, 17px); line-height: 1.55; color: var(--text-2); }
+
+  /* Progress rail (Tom: a progress element as you scroll through the levels) */
+  .rail { display: flex; align-items: center; gap: 16px; margin-top: clamp(24px, 4vh, 40px); max-width: 420px; }
+  .segs { flex: 1; display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .seg { height: 3px; border-radius: 99px; background: var(--line); overflow: hidden; }
+  .seg i { display: block; height: 100%; background: var(--accent); transform-origin: left; transform: scaleX(var(--f, 0)); box-shadow: 0 0 10px rgb(255 61 0 / .6); }
+  .count { font-size: 13px; font-variant-numeric: tabular-nums; color: var(--muted); }
+  .count b { color: var(--text); font-weight: 600; }
+
+  .cta {
+    display: inline-flex; align-items: center; gap: 8px; margin-top: clamp(22px, 3.5vh, 34px); height: 50px; padding: 0 24px; border-radius: 12px;
+    background: var(--accent-grad); color: var(--accent-ink); font-size: 15px; font-weight: 600;
+    opacity: 0; transform: translateY(8px); transition: opacity .5s, transform .5s var(--ease-out-soft), filter .2s;
+  }
+  .cta.show { opacity: 1; transform: none; }
+  .cta:hover { filter: brightness(1.08); }
+
+  /* The funnel. --taper = how far in (% of the width) the bottom edge sits; the script turns it into each band's
+     shape from the bands' real positions, so the sides stay one straight line as bands open and close. */
+  .gf-title { text-align: center; font-size: clamp(17px, 1.5vw, 22px); font-weight: 600; letter-spacing: -0.025em; line-height: 1.25; color: var(--text); }
+  .funnel { --taper: 24; position: relative; margin: clamp(14px, 2.4vh, 22px) auto 0; width: min(600px, 100%); display: grid; gap: 8px; }
+  /* Bands share the Growth System cards' look: see-through dark fill, hairline border, rounded corners,
+     solid orange with white text when active */
+  .band { position: relative; z-index: 1; will-change: transform; transition: filter .5s var(--ease-out-soft); }
+  .shape { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .shape path {
+    fill: color-mix(in srgb, var(--surface) 82%, transparent); stroke: var(--line); stroke-width: 1;
+    transition: fill .5s var(--ease-out-soft), stroke .5s var(--ease-out-soft);
+  }
+  .band.on .shape path { fill: var(--accent); stroke: var(--accent); }
+  .band.on { filter: drop-shadow(0 18px 32px color-mix(in srgb, var(--accent) 45%, transparent)); }
+  /* text stays inside the band's narrower (bottom) edge; --bp is set by the script */
+  .b-in { position: relative; z-index: 1; min-height: 58px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 10px calc(var(--bp, 0px) + 16px); }
+  /* level label sits above the name, like the cards */
+  .b-head { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .b-lvl { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-variant-numeric: tabular-nums; transition: color .5s; }
+  .b-name { font-size: clamp(16px, 1.45vw, 20px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.15; color: var(--text); transition: color .5s; }
+  /* description opens smoothly (0fr → 1fr) on the active band only */
+  .b-more { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .45s var(--ease-out-soft); }
+  .b-line { overflow: hidden; min-height: 0; max-width: 400px; font-size: 13px; line-height: 1.45; color: var(--text-2); opacity: 0; transition: opacity .35s, color .5s; }
+  .band.on .b-more { grid-template-rows: 1fr; }
+  .band.on .b-line { opacity: 1; padding-top: 5px; transition-delay: .1s; }
+  .band.on .b-lvl { color: rgb(255 255 255 / .75); }
+  .band.on .b-name { color: var(--accent-ink); }
+  .band.on .b-line { color: rgb(255 255 255 / .88); }
+
+  /* Leads: dots falling down the middle behind the bands, showing in the gaps and glowing softly through */
+  .flow { position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: 0; transition: opacity .6s; }
+  .gf.walking .flow { opacity: 1; }
+  .flow i {
+    position: absolute; left: 50%; top: 0; width: 6px; height: 6px; margin-left: -3px; border-radius: 99px; background: #fff;
+    box-shadow: 0 0 10px 2px var(--accent); animation: gf-flow 3.5s cubic-bezier(.4, 0, .6, 1) infinite; animation-delay: var(--d);
+  }
+  @keyframes gf-flow {
+    0% { top: 0; translate: calc(var(--x) * 6) 0; opacity: 0; }
+    10% { opacity: .9; }
+    90% { opacity: .9; }
+    100% { top: 100%; translate: calc(var(--x) * .6) 0; opacity: 0; }
+  }
+
+  /* Phones / tablet portrait: no pin, text then funnel then the button */
+  @media (max-width: 899px) {
+    .gf { height: auto; padding: 72px 0 64px; }
+    .gf-pin { position: relative; height: auto; display: block; overflow: visible; }
+    .gf-inner { grid-template-columns: 1fr; gap: 28px; padding-top: 0; }
+    .rail { display: none; }
+    /* text block melts into the grid so the button can sit after the funnel */
+    .gf-text { display: contents; }
+    .gf-visual { order: 1; }
+    .cta { opacity: 1; transform: none; order: 2; justify-self: start; margin-top: 0; }
+    .funnel { --taper: 24; gap: 6px; }
+    .band { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .b-in { min-height: 54px; padding: 8px calc(var(--bp, 0px) + 10px); }
+    .b-line { font-size: 12.5px; line-height: 1.4; }
+    .b-name { font-size: 16px; }
+    .b-lvl { font-size: 10px; }
+    .flow { opacity: 1; }
+    /* bands stack in from the bottom up once the funnel scrolls into view */
+    :global(.reveal-ready) .band { opacity: 0; transform: translateY(-60px); transition: opacity .5s var(--ease-out-soft) calc(var(--k) * 110ms), transform .6s cubic-bezier(.34, 1.4, .64, 1) calc(var(--k) * 110ms); }
+    :global(.reveal-ready) .funnel.in .band { opacity: 1; transform: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .gf { height: auto; } .gf-pin { position: relative; height: auto; padding: 96px 0; }
+    .band { transform: none !important; opacity: 1 !important; }
+    .cta { opacity: 1; transform: none; }
+    .flow { display: none; }
+  }
+</style>
+
+<script>
+  const sec = document.getElementById("growth-funnel")!;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const mobile = matchMedia("(max-width: 899px)");
+  const funnel = sec.querySelector<HTMLElement>(".funnel")!;
+  const bands = [...sec.querySelectorAll<HTMLElement>(".band")];
+  const fills = [...sec.querySelectorAll<HTMLElement>(".seg i")];
+  const cur = sec.querySelector<HTMLElement>(".cur")!;
+  const cta = sec.querySelector<HTMLElement>(".cta")!;
+  const n = bands.length;
+  const clamp = (v: number) => Math.max(0, Math.min(1, v));
+  const seg = (p: number, a: number, b: number) => clamp((p - a) / (b - a));
+  // landing with a little overshoot, like the band settles onto the stack
+  const back = (t: number) => { const c = 1.6; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); };
+
+  // Each band is a rounded trapezoid drawn at its real pixel size (round corners, crisp 1px border).
+  // Its sides sit on one straight line running from the funnel's top corners to --taper% in at the bottom,
+  // measured from the bands' actual positions, so the funnel reads as one shape across the gaps.
+  const R = 14;
+  function shapeBands() {
+    const total = funnel.clientHeight;
+    const taper = parseFloat(getComputedStyle(funnel).getPropertyValue("--taper")) / 100;
+    bands.forEach((b) => {
+      const svg = b.querySelector<SVGSVGElement>(".shape")!;
+      const w = b.clientWidth, h = b.clientHeight;
+      if (!w || !h || !total) return;
+      const t = taper * (b.offsetTop / total) * w + 0.5;
+      const bo = taper * ((b.offsetTop + h) / total) * w + 0.5;
+      b.style.setProperty("--bp", `${Math.round(bo)}px`);
+      const pts = [[t, 0.5], [w - t, 0.5], [w - bo, h - 0.5], [bo, h - 0.5]];
+      const r = Math.min(R, h / 3);
+      let d = "";
+      pts.forEach((p, i) => {
+        const prev = pts[(i + 3) % 4], next = pts[(i + 1) % 4];
+        const toward = (q: number[]) => { const dx = q[0] - p[0], dy = q[1] - p[1], len = Math.hypot(dx, dy); return [p[0] + (dx / len) * r, p[1] + (dy / len) * r]; };
+        const a = toward(prev), c = toward(next);
+        d += `${i ? "L" : "M"}${a[0].toFixed(1)} ${a[1].toFixed(1)} Q${p[0].toFixed(1)} ${p[1].toFixed(1)} ${c[0].toFixed(1)} ${c[1].toFixed(1)} `;
+      });
+      svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+      svg.querySelector("path")!.setAttribute("d", d + "Z");
+    });
+  }
+  shapeBands();
+  new ResizeObserver(shapeBands).observe(funnel);
+
+  // Phones: build once when the funnel comes into view (CSS handles the stagger)
+  new IntersectionObserver(([en], o) => { if (en.isIntersecting) { funnel.classList.add("in"); o.disconnect(); } }, { threshold: 0.2 }).observe(funnel);
+
+  const setActive = (active: number) => bands.forEach((b, i) => {
+    b.classList.toggle("on", i === active);
+    b.setAttribute("aria-expanded", String(i === active));
+  });
+
+  // Phones: tap a band to open it (tap the open one to close it); the first is open to start
+  bands.forEach((b, i) => b.addEventListener("click", () => {
+    if (mobile.matches) setActive(b.classList.contains("on") ? -1 : i);
+  }));
+  const onMode = () => {
+    if (mobile.matches) { bands.forEach((b) => { b.style.transform = ""; b.style.opacity = ""; }); sec.classList.remove("walking"); setActive(0); }
+    else render();
+  };
+  mobile.addEventListener("change", onMode);
+
+  function render() {
+    if (mobile.matches) return;
+    const r = sec.getBoundingClientRect();
+    const p = clamp(-r.top / (sec.offsetHeight - innerHeight));
+
+    // Build (p .02 → .40): bottom band first, each falls from above the screen onto the stack
+    bands.forEach((b) => {
+      const k = Number(b.style.getPropertyValue("--k")); // 0 = bottom band
+      const t = seg(p, 0.02 + k * 0.075, 0.02 + k * 0.075 + 0.1);
+      // fall from just above the top of the screen (layout position, unaffected by the current transform)
+      const drop = funnel.getBoundingClientRect().top + b.offsetTop + b.offsetHeight + 40;
+      b.style.transform = t >= 1 ? "" : `translateY(${(-(1 - back(t)) * drop).toFixed(1)}px)`;
+      b.style.opacity = t > 0 ? "1" : "0";
+    });
+
+    // Walk (p .44 → .96): each level in turn, top to bottom
+    const w = seg(p, 0.44, 0.96);
+    const walking = p >= 0.44;
+    const active = walking ? Math.min(n - 1, Math.floor(w * n)) : -1;
+    sec.classList.toggle("walking", walking);
+    setActive(active);
+    fills.forEach((f, i) => f.style.setProperty("--f", String(clamp(w * n - i))));
+    cur.textContent = String(Math.max(active, 0) + 1).padStart(2, "0");
+    cta.classList.toggle("show", p > 0.9);
+  }
+
+  if (mobile.matches) setActive(0);
+  if (!reduce) {
+    render();
+    addEventListener("scroll", render, { passive: true });
+    addEventListener("resize", render);
+  }
+</script>
