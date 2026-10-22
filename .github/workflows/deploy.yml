@@ -12,9 +12,10 @@ permissions:
   pages: write
   id-token: write
 
+# Queue new pushes instead of cancelling: killing a deploy mid-publish left Pages stuck on an old build
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:

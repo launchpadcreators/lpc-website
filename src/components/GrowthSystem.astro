@@ -1,18 +1,18 @@
 ---
 // Launchpad Growth System (Atlas-style): the section pins, and the five stage cards slide in one at a time
-// and land side by side in one row. The card that just landed turns orange and hands it on;
-// milestone tags pop in as their card lands. Mobile: cards stack vertically with an orange progress line.
+// and land side by side in one row. The card that just landed turns orange and hands it on.
+// Mobile: cards stack vertically with an orange progress line.
 import { applyUrl, stages } from "../data/growth-stages";
 ---
 <section id="growth-system" class="gs relative" aria-label="The Launchpad Growth System">
   <div class="gs-pin">
     <div class="gs-inner mx-auto w-full max-w-[1240px] px-5">
-      <!-- One clear stack: eyebrow → headline → one short line. The revenue figures live on the cards as milestone tags. -->
+      <!-- One clear stack: headline, then one short line -->
       <div class="gs-head">
         <h2 class="text-[clamp(30px,3.6vw,52px)] font-semibold leading-[1.05] tracking-[-0.04em] text-text">
           The way through is full-funnel marketing,<br class="hidden md:block" /> run as <em class="accent">one system.</em>
         </h2>
-        <p class="mt-4 text-[clamp(15px,1.3vw,18px)] text-text-2">Every stage from first impression to repeat customer, built and run together.</p>
+        <p class="mt-4 text-[clamp(15px,1.3vw,18px)] text-text-2">Every stage from first impression to repeat customer, built and run together. That is what a great growth partner does.</p>
       </div>
 
       <ol class="cards">
@@ -21,7 +21,6 @@ import { applyUrl, stages } from "../data/growth-stages";
             <span class="num">Level {String(i + 1).padStart(2, "0")}</span>
             <h3 class="name">{s.name}</h3>
             <p class="line">{s.line}</p>
-            {s.tag && <span class="tag">{s.tag}</span>}
           </li>
         ))}
       </ol>
@@ -46,7 +45,7 @@ import { applyUrl, stages } from "../data/growth-stages";
     display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; align-items: stretch;
     margin-top: clamp(28px, 5vh, 56px);
   }
-  /* Every card has the same rhythm: level label, name, one line, then the milestone tag pinned to the bottom */
+  /* Every card has the same rhythm: level label, name, one line */
   .card {
     position: relative; display: flex; flex-direction: column; align-items: flex-start;
     min-height: clamp(220px, 28vh, 270px); padding: 22px 20px;
@@ -58,21 +57,11 @@ import { applyUrl, stages } from "../data/growth-stages";
   .num { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-variant-numeric: tabular-nums; transition: color .5s; }
   .name { margin-top: 14px; font-size: clamp(19px, 1.6vw, 23px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; color: var(--text); }
   .line { margin-top: 10px; font-size: 14px; line-height: 1.5; color: var(--text-2); transition: color .5s; }
-  .tag {
-    display: inline-flex; margin-top: auto; padding: 6px 10px; border-radius: 999px;
-    font-size: 12px; font-weight: 600; white-space: nowrap;
-    color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
-    background: color-mix(in srgb, var(--accent) 10%, transparent);
-    opacity: 0; transform: translateY(6px) scale(.9);
-    transition: opacity .45s var(--ease-out-soft) .15s, transform .45s var(--ease-out-soft) .15s, color .5s, background-color .5s, border-color .5s;
-  }
-  .card.landed .tag { opacity: 1; transform: none; }
 
   /* Active card: solid orange with white text (brand rule) and a soft orange glow */
   .card.on { background: var(--accent); border-color: var(--accent); box-shadow: 0 20px 60px -20px color-mix(in srgb, var(--accent) 70%, transparent); }
   .card.on .name, .card.on .line { color: var(--accent-ink); }
   .card.on .num { color: rgb(255 255 255 / .75); }
-  .card.on .tag { color: var(--accent-ink); border-color: rgb(255 255 255 / .35); background: rgb(255 255 255 / .14); }
 
   .gs-cta { display: flex; justify-content: center; margin-top: clamp(16px, 3vh, 36px); opacity: 0; transform: translateY(10px); transition: opacity .5s var(--ease-out-soft), transform .5s var(--ease-out-soft); }
   .gs-cta.show { opacity: 1; transform: none; }
@@ -94,7 +83,6 @@ import { applyUrl, stages } from "../data/growth-stages";
     .cards::before { background: var(--line); }
     .cards::after { background: var(--accent); transform-origin: top; transform: scaleY(var(--fill, 0)); }
     .card { min-height: 0; }
-    .tag { margin-top: 14px; }
     .gs-cta { opacity: 1; transform: none; justify-content: flex-start; }
   }
 
@@ -102,7 +90,7 @@ import { applyUrl, stages } from "../data/growth-stages";
     .gs { height: auto; }
     .gs-pin { position: relative; height: auto; padding: 80px 0; }
     .card { transform: none !important; opacity: 1 !important; }
-    .tag, .gs-cta { opacity: 1; transform: none; }
+    .gs-cta { opacity: 1; transform: none; }
   }
 </style>
 

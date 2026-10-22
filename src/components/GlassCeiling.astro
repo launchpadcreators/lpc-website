@@ -1,13 +1,14 @@
 ---
 // Glass ceiling as a scroll story (no card): the section pins while you scroll,
 // a full-width chart draws on the page background, and one short line of copy swaps per beat:
-//  1. "You grew on talent."                → grey line rises
+//  1. "The things that get you to your first milestone…" → grey line rises
 //  2. "Then it stalled."                   → line flattens under the dashed glass ceiling, blockers pop up
 //  3. "The ceiling is the missing system." → orange line breaks through
 // Hitting the ceiling is physical: at the end of beat 2 the scroll turns heavy (you have to push),
 // each push cracks the glass a little more with a thud, then it shatters and the orange line goes through.
 const steps = [
-  { t: "You grew on <em class='accent'>talent.</em>", s: "Great content, a strong network, sheer graft and a bit of luck." },
+  // Tom's Loom review (brief/05): replaces "You grew on talent."
+  { t: "The things that get you from your first milestone <em class='accent'>won't get you past the next one.</em>", s: "Great content, a strong network, sheer graft and a bit of luck.", long: true },
   { t: "Then it <em class='accent'>stalled.</em>", s: "Reach plateaus. Every launch depends on how hard you push that month.", hint: "Keep scrolling to break through" },
   { t: "The ceiling is the <em class='accent'>missing system.</em>", s: "Not your audience. Not your expertise." },
 ];
@@ -28,10 +29,14 @@ const shards = [
   { d: "M644 178 L652 174 L654 182 Z", x: -100, y: -60, r: 80 },
   { d: "M700 178 L708 174 L712 184 Z", x: 110, y: -70, r: -60 },
 ];
+// Things people say at this stage (Tom's review added the last three). x/y = % of the content-width chart layer.
 const blockers = [
-  { q: "I've got an audience but no idea about ads.", x: 42, y: 27 },
-  { q: "I don't know how to build a funnel.", x: 62, y: 60 },
-  { q: "I've never run a proper webinar.", x: 82, y: 27 },
+  { q: "I've got an audience but no idea about ads.", x: 30, y: 13 },
+  { q: "I don't know how to build a funnel.", x: 66, y: 13 },
+  { q: "I've never run a proper webinar.", x: 46, y: 29 },
+  { q: "I want to get myself out of the day-to-day running of this business.", x: 40, y: 60 },
+  { q: "I want to scale to 7 or 8 figures.", x: 82, y: 29 },
+  { q: "My organic social metrics have slowed down.", x: 74, y: 60 },
 ];
 ---
 <section id="glass-ceiling" class="gc relative" aria-label="The glass ceiling">
@@ -41,7 +46,7 @@ const blockers = [
       <div class="gc-copy" aria-live="polite">
         {steps.map((st, i) => (
           <div class="step" data-i={i}>
-            <h2 class="text-[clamp(34px,5.2vw,76px)] font-semibold leading-[1.02] tracking-[-0.04em] text-text" set:html={st.t} />
+            <h2 class={`${st.long ? "mx-auto max-w-[980px] text-[clamp(28px,3.9vw,56px)] leading-[1.06]" : "text-[clamp(34px,5.2vw,76px)] leading-[1.02]"} font-semibold tracking-[-0.04em] text-text`} set:html={st.t} />
             <p class="mx-auto mt-4 max-w-[520px] text-[clamp(15px,1.4vw,18px)] text-text-2">{st.s}</p>
             {st.hint && <p class="push-hint">{st.hint} <span aria-hidden="true">↓</span></p>}
           </div>
@@ -98,6 +103,7 @@ const blockers = [
         <!-- Label + blockers live in a content-width layer so they line up with the copy on any screen width -->
         <div class="b-layer">
           <span class="ceil-label">Glass ceiling</span>
+          <p class="quotes-cap">Here are some examples of things we hear from people at this stage.</p>
           {blockers.map((b, i) => (
             <span class="blocker" data-b={i} style={`left:${b.x}%;top:${b.y}%`}>“{b.q}”</span>
           ))}
@@ -185,6 +191,13 @@ const blockers = [
     position: absolute; left: 20px; top: calc(186 / 420 * 100%); transform: translateY(-160%);
     font-size: 13px; font-weight: 600; color: var(--text-2); opacity: 0; transition: opacity .6s;
   }
+  /* Lead-in line for the quotes; fades in and out with them */
+  .quotes-cap {
+    position: absolute; left: 50%; top: 0; transform: translate(-50%, 6px); margin: 0; width: max-content; max-width: calc(100% - 40px);
+    text-align: center; font-size: clamp(12px, 1vw, 14px); color: var(--muted); opacity: 0;
+    transition: opacity .6s var(--ease-out-soft), transform .6s var(--ease-out-soft);
+  }
+  .quotes-cap.on { opacity: 1; transform: translate(-50%, 0); }
   .blocker {
     position: absolute; transform: translate(-50%, 8px) scale(.96); opacity: 0;
     font-size: clamp(12px, 1.1vw, 15px); color: var(--text-2); white-space: nowrap;
@@ -198,10 +211,16 @@ const blockers = [
   @media (max-width: 767px) {
     .gc { height: 540vh; }
     .gc-inner { padding-top: 96px; }
-    .blocker { white-space: normal; width: 180px; text-align: center; }
-    .blocker[data-b="0"] { left: 34% !important; top: 18% !important; }
-    .blocker[data-b="1"] { left: 66% !important; top: 58% !important; }
-    .blocker[data-b="2"] { left: 62% !important; top: 78% !important; }
+    .blocker { white-space: normal; width: 168px; text-align: center; font-size: 12px; padding: 8px 12px; }
+    /* caption sits just above the chart; quotes zig-zag and leave the ceiling line (~45%) clear */
+    .quotes-cap { top: -10px; transform: translate(-50%, calc(-100% + 6px)); }
+    .quotes-cap.on { transform: translate(-50%, -100%); }
+    .blocker[data-b="0"] { left: 30% !important; top: 3% !important; }
+    .blocker[data-b="1"] { left: 70% !important; top: 15% !important; }
+    .blocker[data-b="2"] { left: 30% !important; top: 27% !important; }
+    .blocker[data-b="3"] { left: 70% !important; top: 51% !important; }
+    .blocker[data-b="4"] { left: 30% !important; top: 67% !important; }
+    .blocker[data-b="5"] { left: 70% !important; top: 81% !important; }
   }
 
   /* Reduced motion: no pinning; show the final state */
@@ -231,6 +250,7 @@ const blockers = [
   let stage = 0; // how many crack groups are showing
   let heavy = false; // scroll resistance on?
   const ceilLabel = sec.querySelector<HTMLElement>(".ceil-label")!;
+  const quotesCap = sec.querySelector<HTMLElement>(".quotes-cap")!;
   const svg = sec.querySelector<SVGSVGElement>(".gc-chart svg")!;
   const shapes = [...svg.querySelectorAll<SVGPathElement>("[data-d]")];
   const clamp = (v: number) => Math.max(0, Math.min(1, v));
@@ -270,8 +290,9 @@ const blockers = [
     const ceilOn = p > 0.28;
     ceilLabel.style.opacity = ceilOn ? "1" : "0";
     // Blockers arrive one at a time with room to read each, then all stay until the ceiling breaks
+    quotesCap.classList.toggle("on", p > 0.29 && p < 0.66);
     blockers.forEach((b, i) => {
-      const show = p > 0.32 + i * 0.07;
+      const show = p > 0.31 + i * 0.03;
       b.classList.toggle("on", show && p < 0.66);
       b.classList.toggle("gone", p >= 0.66);
     });

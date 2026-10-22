@@ -9,6 +9,8 @@ const models = [
     key: "growth", name: "Growth Partner",
     rows: [
       { l: "Who it's for", v: "Founders and experts typically doing 7 figures a year with a proven, scalable offer, or with an audience big enough that we can get there soon." },
+      // [DRAFT for Tom to edit] his review asked us to write this one
+      { l: "Your current situation", v: "Growth has plateaued at 7 figures and still runs through you. You want to scale to 8 without running the day-to-day." },
       { l: "What we do", v: "Our team runs product development, marketing and sales end to end." },
       { l: "What you do", v: "You're the face of the brand, with little day-to-day operational work." },
     ],
@@ -17,7 +19,9 @@ const models = [
   {
     key: "consult", name: "Consultancy Partner",
     rows: [
-      { l: "Who it's for", v: "Businesses building towards that level." },
+      // Who it's for + current situation: Tom's Loom review (brief/05)
+      { l: "Who it's for", v: "You have a validated product or offer that customers are paying for, and you're making $20K to $100K a month." },
+      { l: "Your current situation", v: "Your revenue is inconsistent and you're not sure how to scale past your current level." },
       { l: "What we do", v: "Daily strategic support, frameworks and feedback from our team." },
       { l: "What you do", v: "You and your team execute, with us guiding every step." },
     ],
@@ -66,10 +70,10 @@ const models = [
 <style>
   .hw { padding: clamp(96px, 14vh, 160px) 0; }
 
-  /* Subgrid: each card spans 5 shared rows (head + 4 rows), so "Who it's for", "What we do"… line up across both cards */
+  /* Subgrid: each card spans 6 shared rows (head + 5 rows), so "Who it's for", "What we do"… line up across both cards */
   .cards { margin-top: clamp(40px, 6vh, 64px); display: grid; grid-template-columns: 1fr 1fr; column-gap: 20px; row-gap: 0; }
   .card {
-    display: grid; grid-row: span 5; grid-template-rows: subgrid;
+    display: grid; grid-row: span 6; grid-template-rows: subgrid;
     position: relative; overflow: hidden; padding: 32px; border-radius: 18px;
     background: var(--surface); border: 1px solid var(--line);
     transition: border-color .4s, box-shadow .4s, transform .4s var(--ease-out-soft);
@@ -85,7 +89,7 @@ const models = [
   .c-growth .badge { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); }
   .name { font-size: clamp(24px, 2.3vw, 30px); font-weight: 600; letter-spacing: -0.03em; color: var(--text); }
 
-  .rows { grid-row: span 4; margin-top: 26px; display: grid; grid-template-rows: subgrid; }
+  .rows { grid-row: span 5; margin-top: 26px; display: grid; grid-template-rows: subgrid; }
   .row { display: grid; gap: 6px; padding: 16px 0; border-top: 1px solid var(--line); align-content: start; }
   dt { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
   dd { font-size: 15px; line-height: 1.55; color: var(--text-2); }

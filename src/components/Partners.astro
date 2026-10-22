@@ -1,32 +1,35 @@
 ---
 // Partners and results, modelled on the LeverBrands "The results" cards Tom pointed to in the brief:
-// same size, layout and type scale (3:2 photo, result sentence, name, two stats). No video/testimonial slot for now.
+// same size, layout and type scale (3:2 photo, name, niche, one-line bio, result sentence, stats). No video/testimonial slot for now.
 // The result sentence is the headline result + supporting line; stat figures come from that copy.
 // Copy is word for word from brief/04-copy-deck.md, section 4 (every figure needs partner sign-off before launch).
 // Cards sit in a horizontal row you can swipe / drag / step through with arrows.
 // Motion: cards fade up one after another and the stat numbers count up (photos stay still).
 // Pager under the row: ‹ dots ›.
-const rotating = ["course", "community", "cohort", "digital product", "SaaS"];
 import { url } from "../config/paths";
 // Partner photos live in public/partners/ (white-background shots are cut out onto the dark warm backdrop).
 const partners = [
   {
-    name: "Nicolas Boucher", business: "AI Finance Club", img: "/partners/nicolas-boucher.jpg", pos: "50% 50%",
+    name: "Nicolas Boucher", niche: "AI Finance", bio: "World's leading expert in AI finance, with a community of 3,000+ senior finance leaders.",
+    img: "/partners/nicolas-boucher.jpg", pos: "50% 50%",
     headline: "$50K → $650K a month", line: "In around 9 months.", // [CONFIRM sign-off: ex-partner]
     stats: [{ v: "$650K", l: "A month" }, { v: "9", l: "Months" }],
   },
   {
-    name: "Joseph McClendon III", business: "Vital AF", img: "/partners/joseph-mcclendon.jpg", pos: "50% 22%",
+    name: "Joseph McClendon III", niche: "Health and Fitness", bio: "Performance coach who has taught over 6 million people worldwide on mindset, health and longevity.",
+    img: "/partners/joseph-mcclendon.jpg", pos: "50% 22%",
     headline: "16x ROAS on launch", line: "From zero to launch in 2 months.",
     stats: [{ v: "16x", l: "ROAS on launch" }, { v: "2", l: "Months to launch" }],
   },
   {
-    name: "Chris Donnelly", business: "The Creator Accelerator", img: "/partners/chris-donnelly.jpg", pos: "50% 50%",
+    name: "Chris Donnelly", niche: "Personal Branding and Business Growth", bio: "Serial entrepreneur who has built and scaled three 8-figure businesses and one 9-figure business.",
+    img: "/partners/chris-donnelly.jpg", pos: "50% 50%",
     headline: "6.5x ROAS on the first cohort", line: "Then full ownership of marketing, sales and product.",
     stats: [{ v: "6.5x", l: "ROAS, first cohort" }],
   },
   {
-    name: "Jo Bird", business: "Personal branding programme", img: "/partners/jo-bird.jpg", pos: "50% 50%",
+    name: "Jo Bird", niche: "Personal Branding", bio: "", // [TODO bio from Tom]
+    img: "/partners/jo-bird.jpg", pos: "50% 50%",
     headline: "$30K first launch, $0 ad spend", line: "Her first launch with us.", // [CONFIRM public figure]
     stats: [{ v: "$30K", l: "First launch" }, { v: "$0", l: "Ad spend" }],
   },
@@ -41,12 +44,6 @@ const parts = (s: string) => s.split(/(\d+(?:\.\d+)?)/).map((t, i) => (i % 2 ? {
       <h2 class="text-[clamp(30px,3.6vw,52px)] font-semibold leading-[1.05] tracking-[-0.04em] text-text">
         A sample of recent results<br class="hidden md:block" /> for our partners.
       </h2>
-      <p class="rot mt-5 text-[clamp(17px,1.6vw,22px)] text-text-2">
-        We launch and scale a{" "}
-        <span class="rot-slot" aria-live="polite">
-          {rotating.map((w, i) => <span class={`rot-word accent${i === 0 ? " on" : ""}`}>{w}</span>)}
-        </span>
-      </p>
     </div>
 
     <p class="intro" data-reveal>We work with a small number of partners at a time: proven founders scaling from 7 to 8 figures, and exceptional experts with an audience to monetise and a clear path to 7 figures.</p>
@@ -57,10 +54,11 @@ const parts = (s: string) => s.split(/(\d+(?:\.\d+)?)/).map((t, i) => (i % 2 ? {
       <li class="card" style={`--d:${i * 110}ms`}>
         <div class="media">
           <img class="photo" src={url(p.img)} alt={p.name} loading="lazy" decoding="async" draggable="false" style={`object-position:${p.pos}`} />
-          <span class="biz">{p.business}</span>
         </div>
         <div class="body">
           <h3 class="who">{p.name}</h3>
+          <p class="niche">{p.niche}</p>
+          {p.bio && <p class="bio">{p.bio}</p>}
           <p class="result">{p.headline}. {p.line}</p>
           <div class="stats">
             {p.stats.map((s) => (
@@ -88,16 +86,6 @@ const parts = (s: string) => s.split(/(\d+(?:\.\d+)?)/).map((t, i) => (i % 2 ? {
 
 <style>
   .pr { padding: clamp(96px, 14vh, 160px) 0 clamp(80px, 12vh, 140px); }
-
-  /* Rotating word: words stack in one slot; the slot's width eases to the current word */
-  /* slot is tall enough for descenders (the "y" in community), nudged down so the word sits on the sentence baseline */
-  .rot-slot { position: relative; display: inline-block; height: 1.6em; vertical-align: -0.42em; overflow: hidden; transition: width .5s var(--ease-out-soft); }
-  .rot-word {
-    position: absolute; left: 0; top: 0; white-space: nowrap; color: var(--text); font-size: 1.15em; line-height: 1.35;
-    opacity: 0; transform: translateY(100%); transition: transform .5s var(--ease-out-soft), opacity .5s;
-  }
-  .rot-word.on { opacity: 1; transform: none; }
-  .rot-word.out { opacity: 0; transform: translateY(-100%); }
 
   .intro { max-width: 560px; margin: clamp(28px, 4vh, 40px) auto 0; text-align: center; font-size: 15px; line-height: 1.6; color: var(--text-2); }
 
@@ -149,15 +137,13 @@ const parts = (s: string) => s.split(/(\d+(?:\.\d+)?)/).map((t, i) => (i % 2 ? {
   /* light grade only (the photo ends in a clean edge like LeverBrands): soft top shade for the chip, faint grain */
   .media::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(180deg, rgb(0 0 0 / .28), transparent 35%); }
   .media::after { content: ""; position: absolute; inset: 0; z-index: 1; background-image: var(--noise); background-size: 180px; opacity: .15; mix-blend-mode: overlay; pointer-events: none; }
-  .biz {
-    position: absolute; left: 16px; top: 16px; z-index: 2; padding: 6px 10px; border-radius: 999px;
-    font-size: 12px; font-weight: 600; color: var(--text); background: rgb(0 0 0 / .35); border: 1px solid rgb(255 255 255 / .12); backdrop-filter: blur(6px);
-  }
-  /* Body: LeverBrands rhythm — 28px padding, then name, result, stats (+18) */
+  /* Body: LeverBrands rhythm — 28px padding, then name, niche, one-line bio, result, stats (+18) */
   .body { display: flex; flex-direction: column; flex: 1; padding: 28px; }
-  /* Partner name is the heading (business is on the photo chip); the result is the description under it */
+  /* Tom's review: under the name, their niche (not the product), then a one-line bio */
   .who { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; color: var(--text); }
-  .result { margin-top: 8px; font-size: 15px; line-height: 23px; color: var(--text-2); }
+  .niche { margin-top: 6px; font-size: 13px; font-weight: 600; color: var(--accent); }
+  .bio { margin-top: 10px; font-size: 14px; line-height: 21px; color: var(--muted); }
+  .result { margin-top: 14px; font-size: 15px; line-height: 23px; color: var(--text-2); }
   /* cards share the tallest height; stats sit on the bottom edge so they line up across the row */
   .stats { display: flex; gap: 32px; margin-top: auto; padding-top: 18px; }
   .stats > div { min-width: 0; }
@@ -176,25 +162,6 @@ const parts = (s: string) => s.split(/(\d+(?:\.\d+)?)/).map((t, i) => (i % 2 ? {
 <script>
   const sec = document.getElementById("results")!;
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  // Rotating word ("course / community / ...")
-  const slot = sec.querySelector<HTMLElement>(".rot-slot")!;
-  const words = [...slot.querySelectorAll<HTMLElement>(".rot-word")];
-  let w = 0;
-  const fit = () => (slot.style.width = `${words[w].offsetWidth}px`);
-  fit();
-  addEventListener("resize", fit);
-  if (!reduce) {
-    setInterval(() => {
-      if (document.hidden) return;
-      const prev = words[w];
-      w = (w + 1) % words.length;
-      prev.classList.remove("on"); prev.classList.add("out");
-      words[w].classList.remove("out"); words[w].classList.add("on");
-      setTimeout(() => prev.classList.remove("out"), 520);
-      fit();
-    }, 2200);
-  }
 
   const track = sec.querySelector<HTMLElement>(".track")!;
   const cards = [...track.querySelectorAll<HTMLElement>(".card")];

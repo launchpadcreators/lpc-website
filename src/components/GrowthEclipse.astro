@@ -2,7 +2,7 @@
 // Growth System, eclipse variant (after Agnos' "process" section): the section pins and a huge dark planet
 // rises like an eclipse, with a thin glowing orange rim. The five level badges ride around that rim as you
 // scroll: the active level sits at the top in orange, its neighbours tilt along the curve and fade.
-// The active level's name, line and milestone tag swap inside the disc, with a ‹ 01 / 05 › pager
+// The active level's name and line swap inside the disc, with a ‹ 01 / 05 › pager
 // (arrows on desktop, dots on mobile).
 import { stages } from "../data/growth-stages";
 const pad = (n: number) => String(n).padStart(2, "0");
@@ -30,7 +30,6 @@ const pad = (n: number) => String(n).padStart(2, "0");
               <div class="ge-step" data-i={i}>
                 <h3 class="name">{s.name}</h3>
                 <p class="line">{s.line}</p>
-                {s.tag && <span class="tag">{s.tag}</span>}
               </div>
             ))}
           </div>
@@ -53,8 +52,8 @@ const pad = (n: number) => String(n).padStart(2, "0");
 <style>
   .ge { height: 440vh; }
   .ge-pin { position: sticky; top: 0; height: 100svh; display: flex; flex-direction: column; overflow: hidden; }
-  /* clear room under the fixed navbar (~80px tall) so the headline never touches it */
-  .ge-head { padding-top: clamp(124px, 17vh, 176px); }
+  /* header sits at the same height as the other pinned headers; the script sets --ge-top from the Growth System one */
+  .ge-head { padding-top: var(--ge-top, clamp(124px, 17vh, 176px)); }
 
   .ge-stage { position: relative; flex: 1; }
 
@@ -62,7 +61,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
      Much wider than the screen (190vw) for a flatter horizon that curves out through the left and right edges. */
   .eclipse {
     --w: 190vw;
-    position: absolute; left: 50%; top: clamp(64px, 9vh, 96px);
+    position: absolute; left: 50%; top: clamp(110px, 17vh, 190px);
     width: var(--w); height: var(--w); margin-left: calc(var(--w) / -2);
     will-change: transform;
   }
@@ -116,10 +115,6 @@ const pad = (n: number) => String(n).padStart(2, "0");
   .ge-step.on { opacity: 1; transform: none; filter: none; pointer-events: auto; }
   .name { font-size: clamp(28px, 3vw, 42px); font-weight: 600; letter-spacing: -0.035em; line-height: 1.05; color: var(--text); }
   .line { margin-top: 12px; max-width: 540px; font-size: clamp(15px, 1.2vw, 17px); line-height: 1.55; color: var(--text-2); }
-  .tag {
-    margin-top: 16px; padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 600;
-    color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent); background: color-mix(in srgb, var(--accent) 10%, transparent);
-  }
 
   /* Desktop: ‹ 01 / 05 › arrows. Mobile: count with dots underneath instead */
   .pager { margin-top: 26px; display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; }
@@ -217,6 +212,16 @@ const pad = (n: number) => String(n).padStart(2, "0");
     const lenis = (window as any).lenis;
     lenis ? lenis.scrollTo(y, { duration: 1.2 }) : scrollTo({ top: y, behavior: reduce ? "auto" : "smooth" });
   }));
+
+  // Same headline height as the Growth System (and glass ceiling) headline; mobile keeps the CSS padding
+  const gsPin = document.querySelector<HTMLElement>("#growth-system .gs-pin");
+  const gsLabel = document.querySelector<HTMLElement>("#growth-system h2");
+  function syncTop() {
+    if (!gsPin || !gsLabel || reduce || matchMedia("(max-width: 899px)").matches) return sec.style.removeProperty("--ge-top");
+    sec.style.setProperty("--ge-top", `${Math.round(gsLabel.getBoundingClientRect().top - gsPin.getBoundingClientRect().top)}px`);
+  }
+  syncTop();
+  if (gsPin) new ResizeObserver(syncTop).observe(gsPin);
 
   if (reduce) {
     steps.forEach((el) => el.classList.add("on"));
