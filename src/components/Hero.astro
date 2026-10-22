@@ -1,14 +1,7 @@
 ---
-// Hero: centred headline with one serif accent word, sub-copy, two CTAs, partner photos below.
+// Hero: centred headline with one serif accent word, sub-copy, two CTAs.
+// (Partner avatar strip removed for now; square face crops are kept in public/partners/avatars/.)
 const applyUrl = "https://form.typeform.com/to/yWBgS4vK";
-import { url } from "../config/paths";
-// Partner faces: square 160px crops of the Partners card photos (public/partners/avatars/)
-const partners = [
-  { src: "/partners/avatars/nicolas-boucher.jpg", alt: "Nicolas Boucher" },
-  { src: "/partners/avatars/joseph-mcclendon.jpg", alt: "Joseph McClendon III" },
-  { src: "/partners/avatars/chris-donnelly.jpg", alt: "Chris Donnelly" },
-  { src: "/partners/avatars/jo-bird.jpg", alt: "Jo Bird" },
-];
 ---
 <section id="top" class="hero relative flex min-h-svh items-center justify-center overflow-hidden px-5 pt-[104px] pb-[72px]">
   <!-- Glow (Conversion-template style): stacked blurred conic gradients, clipped in a box below the CTAs -->
@@ -31,26 +24,11 @@ const partners = [
       <a href={applyUrl} target="_blank" rel="noopener" class="hbtn hbtn-primary">Work with us</a>
       <a href="#newsletter" class="hbtn hbtn-ghost">Join our mailing list</a>
     </div>
-
-    <!-- Partner photos only -->
-    <div class="h-in mt-10 flex" style="--d:360ms">
-      {partners.map((p, n) => (
-        <img src={url(p.src)} alt={p.alt} width="44" height="44" class="avatar" style={`z-index:${10 - n}`} loading="eager" />
-      ))}
-    </div>
   </div>
 </section>
 
 <style>
-  .avatar {
-    width: 44px; height: 44px; margin-left: -10px; border-radius: 999px;
-    border: 2px solid var(--bg); object-fit: cover; background: var(--surface);
-    position: relative; transition: transform .25s var(--ease-out-soft);
-  }
-  .avatar:hover { transform: translateY(-3px); z-index: 20 !important; }
-  .avatar:first-child { margin-left: 0; }
-
-  /* Glow box sits behind the CTAs/avatars; overflow hidden like the template */
+  /* Glow box sits behind the CTAs; overflow hidden like the template */
   .glow-box {
     position: absolute; left: 50%; top: 42%; transform: translateX(-50%); opacity: 1;
     width: min(1600px, 140vw); height: 1100px; overflow: hidden; pointer-events: none;
