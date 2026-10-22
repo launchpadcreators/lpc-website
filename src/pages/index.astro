@@ -1,0 +1,37 @@
+---
+import Base from "../layouts/Base.astro";
+import Starfield from "../components/Starfield.astro";
+import Navbar from "../components/Navbar.astro";
+import Hero from "../components/Hero.astro";
+import Stats from "../components/Stats.astro";
+import GlassCeiling from "../components/GlassCeiling.astro";
+import GrowthSystem from "../components/GrowthSystem.astro";
+import GrowthEclipse from "../components/GrowthEclipse.astro";
+import Partners from "../components/Partners.astro";
+import WhatWeDo from "../components/WhatWeDo.astro";
+import HowWeWork from "../components/HowWeWork.astro";
+import WhoWeAre from "../components/WhoWeAre.astro";
+import Close from "../components/Close.astro";
+import Footer from "../components/Footer.astro";
+---
+<Base
+  title="Launchpad Creators | We build and scale expert businesses"
+  description="Launchpad partners with founders and experts to monetise their audience and expertise, and scale to 7- and 8-figure growth."
+>
+  <Starfield />
+  <Navbar />
+  <main class="relative z-10">
+    <Hero />
+    <Stats />
+    <GlassCeiling />
+    <GrowthSystem />
+    <!-- Alternate Growth System design for comparison; keep one of the two -->
+    <GrowthEclipse />
+    <Partners />
+    <WhatWeDo />
+    <HowWeWork />
+    <WhoWeAre />
+    <Close />
+  </main>
+  <Footer />
+</Base>

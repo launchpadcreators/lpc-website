@@ -1,0 +1,95 @@
+---
+// Close — apply card (Typeform) + mailing list card (Kit). Copy: brief/04-copy-deck.md, section 8.
+// TODO: connect the mailing list form to Kit once Tom shares the form embed / ID.
+import { applyUrl } from "../data/growth-stages";
+---
+<section id="newsletter" class="cl relative" aria-label="Apply or join the mailing list">
+  <div class="mx-auto grid w-full max-w-[1080px] gap-5 px-6 md:grid-cols-[1.1fr_1fr]" data-reveal>
+    <!-- Work with us -->
+    <article class="card apply">
+      <p class="kicker">Work with us</p>
+      <h2 class="title">Ready to <em class="accent">scale?</em></h2>
+      <p class="body">We take on a small number of partners at a time. Tell us about your business and we'll come back to you within 48 hours.</p>
+      <!-- [CONFIRM: 48 hours] -->
+      <a class="btn-light" href={applyUrl} target="_blank" rel="noopener">Apply to work with us <span aria-hidden="true">→</span></a>
+    </article>
+
+    <!-- Learn how to scale -->
+    <article class="card list">
+      <p class="kicker">Mailing list</p>
+      <h2 class="title">Learn how to scale.</h2>
+      <p class="body">Weekly tips, frameworks and behind-the-scenes breakdowns from the businesses we grow.</p>
+      <form class="form" novalidate>
+        <label class="field"><span class="sr-only">First name</span><input name="first_name" type="text" placeholder="First name" autocomplete="given-name" required /></label>
+        <label class="field"><span class="sr-only">Email</span><input name="email" type="email" placeholder="Email" autocomplete="email" required /></label>
+        <button class="btn-accent" type="submit">Join the list</button>
+        <p class="note" role="status" aria-live="polite"></p>
+      </form>
+      <p class="fine">Unsubscribe any time. We'll never spam you or sell your data.</p>
+    </article>
+  </div>
+</section>
+
+<style>
+  .cl { padding: clamp(80px, 12vh, 140px) 0 clamp(64px, 10vh, 110px); }
+  .card { position: relative; overflow: hidden; display: flex; flex-direction: column; padding: clamp(28px, 3.4vw, 44px); border-radius: 20px; min-height: 380px; }
+  .card::after { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: var(--noise); background-size: 180px; mix-blend-mode: overlay; }
+  .card > * { position: relative; z-index: 1; }
+
+  /* Apply: the brand's orange, warm-to-deep with grain */
+  .apply { background: radial-gradient(120% 90% at 0% 0%, #FF8A3D 0%, #FF5A01 45%, #B83A00 100%); }
+  .apply::after { opacity: .35; }
+  .apply .kicker { color: rgb(255 255 255 / .8); }
+  .apply .title { color: #fff; }
+  .apply .accent { color: #fff; }
+  .apply .body { color: rgb(255 255 255 / .88); }
+
+  .list { background: var(--surface); border: 1px solid var(--line); }
+  .list::after { opacity: .1; }
+
+  .kicker { font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+  .title { margin-top: 14px; font-size: clamp(32px, 3.6vw, 48px); font-weight: 600; letter-spacing: -0.04em; line-height: 1.05; color: var(--text); }
+  .body { margin-top: 14px; max-width: 440px; font-size: 16px; line-height: 1.55; color: var(--text-2); }
+
+  .btn-light, .btn-accent {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 52px; padding: 0 24px; border-radius: 12px;
+    font-size: 16px; font-weight: 600; transition: transform .2s var(--ease-out-soft), filter .2s, box-shadow .2s;
+  }
+  .btn-light { margin-top: auto; align-self: flex-start; color: #0E0E10; background: #fff; box-shadow: 0 12px 30px -12px rgb(0 0 0 / .5); }
+  .btn-light:hover { transform: translateY(-2px); }
+  .btn-light span { transition: transform .2s var(--ease-out-soft); }
+  .btn-light:hover span { transform: translateX(3px); }
+  .apply .body { margin-bottom: 28px; }
+
+  .form { margin-top: auto; padding-top: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .field input {
+    width: 100%; height: 52px; padding: 0 16px; border-radius: 12px; font: inherit; font-size: 15px; color: var(--text);
+    background: var(--bg); border: 1px solid var(--line); outline: none; transition: border-color .2s, box-shadow .2s;
+  }
+  .field input::placeholder { color: var(--muted); }
+  .field input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgb(255 90 1 / .18); }
+  .btn-accent { grid-column: 1 / -1; color: var(--accent-ink); background: var(--accent); cursor: pointer; }
+  .btn-accent:hover { filter: brightness(1.08); transform: translateY(-1px); }
+  .note { grid-column: 1 / -1; min-height: 0; font-size: 13px; color: var(--text-2); }
+  .note:empty { display: none; }
+  .fine { margin-top: 14px; font-size: 13px; color: var(--muted); }
+
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  @media (max-width: 767px) { .card { min-height: 0; } .form { grid-template-columns: 1fr; } .btn-light { margin-top: 0; } }
+</style>
+
+<script>
+  // Mailing list: basic validation for now. TODO: post to Kit (form ID from Tom) instead of showing this note.
+  const form = document.querySelector<HTMLFormElement>("#newsletter .form")!;
+  const note = form.querySelector<HTMLElement>(".note")!;
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const email = form.elements.namedItem("email") as HTMLInputElement;
+    const name = form.elements.namedItem("first_name") as HTMLInputElement;
+    if (!name.value.trim() || !email.validity.valid || !email.value) {
+      note.textContent = "Please add your first name and a valid email.";
+      return;
+    }
+    note.textContent = "Sign-up isn't connected yet. It'll go live once the Kit form is set up.";
+  });
+</script>

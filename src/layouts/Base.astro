@@ -1,0 +1,70 @@
+---
+import "../styles/global.css";
+import { THEME, THEMES } from "../config/theme";
+import Cursor from "../components/Cursor.astro";
+import { url } from "../config/paths";
+
+interface Props {
+  title: string;
+  description: string;
+  noindex?: boolean;
+}
+const { title, description, noindex = false } = Astro.props;
+// Preview builds (GitHub Pages) set PUBLIC_NOINDEX=true so the work-in-progress site stays out of search engines
+const hidden = noindex || import.meta.env.PUBLIC_NOINDEX === "true";
+---
+<!doctype html>
+<html lang="en-GB" data-theme={THEME}>
+  <head>
+    <meta charset="utf-8" />
+    {import.meta.env.DEV && (
+      // Dev-only preview: add ?theme=blue to the URL. Not included in the production build.
+      <script is:inline define:vars={{ themes: THEMES }}>
+        const t = new URLSearchParams(location.search).get("theme");
+        if (t && themes.includes(t)) document.documentElement.dataset.theme = t;
+      </script>
+    )}
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {hidden && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="icon" type="image/svg+xml" href={url("favicon.svg")} />
+    <meta name="theme-color" content={THEME === "blue" ? "#0D0C15" : "#0E0E10"} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+  </head>
+  <body>
+    <slot />
+    <Cursor />
+
+    <script>
+      import Lenis from "lenis";
+
+      const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      // Smooth scroll (skipped for reduced motion)
+      if (!reduce) {
+        const lenis = new Lenis({ duration: 1.1, smoothWheel: true });
+        const raf = (t: number) => { lenis.raf(t); requestAnimationFrame(raf); };
+        requestAnimationFrame(raf);
+        (window as any).lenis = lenis; // sections use it for programmatic scrolls (e.g. step arrows)
+        document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((a) =>
+          a.addEventListener("click", (e) => {
+            const id = a.getAttribute("href")!;
+            if (id.length > 1) { e.preventDefault(); lenis.scrollTo(id, { offset: -80 }); }
+          })
+        );
+      }
+
+      // Scroll reveals: content stays visible if this script never runs
+      document.documentElement.classList.add("reveal-ready");
+      const io = new IntersectionObserver(
+        (entries) => entries.forEach((en) => {
+          if (en.isIntersecting) { en.target.classList.add("is-in"); io.unobserve(en.target); }
+        }),
+        { rootMargin: "0px 0px -8% 0px" }
+      );
+      document.querySelectorAll("[data-reveal]").forEach((el) => io.observe(el));
+    </script>
+  </body>
+</html>

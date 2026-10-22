@@ -1,0 +1,126 @@
+---
+// Header: the Launchpad Creators wordmark sits on its own at the left (no background);
+// the floating island on the right holds the 3 links and the orange button.
+// The island is clear at the top of the page and becomes frosted glass once it overlaps content.
+// Mobile: the island is just the burger; the menu drops down as its own glass panel.
+const links = [
+  { label: "Growth System", href: "#growth-system" },
+  { label: "Results", href: "#results" },
+  { label: "About", href: "#about" },
+];
+const applyUrl = "https://form.typeform.com/to/yWBgS4vK";
+import { url } from "../config/paths";
+---
+<header class="fixed inset-x-0 top-0 z-50 px-3 pt-3 md:pt-4">
+  <div class="mx-auto flex max-w-[1240px] items-center justify-between gap-4 md:px-2">
+    <a href={url("/")} class="logo" aria-label="Launchpad Creators home">
+      <img src={url("logo-full.png")} alt="Launchpad Creators" width="907" height="190" />
+    </a>
+
+    <div id="nav" class="island rounded-2xl border border-transparent">
+      <nav class="flex h-14 items-center gap-2 pl-2 pr-2 md:h-16 md:gap-8 md:pl-7" aria-label="Main">
+        <ul class="hidden items-center gap-9 md:flex">
+          {links.map((l) => (
+            <li><a href={l.href} class="text-[15px] font-medium text-text-2 transition-colors hover:text-text">{l.label}</a></li>
+          ))}
+        </ul>
+        <a href={applyUrl} target="_blank" rel="noopener" class="btn hidden sm:inline-flex">Work with us</a>
+        <button id="nav-toggle" class="burger md:hidden" aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu">
+          <span class="l1"></span><span class="l2"></span><span class="l3"></span>
+        </button>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Mobile menu: its own glass panel, revealed by animating height (like the Conversion template) -->
+  <div id="nav-menu" class="menu md:hidden" inert>
+    <div class="px-5 pb-5 pt-2">
+      <ul class="flex flex-col">
+        {links.map((l) => (
+          <li><a href={l.href} class="block py-3.5 text-lg font-semibold text-text">{l.label}</a></li>
+        ))}
+      </ul>
+      <a href={applyUrl} target="_blank" rel="noopener" class="btn mt-3 flex w-full justify-center">Work with us</a>
+    </div>
+  </div>
+</header>
+
+<style>
+  /* Wordmark on its own, no background; a soft shadow keeps it readable over busy sections */
+  .logo { display: block; flex-shrink: 0; }
+  .logo img { display: block; height: 34px; width: auto; filter: drop-shadow(0 2px 10px rgb(0 0 0 / .45)); }
+  @media (max-width: 767px) { .logo img { height: 28px; } }
+
+  .island {
+    transition: background-color .3s var(--ease-out-soft), border-color .3s var(--ease-out-soft), backdrop-filter .3s var(--ease-out-soft);
+  }
+  /* Frosted glass once the nav overlaps page content (or the mobile menu is open) */
+  .island.glass {
+    background: color-mix(in srgb, var(--surface) 55%, transparent);
+    border-color: color-mix(in srgb, var(--text) 10%, transparent);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    box-shadow: 0 10px 40px -20px rgb(0 0 0 / .6);
+  }
+
+  /* Mobile menu panel: height animates 0 -> content with a spring-like expo ease-out (~0.75s, matches the template tail) */
+  .menu {
+    height: 0; overflow: hidden; margin-top: 8px; border-radius: 16px;
+    background: color-mix(in srgb, var(--surface) 80%, transparent);
+    backdrop-filter: blur(18px) saturate(140%); -webkit-backdrop-filter: blur(18px) saturate(140%);
+    border: 1px solid transparent;
+    transition: height .75s cubic-bezier(0.16, 1, 0.3, 1), border-color .3s;
+  }
+  .menu:not([inert]) { border-color: color-mix(in srgb, var(--text) 10%, transparent); }
+
+  /* Hamburger -> X: lines 1 and 3 rotate +/-45deg, middle line shrinks and fades */
+  .burger {
+    position: relative; width: 40px; height: 40px; border-radius: 12px; color: var(--text);
+  }
+  .burger span {
+    position: absolute; left: 9px; width: 22px; height: 2px; border-radius: 2px; background: currentColor;
+    transition: transform .75s cubic-bezier(0.16, 1, 0.3, 1), opacity .5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .burger .l1 { top: 13px; } .burger .l2 { top: 19px; transform-origin: left center; } .burger .l3 { top: 25px; }
+  .burger[aria-expanded="true"] .l1 { transform: translateY(6px) rotate(45deg); }
+  .burger[aria-expanded="true"] .l2 { transform: scaleX(0); opacity: 0; }
+  .burger[aria-expanded="true"] .l3 { transform: translateY(-6px) rotate(-45deg); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .menu, .burger span { transition: none; }
+  }
+
+  /* Simple solid button */
+  .btn {
+    align-items: center;
+    height: 42px; padding: 0 20px;
+    border-radius: 10px;
+    background: var(--accent); color: var(--accent-ink);
+    font-weight: 600; font-size: 15px;
+    transition: filter .2s, transform .2s var(--ease-out-soft);
+  }
+  .btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+</style>
+
+<script>
+  const nav = document.getElementById("nav")!;
+  const menu = document.getElementById("nav-menu")!;
+  const btn = document.getElementById("nav-toggle")!;
+  let open = false;
+  const update = () => nav.classList.toggle("glass", window.scrollY > 8 || open);
+  update();
+  window.addEventListener("scroll", update, { passive: true });
+
+  const setOpen = (next: boolean) => {
+    open = next;
+    menu.style.height = open ? menu.scrollHeight + "px" : "0px";
+    menu.toggleAttribute("inert", !open);
+    btn.setAttribute("aria-expanded", String(open));
+    btn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+    update();
+  };
+  btn.addEventListener("click", () => setOpen(!open));
+  menu.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setOpen(false)));
+  // keep the open height right if the viewport changes (e.g. rotation)
+  window.addEventListener("resize", () => { if (open) menu.style.height = menu.scrollHeight + "px"; });
+</script>

@@ -1,0 +1,50 @@
+---
+// Footer — copy: brief/04-copy-deck.md, section 9.
+// TODO: company number [CONFIRM], Privacy / Terms pages (Terms currently pointed at Privacy on the old site),
+// and Dan's / Tom's LinkedIn URLs once shared.
+import { applyUrl } from "../data/growth-stages";
+import { url } from "../config/paths";
+const nav = [
+  { href: "#growth-system", label: "Growth System" },
+  { href: "#results", label: "Results" },
+  { href: "#about", label: "About" },
+];
+---
+<footer class="ft relative z-10">
+  <div class="mx-auto w-full max-w-[1080px] px-6">
+    <div class="top">
+      <a href="#top" class="brand" aria-label="Launchpad Creators, back to top">
+        <img src={url("logo.svg")} alt="" width="28" height="24" />
+        <span>Launchpad Creators</span>
+      </a>
+      <nav class="links" aria-label="Footer">
+        {nav.map((n) => <a href={n.href}>{n.label}</a>)}
+        <a href={applyUrl} target="_blank" rel="noopener" class="work">Work with us</a>
+      </nav>
+    </div>
+
+    <div class="bottom">
+      <p>© 2026 Launchpad Creators Limited · 3rd Floor, 86-90 Paul Street, London EC2A 4NE</p>
+      <div class="legal">
+        <a href={url("privacy")}>Privacy Policy</a>
+        <a href={url("terms")}>Terms of Use</a>
+        <a href="mailto:hello@launchpadcreators.com">hello@launchpadcreators.com</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .ft { padding: 48px 0 40px; border-top: 1px solid var(--line); background: color-mix(in srgb, var(--surface) 40%, var(--bg)); }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  .brand { display: inline-flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 700; letter-spacing: -0.02em; color: var(--text); }
+  .links { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; font-size: 14px; color: var(--text-2); }
+  .links a { transition: color .2s; }
+  .links a:hover { color: var(--text); }
+  .links .work { color: var(--accent); font-weight: 600; }
+  .bottom { margin-top: 36px; padding-top: 24px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 16px 32px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+  .legal { display: flex; gap: 22px; flex-wrap: wrap; }
+  .legal a { transition: color .2s; }
+  .legal a:hover { color: var(--text); }
+  @media (max-width: 767px) { .links { gap: 18px; } }
+</style>

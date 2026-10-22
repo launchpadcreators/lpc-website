@@ -1,0 +1,74 @@
+---
+// Numbers strip: big numeral with orange suffix and the copy label underneath, divider lines between stats.
+// 4 in one row on tablet/desktop, 2x2 on mobile. Subtle count-up when it scrolls into view.
+const stats = [
+  { label: "Revenue generated", prefix: "$", value: 80, decimals: 0, suffix: "M+", desc: "Revenue generated for our partners." },
+  { label: "Return on ad spend", prefix: "", value: 6.8, decimals: 1, suffix: "x", desc: "Average return on ad spend." },
+  { label: "Partner audience", prefix: "", value: 10, decimals: 0, suffix: "M+", desc: "Followers across our partners' audiences." },
+  { label: "Creatives produced", prefix: "", value: 3250, decimals: 0, suffix: "+", desc: "Ad creatives produced in-house." },
+];
+const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractionDigits: d, maximumFractionDigits: d });
+---
+<section id="numbers" class="band relative" aria-label="Results in numbers">
+  <div class="stats grid grid-cols-2 md:grid-cols-4">
+    {stats.map((s, i) => (
+      <div class="cell" data-reveal>
+        <p class="num" aria-label={`${s.prefix}${fmt(s.value, s.decimals)}${s.suffix}`}>
+          <span aria-hidden="true">{s.prefix}<span class="count" data-to={s.value} data-dec={s.decimals}>{fmt(s.value, s.decimals)}</span><span class="suf">{s.suffix}</span></span>
+        </p>
+        <p class="desc">{s.desc}</p>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  /* Full-width band (Atlas-style grid): lighter strip, hairlines top/bottom, full-height cell dividers */
+  .band {
+    background: color-mix(in srgb, var(--surface) 55%, var(--bg));
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  }
+  .cell {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+    min-height: clamp(170px, 18vw, 240px); padding: 28px clamp(12px, 2vw, 28px);
+  }
+  .cell:nth-child(odd) { border-right: 1px solid var(--line); }
+  .cell:nth-child(n + 3) { border-top: 1px solid var(--line); }
+  @media (min-width: 768px) {
+    .cell:nth-child(n + 3) { border-top: 0; }
+    .cell:not(:last-child) { border-right: 1px solid var(--line); }
+  }
+
+  .num {
+    font-weight: 800; letter-spacing: -0.055em; line-height: .9;
+    font-size: clamp(34px, 5vw, 72px); color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+  .suf { color: var(--accent); }
+  .desc { max-width: 220px; margin-top: clamp(12px, 1.6vw, 18px); font-size: clamp(13px, 1.25vw, 17px); line-height: 1.45; color: var(--text-2); }
+</style>
+
+<script>
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const els = document.querySelectorAll<HTMLElement>("#numbers .count");
+  const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractionDigits: d, maximumFractionDigits: d });
+  if (!reduce) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        io.unobserve(e.target);
+        const el = e.target as HTMLElement;
+        const to = parseFloat(el.dataset.to!), dec = parseInt(el.dataset.dec!), from = to * 0.6;
+        const dur = 1400, t0 = performance.now();
+        const step = (t: number) => {
+          const p = Math.min(1, (t - t0) / dur), ease = 1 - Math.pow(1 - p, 3);
+          el.textContent = fmt(from + (to - from) * ease, dec);
+          if (p < 1) requestAnimationFrame(step);
+        };
+        el.textContent = fmt(from, dec);
+        requestAnimationFrame(step);
+      });
+    }, { threshold: 0.5 });
+    els.forEach((el) => io.observe(el));
+  }
+</script>

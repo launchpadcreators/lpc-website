@@ -1,0 +1,102 @@
+---
+// Who we are — origin story, then three cards: the 12-strong team and the two co-founders.
+// Copy: brief/04-copy-deck.md, section 7. Founder facts are still marked [CONFIRM] in the copy deck.
+const founders = [
+  {
+    name: "Dan Mian",
+    line: "Performance marketer (Forbes, BT). Founded Gradvance and grew it to $500K.", // [CONFIRM]
+    stats: [{ v: "200K+", l: "LinkedIn followers" }, { v: "$500K", l: "Grew Gradvance to" }],
+  },
+  {
+    name: "Tom Pestridge",
+    line: "Marketing leader and agency founder. Took a travel company to £7M a year as its growth partner.", // [CONFIRM: "£500K to £7M" or "£0 to £7M"]
+    stats: [{ v: "£7M", l: "A year, as growth partner" }, { v: "~200K", l: "LinkedIn followers" }],
+  },
+];
+const specialisms = ["Paid media", "Creative", "Content", "Funnels and AI", "Sales", "Customer success"];
+---
+<section id="about" class="wa relative" aria-label="Who we are">
+  <div class="mx-auto w-full max-w-[1080px] px-6">
+    <div class="text-center" data-reveal>
+      <h2 class="text-[clamp(30px,3.6vw,52px)] font-semibold leading-[1.05] tracking-[-0.04em] text-text">
+        Operators, <em class="accent">not an agency.</em>
+      </h2>
+      <p class="mx-auto mt-6 max-w-[700px] text-[clamp(15px,1.3vw,18px)] leading-[1.65] text-text-2">
+        We've built and scaled our own businesses, and run growth for others. We learned that you can't fix growth with one channel. Ads alone, sales alone or organic alone all hit the same ceiling. It takes the whole funnel working as one system, so we built the Launchpad Growth System and started Launchpad to run it for our partners. <span class="text-text">We run their growth like it's our own.</span>
+      </p>
+    </div>
+
+    <div class="grid3">
+      <!-- The team -->
+      <article class="card team" style="--d:0ms">
+        <p class="kicker">The team</p>
+        <p class="big"><span class="count" data-n="12">12</span><span class="suf">-strong</span></p>
+        <p class="desc">A 12-strong team of specialists across paid media, creative, content, funnels and AI, sales and customer success.</p>
+        <ul class="spec">{specialisms.map((s) => <li>{s}</li>)}</ul>
+      </article>
+
+      {founders.map((f, i) => (
+        <article class="card" style={`--d:${(i + 1) * 110}ms`}>
+          <p class="kicker">Co-founder</p>
+          <h3 class="fname">{f.name}</h3>
+          <p class="desc">{f.line}</p>
+          <div class="stats">
+            {f.stats.map((s) => <div><p class="sv">{s.v}</p><p class="sl">{s.l}</p></div>)}
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .wa { padding: clamp(96px, 14vh, 160px) 0; }
+
+  .grid3 { margin-top: clamp(40px, 6vh, 64px); display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .card {
+    position: relative; overflow: hidden; display: flex; flex-direction: column; padding: 28px; border-radius: 16px;
+    background: var(--surface); border: 1px solid var(--line);
+    transition: translate .8s var(--ease-out-soft) var(--d), opacity .8s var(--ease-out-soft) var(--d), border-color .3s, transform .4s var(--ease-out-soft);
+  }
+  :global(.reveal-ready) .card { opacity: 0; translate: 0 24px; }
+  :global(.reveal-ready) .grid3.in .card { opacity: 1; translate: 0 0; }
+  .card:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
+  .card::after { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: var(--noise); background-size: 180px; opacity: .1; mix-blend-mode: overlay; }
+  .team { background: radial-gradient(90% 70% at 0% 100%, rgb(255 90 1 / .2), transparent 65%), var(--surface); }
+
+  .kicker { font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+  .big { margin-top: 14px; font-size: clamp(56px, 6vw, 80px); font-weight: 800; letter-spacing: -0.05em; line-height: .9; color: var(--text); font-variant-numeric: tabular-nums; }
+  .suf { font-size: .42em; font-weight: 600; letter-spacing: -0.02em; margin-left: 4px; color: var(--text-2); }
+  .fname { margin-top: 14px; font-size: clamp(26px, 2.4vw, 32px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; color: var(--text); }
+  .desc { margin-top: 14px; font-size: 15px; line-height: 1.55; color: var(--text-2); }
+
+  .spec { margin-top: auto; padding-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; font-size: 13px; color: var(--text); }
+  .spec li { display: flex; align-items: center; gap: 8px; }
+  .spec li::before { content: ""; width: 6px; height: 6px; border-radius: 2px; background: var(--accent); flex-shrink: 0; }
+
+  .stats { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--line); display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .card .stats { margin-top: 24px; }
+  .sv { font-size: 26px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; color: var(--accent); }
+  .sl { margin-top: 6px; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+
+  @media (max-width: 1023px) { .grid3 { grid-template-columns: 1fr 1fr; } .team { grid-column: span 2; } }
+  @media (max-width: 767px) { .grid3 { grid-template-columns: 1fr; } .team { grid-column: span 1; } }
+  @media (prefers-reduced-motion: reduce) { :global(.reveal-ready) .card { opacity: 1; translate: none; } }
+</style>
+
+<script>
+  const sec = document.getElementById("about")!;
+  const grid = sec.querySelector<HTMLElement>(".grid3")!;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  new IntersectionObserver(([en], o) => {
+    if (!en.isIntersecting) return;
+    o.disconnect();
+    grid.classList.add("in");
+    // count the team size up from 0
+    const el = sec.querySelector<HTMLElement>(".count")!;
+    if (reduce) return;
+    const to = Number(el.dataset.n), t0 = performance.now();
+    const tick = (t: number) => { const k = Math.min(1, (t - t0) / 1200); el.textContent = String(Math.round(to * (1 - Math.pow(1 - k, 3)))); if (k < 1) requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
+  }, { threshold: 0.2 }).observe(grid);
+</script>

@@ -1,0 +1,162 @@
+---
+// Launchpad Growth System (Atlas-style): the section pins, and the five stage cards slide in one at a time
+// and land side by side in one row. The card that just landed turns orange and hands it on;
+// milestone tags pop in as their card lands. Mobile: cards stack vertically with an orange progress line.
+import { applyUrl, stages } from "../data/growth-stages";
+---
+<section id="growth-system" class="gs relative" aria-label="The Launchpad Growth System">
+  <div class="gs-pin">
+    <div class="gs-inner mx-auto w-full max-w-[1240px] px-5">
+      <!-- One clear stack: eyebrow → headline → one short line. The revenue figures live on the cards as milestone tags. -->
+      <div class="gs-head">
+        <h2 class="text-[clamp(30px,3.6vw,52px)] font-semibold leading-[1.05] tracking-[-0.04em] text-text">
+          The way through is full-funnel marketing,<br class="hidden md:block" /> run as <em class="accent">one system.</em>
+        </h2>
+        <p class="mt-4 text-[clamp(15px,1.3vw,18px)] text-text-2">Every stage from first impression to repeat customer, built and run together.</p>
+      </div>
+
+      <ol class="cards">
+        {stages.map((s, i) => (
+          <li class="card" data-i={i} style={`--i:${i}`}>
+            <span class="num">Level {String(i + 1).padStart(2, "0")}</span>
+            <h3 class="name">{s.name}</h3>
+            <p class="line">{s.line}</p>
+            {s.tag && <span class="tag">{s.tag}</span>}
+          </li>
+        ))}
+      </ol>
+
+      <div class="gs-cta">
+        <a href={applyUrl} target="_blank" rel="noopener" class="cta">See if you're a fit <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .gs { height: 340vh; }
+  .gs-pin { position: sticky; top: 0; height: 100svh; display: flex; align-items: center; overflow: hidden; }
+  .gs-inner { display: flex; flex-direction: column; padding-top: 88px; }
+
+
+  .gs-head { text-align: center; max-width: 1080px; margin: 0 auto; }
+
+  /* Five cards in one level row, all the same height */
+  .cards {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; align-items: stretch;
+    margin-top: clamp(28px, 5vh, 56px);
+  }
+  /* Every card has the same rhythm: level label, name, one line, then the milestone tag pinned to the bottom */
+  .card {
+    position: relative; display: flex; flex-direction: column; align-items: flex-start;
+    min-height: clamp(220px, 28vh, 270px); padding: 22px 20px;
+    border-radius: 14px; border: 1px solid var(--line);
+    background: color-mix(in srgb, var(--surface) 82%, transparent); backdrop-filter: blur(8px);
+    transition: background-color .5s var(--ease-out-soft), border-color .5s var(--ease-out-soft), box-shadow .5s var(--ease-out-soft);
+    will-change: transform, opacity;
+  }
+  .num { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-variant-numeric: tabular-nums; transition: color .5s; }
+  .name { margin-top: 14px; font-size: clamp(19px, 1.6vw, 23px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; color: var(--text); }
+  .line { margin-top: 10px; font-size: 14px; line-height: 1.5; color: var(--text-2); transition: color .5s; }
+  .tag {
+    display: inline-flex; margin-top: auto; padding: 6px 10px; border-radius: 999px;
+    font-size: 12px; font-weight: 600; white-space: nowrap;
+    color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    opacity: 0; transform: translateY(6px) scale(.9);
+    transition: opacity .45s var(--ease-out-soft) .15s, transform .45s var(--ease-out-soft) .15s, color .5s, background-color .5s, border-color .5s;
+  }
+  .card.landed .tag { opacity: 1; transform: none; }
+
+  /* Active card: solid orange with white text (brand rule) and a soft orange glow */
+  .card.on { background: var(--accent); border-color: var(--accent); box-shadow: 0 20px 60px -20px color-mix(in srgb, var(--accent) 70%, transparent); }
+  .card.on .name, .card.on .line { color: var(--accent-ink); }
+  .card.on .num { color: rgb(255 255 255 / .75); }
+  .card.on .tag { color: var(--accent-ink); border-color: rgb(255 255 255 / .35); background: rgb(255 255 255 / .14); }
+
+  .gs-cta { display: flex; justify-content: center; margin-top: clamp(16px, 3vh, 36px); opacity: 0; transform: translateY(10px); transition: opacity .5s var(--ease-out-soft), transform .5s var(--ease-out-soft); }
+  .gs-cta.show { opacity: 1; transform: none; }
+  .cta {
+    display: inline-flex; align-items: center; gap: 8px; height: 52px; padding: 0 26px; border-radius: 12px;
+    background: var(--accent); color: var(--accent-ink); font-size: 16px; font-weight: 600;
+    transition: transform .2s var(--ease-out-soft), filter .2s;
+  }
+  .cta:hover { transform: translateY(-1px); filter: brightness(1.08); }
+
+  /* Mobile / tablet portrait: no pin, vertical stack with an orange progress line down the side */
+  @media (max-width: 899px) {
+    .gs { height: auto; }
+    .gs-pin { position: relative; height: auto; display: block; overflow: visible; padding: 40px 0 80px; }
+    .gs-inner { padding-top: 0; }
+    .gs-head { text-align: left; }
+    .cards { grid-template-columns: 1fr; gap: 12px; padding: 0 0 0 26px; position: relative; margin-top: 32px; }
+    .cards::before, .cards::after { content: ""; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 2px; border-radius: 2px; }
+    .cards::before { background: var(--line); }
+    .cards::after { background: var(--accent); transform-origin: top; transform: scaleY(var(--fill, 0)); }
+    .card { min-height: 0; }
+    .tag { margin-top: 14px; }
+    .gs-cta { opacity: 1; transform: none; justify-content: flex-start; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gs { height: auto; }
+    .gs-pin { position: relative; height: auto; padding: 80px 0; }
+    .card { transform: none !important; opacity: 1 !important; }
+    .tag, .gs-cta { opacity: 1; transform: none; }
+  }
+</style>
+
+<script>
+  const sec = document.getElementById("growth-system")!;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const mobile = matchMedia("(max-width: 899px)");
+  const list = sec.querySelector<HTMLElement>(".cards")!;
+  const cards = [...sec.querySelectorAll<HTMLElement>(".card")];
+  const cta = sec.querySelector<HTMLElement>(".gs-cta")!;
+  const clamp = (v: number) => Math.max(0, Math.min(1, v));
+  const seg = (p: number, a: number, b: number) => clamp((p - a) / (b - a));
+  const ease = (t: number) => 1 - Math.pow(1 - t, 3);
+
+  function desktop() {
+    const r = sec.getBoundingClientRect();
+    const p = clamp(-r.top / (sec.offsetHeight - innerHeight)); // 0 → 1 across the pin
+    const dx = Math.min(innerWidth * 0.45, 560);
+    let active = -1;
+    cards.forEach((c, i) => {
+      // each card gets its own slice; it slides in from the right and rises into its step
+      const e = ease(seg(p, 0.06 + i * 0.15, 0.2 + i * 0.15));
+      c.style.transform = `translate3d(${(1 - e) * dx}px, ${(1 - e) * 70}px, 0)`;
+      c.style.opacity = String(clamp(e * 1.6));
+      c.classList.toggle("landed", e > 0.92);
+      if (e > 0.6) active = i;
+    });
+    cards.forEach((c, i) => c.classList.toggle("on", i === active));
+    cta.classList.toggle("show", p > 0.84);
+  }
+
+  function stacked() {
+    // vertical list: progress line fills with scroll, the card crossing the middle of the screen is active
+    const mid = innerHeight * 0.55;
+    const lr = list.getBoundingClientRect();
+    list.style.setProperty("--fill", String(clamp((mid - lr.top) / lr.height)));
+    let active = -1;
+    cards.forEach((c, i) => {
+      c.style.transform = ""; c.style.opacity = "";
+      const top = c.getBoundingClientRect().top;
+      c.classList.toggle("landed", top < innerHeight * 0.85);
+      if (top < mid) active = i;
+    });
+    cards.forEach((c, i) => c.classList.toggle("on", i === active));
+  }
+
+  const render = () => (mobile.matches ? stacked() : desktop());
+
+  if (reduce) {
+    cards.forEach((c) => c.classList.add("landed"));
+    cards[cards.length - 1].classList.add("on");
+  } else {
+    render();
+    addEventListener("scroll", render, { passive: true });
+    addEventListener("resize", render);
+  }
+</script>

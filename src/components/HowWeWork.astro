@@ -1,0 +1,141 @@
+---
+// How we work — two partnership models as cards, not a table (Tom: "I don't want this to look like a simple table").
+// Rows line up across the two cards so they compare at a glance. Hovering the Consultancy goal ("…take over as your
+// Growth Partner") lights up the Growth Partner card. On mobile a toggle switches between the two.
+// Copy: brief/04-copy-deck.md, section 6.
+import { applyUrl } from "../data/growth-stages";
+const models = [
+  {
+    key: "growth", name: "Growth Partner",
+    rows: [
+      { l: "Who it's for", v: "Founders and experts typically doing 7 figures a year with a proven, scalable offer, or with an audience big enough that we can get there soon." },
+      { l: "What we do", v: "Our team runs product development, marketing and sales end to end." },
+      { l: "What you do", v: "You're the face of the brand, with little day-to-day operational work." },
+    ],
+    goal: "Scale to 8 figures.",
+  },
+  {
+    key: "consult", name: "Consultancy Partner",
+    rows: [
+      { l: "Who it's for", v: "Businesses building towards that level." },
+      { l: "What we do", v: "Daily strategic support, frameworks and feedback from our team." },
+      { l: "What you do", v: "You and your team execute, with us guiding every step." },
+    ],
+    goal: "Reach the level where we take over as your Growth Partner.",
+  },
+];
+---
+<section id="how-we-work" class="hw relative" aria-label="How we work">
+  <div class="mx-auto w-full max-w-[1080px] px-6">
+    <div class="text-center" data-reveal>
+      <h2 class="text-[clamp(30px,3.6vw,52px)] font-semibold leading-[1.05] tracking-[-0.04em] text-text">
+        Two ways to <em class="accent">partner with us.</em>
+      </h2>
+    </div>
+
+    <!-- Mobile: switch between the two models -->
+    <div class="toggle" role="tablist" aria-label="Partnership model">
+      {models.map((m, i) => <button role="tab" class={i === 0 ? "on" : ""} data-k={m.key} aria-selected={i === 0 ? "true" : "false"}>{m.name}</button>)}
+      <span class="pill" aria-hidden="true"></span>
+    </div>
+
+    <div class="cards" data-reveal>
+      {models.map((m, i) => (
+        <article class={`card c-${m.key}${i === 0 ? " show" : ""}`} data-k={m.key}>
+          <div class="card-head">
+            <span class="badge">{i === 0 ? "01" : "02"}</span>
+            <h3 class="name">{m.name}</h3>
+          </div>
+          <dl class="rows">
+            {m.rows.map((r) => (
+              <div class="row"><dt>{r.l}</dt><dd>{r.v}</dd></div>
+            ))}
+            <div class="row goal" data-goal={m.key}><dt>The goal</dt><dd>{m.goal}</dd></div>
+          </dl>
+        </article>
+      ))}
+    </div>
+
+    <div class="foot" data-reveal>
+      <p class="small">Fit depends on your revenue, business setup and capacity, not one number. We'll tell you honestly which one suits you.</p>
+      <a class="btn" href={applyUrl} target="_blank" rel="noopener">Work with us <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hw { padding: clamp(96px, 14vh, 160px) 0; }
+
+  /* Subgrid: each card spans 5 shared rows (head + 4 rows), so "Who it's for", "What we do"… line up across both cards */
+  .cards { margin-top: clamp(40px, 6vh, 64px); display: grid; grid-template-columns: 1fr 1fr; column-gap: 20px; row-gap: 0; }
+  .card {
+    display: grid; grid-row: span 5; grid-template-rows: subgrid;
+    position: relative; overflow: hidden; padding: 32px; border-radius: 18px;
+    background: var(--surface); border: 1px solid var(--line);
+    transition: border-color .4s, box-shadow .4s, transform .4s var(--ease-out-soft);
+  }
+  .card::after { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: var(--noise); background-size: 180px; opacity: .1; mix-blend-mode: overlay; }
+  /* Growth Partner leads: warm glow from the top corner */
+  .c-growth { background: radial-gradient(90% 60% at 100% 0%, rgb(255 90 1 / .18), transparent 60%), var(--surface); border-color: color-mix(in srgb, var(--accent) 35%, var(--line)); }
+  .card:hover { transform: translateY(-3px); }
+  .card.lit { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), 0 24px 60px -24px rgb(255 90 1 / .6); }
+
+  .card-head { display: flex; align-items: center; gap: 14px; }
+  .badge { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 11px; font-size: 13px; font-weight: 700; color: var(--accent); background: var(--raised); border: 1px solid var(--line); }
+  .c-growth .badge { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); }
+  .name { font-size: clamp(24px, 2.3vw, 30px); font-weight: 600; letter-spacing: -0.03em; color: var(--text); }
+
+  .rows { grid-row: span 4; margin-top: 26px; display: grid; grid-template-rows: subgrid; }
+  .row { display: grid; gap: 6px; padding: 16px 0; border-top: 1px solid var(--line); align-content: start; }
+  dt { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  dd { font-size: 15px; line-height: 1.55; color: var(--text-2); }
+  .goal dd { font-size: 19px; font-weight: 600; line-height: 1.35; letter-spacing: -0.02em; color: var(--accent); }
+  .goal[data-goal="consult"] { cursor: default; }
+
+  .foot { margin-top: 36px; display: flex; flex-direction: column; align-items: center; gap: 22px; text-align: center; }
+  .small { max-width: 560px; font-size: 14px; line-height: 1.55; color: var(--muted); }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; height: 52px; padding: 0 26px; border-radius: 12px;
+    font-size: 16px; font-weight: 600; color: var(--accent-ink); background: var(--accent); transition: transform .2s var(--ease-out-soft), filter .2s;
+  }
+  .btn:hover { transform: translateY(-1px); filter: brightness(1.08); }
+  .btn span { transition: transform .2s var(--ease-out-soft); }
+  .btn:hover span { transform: translateX(3px); }
+
+  /* Mobile toggle (hidden on desktop where both cards show) */
+  .toggle { display: none; }
+  @media (max-width: 767px) {
+    .toggle {
+      position: relative; display: grid; grid-template-columns: 1fr 1fr; margin: 32px auto 0; padding: 4px; max-width: 360px;
+      border-radius: 999px; background: var(--surface); border: 1px solid var(--line);
+    }
+    .toggle button { position: relative; z-index: 1; padding: 10px 8px; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--text-2); transition: color .3s; }
+    .toggle button.on { color: var(--accent-ink); }
+    .pill { position: absolute; top: 4px; bottom: 4px; left: 4px; width: calc(50% - 4px); border-radius: 999px; background: var(--accent); transition: transform .4s var(--ease-out-soft); }
+    .toggle.second .pill { transform: translateX(100%); }
+    .cards { grid-template-columns: 1fr; margin-top: 20px; }
+    .card { display: none; padding: 24px; grid-row: auto; }
+    .card.show { display: block; animation: cardIn .45s var(--ease-out-soft); }
+    .rows { display: block; }
+  }
+  @keyframes cardIn { from { opacity: 0; transform: translateY(10px); } }
+</style>
+
+<script>
+  const sec = document.getElementById("how-we-work")!;
+  // Consultancy goal → light up the Growth Partner card (that's where it leads)
+  const growth = sec.querySelector<HTMLElement>(".c-growth")!;
+  const goal = sec.querySelector<HTMLElement>('[data-goal="consult"]')!;
+  goal.addEventListener("mouseenter", () => growth.classList.add("lit"));
+  goal.addEventListener("mouseleave", () => growth.classList.remove("lit"));
+
+  // Mobile toggle
+  const toggle = sec.querySelector<HTMLElement>(".toggle")!;
+  const tabs = [...toggle.querySelectorAll<HTMLButtonElement>("button")];
+  const cards = [...sec.querySelectorAll<HTMLElement>(".card")];
+  tabs.forEach((t, i) => t.addEventListener("click", () => {
+    tabs.forEach((x, j) => { x.classList.toggle("on", i === j); x.setAttribute("aria-selected", String(i === j)); });
+    cards.forEach((c, j) => c.classList.toggle("show", i === j));
+    toggle.classList.toggle("second", i === 1);
+  }));
+</script>

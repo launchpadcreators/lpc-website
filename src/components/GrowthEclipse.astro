@@ -1,0 +1,236 @@
+---
+// Growth System, eclipse variant (after Agnos' "process" section): the section pins and a huge dark planet
+// rises like an eclipse, with a thin glowing orange rim. The five level badges ride around that rim as you
+// scroll: the active level sits at the top in orange, its neighbours tilt along the curve and fade.
+// The active level's name, line and milestone tag swap inside the disc, with a ‹ 01 / 05 › pager
+// (arrows on desktop, dots on mobile).
+import { stages } from "../data/growth-stages";
+const pad = (n: number) => String(n).padStart(2, "0");
+---
+<section id="growth-eclipse" class="ge relative" aria-label="The Launchpad Growth System">
+  <div class="ge-pin">
+    <div class="ge-head mx-auto w-full max-w-[1080px] px-5 text-center">
+      <h2 class="text-[clamp(30px,3.6vw,52px)] font-semibold leading-[1.05] tracking-[-0.04em] text-text">
+        The way through is full-funnel marketing,<br class="hidden md:block" /> run as <em class="accent">one system.</em>
+      </h2>
+    </div>
+
+    <div class="ge-stage">
+      <div class="eclipse">
+        <div class="disc-mask" aria-hidden="true"><div class="disc"></div></div>
+        <div class="flare" aria-hidden="true"></div>
+        <span class="lvl-word" aria-hidden="true">Level</span>
+        {stages.map((_, i) => (
+          <span class="badge" data-i={i} aria-hidden="true">{pad(i + 1)}</span>
+        ))}
+
+        <div class="ge-content">
+          <div class="ge-steps" aria-live="polite">
+            {stages.map((s, i) => (
+              <div class="ge-step" data-i={i}>
+                <h3 class="name">{s.name}</h3>
+                <p class="line">{s.line}</p>
+                {s.tag && <span class="tag">{s.tag}</span>}
+              </div>
+            ))}
+          </div>
+          <div class="pager">
+            <button class="arrow" data-dir="-1" aria-label="Previous level">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" /></svg>
+            </button>
+            <span class="count"><span class="cur">01</span> / {pad(stages.length)}</span>
+            <button class="arrow" data-dir="1" aria-label="Next level">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 5 5-5 5" /></svg>
+            </button>
+            <span class="dots">{stages.map((_, i) => <i data-i={i} />)}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ge { height: 440vh; }
+  .ge-pin { position: sticky; top: 0; height: 100svh; display: flex; flex-direction: column; overflow: hidden; }
+  .ge-head { padding-top: clamp(100px, 15vh, 160px); }
+
+  .ge-stage { position: relative; flex: 1; }
+
+  /* The planet: a huge circle whose top cap shows; --r (radius) is read by the badge maths */
+  .eclipse {
+    --w: min(1560px, 118vw);
+    position: absolute; left: 50%; top: clamp(70px, 11vh, 110px);
+    width: var(--w); height: var(--w); margin-left: calc(var(--w) / -2);
+    will-change: transform;
+  }
+  /* The mask lives on an oversized wrapper so it doesn't clip the rim's outer glow:
+     rim fades out towards the screen edges and the disc fades into the page at the bottom */
+  .disc-mask {
+    position: absolute; inset: -160px;
+    -webkit-mask-image: linear-gradient(90deg, transparent 4%, #000 28%, #000 72%, transparent 96%), linear-gradient(#000 38%, transparent 60%);
+    -webkit-mask-composite: source-in;
+            mask-image: linear-gradient(90deg, transparent 4%, #000 28%, #000 72%, transparent 96%), linear-gradient(#000 38%, transparent 60%);
+            mask-composite: intersect;
+  }
+  .disc {
+    position: absolute; inset: 160px; border-radius: 50%;
+    background:
+      radial-gradient(60% 18% at 50% 0%, rgb(255 90 1 / .16), transparent 70%),
+      color-mix(in srgb, #000 45%, var(--bg));
+    border: 1px solid rgb(255 186 140 / .9);
+    box-shadow:
+      0 0 0 1px rgb(255 90 1 / .35),
+      0 0 26px 3px rgb(255 90 1 / .55),
+      0 0 120px 24px rgb(255 90 1 / .2),
+      inset 0 24px 70px -28px rgb(255 120 40 / .45);
+  }
+  /* "Diamond ring" bloom where the light breaks over the top of the planet, with grain */
+  .flare {
+    position: absolute; left: 50%; top: -46px; width: min(620px, 60vw); height: 92px; transform: translateX(-50%);
+    background: radial-gradient(closest-side, rgb(255 150 70 / .5), rgb(255 90 1 / .22) 55%, transparent);
+    filter: blur(14px); pointer-events: none;
+  }
+  .flare::after {
+    content: ""; position: absolute; inset: 0; background-image: var(--noise); background-size: 160px; opacity: .35; mix-blend-mode: overlay;
+    -webkit-mask-image: radial-gradient(closest-side, #000, transparent); mask-image: radial-gradient(closest-side, #000, transparent);
+  }
+
+  .lvl-word {
+    position: absolute; left: 50%; top: -52px; transform: translateX(-50%);
+    font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--text-2);
+  }
+  /* Badges sit on the rim: rotate around the circle's centre, then push out by the radius */
+  .badge {
+    position: absolute; left: 50%; top: 50%; width: 46px; height: 46px; margin: -23px 0 0 -23px;
+    display: grid; place-items: center; border-radius: 13px;
+    font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text-2);
+    background: color-mix(in srgb, var(--surface) 92%, transparent); border: 1px solid var(--line);
+    transition: background-color .4s var(--ease-out-soft), color .4s, border-color .4s, box-shadow .4s;
+  }
+  .badge.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); box-shadow: 0 0 0 6px rgb(255 90 1 / .14), 0 10px 40px -6px rgb(255 90 1 / .8); }
+
+  .ge-content {
+    position: absolute; left: 50%; top: clamp(64px, 9vh, 96px); width: min(600px, calc(100vw - 40px)); transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+  }
+  .ge-steps { display: grid; width: 100%; }
+  .ge-step {
+    grid-area: 1 / 1; display: flex; flex-direction: column; align-items: center;
+    opacity: 0; transform: translateY(12px); filter: blur(6px); pointer-events: none;
+    transition: opacity .45s var(--ease-out-soft), transform .45s var(--ease-out-soft), filter .45s var(--ease-out-soft);
+  }
+  .ge-step.on { opacity: 1; transform: none; filter: none; pointer-events: auto; }
+  .name { font-size: clamp(28px, 3vw, 42px); font-weight: 600; letter-spacing: -0.035em; line-height: 1.05; color: var(--text); }
+  .line { margin-top: 12px; max-width: 540px; font-size: clamp(15px, 1.2vw, 17px); line-height: 1.55; color: var(--text-2); }
+  .tag {
+    margin-top: 16px; padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 600;
+    color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent); background: color-mix(in srgb, var(--accent) 10%, transparent);
+  }
+
+  /* Desktop: ‹ 01 / 05 › arrows. Mobile: count with dots underneath instead */
+  .pager { margin-top: 26px; display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; }
+  .count { min-width: 64px; text-align: center; font-size: 13px; font-weight: 600; letter-spacing: .08em; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .count .cur { color: var(--text); }
+  .arrow {
+    width: 40px; height: 40px; display: grid; place-items: center; border-radius: 999px; cursor: pointer;
+    color: var(--text); border: 1px solid var(--line); background: color-mix(in srgb, var(--surface) 80%, transparent);
+    transition: border-color .2s, background-color .2s, opacity .2s, transform .2s var(--ease-out-soft);
+  }
+  .arrow svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .arrow:hover:not(:disabled) { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+  .arrow:active:not(:disabled) { transform: scale(.94); }
+  .arrow:disabled { opacity: .3; cursor: default; }
+  .dots { display: none; flex-basis: 100%; justify-content: center; gap: 6px; }
+  .dots i { width: 6px; height: 6px; border-radius: 99px; background: var(--line); transition: width .35s var(--ease-out-soft), background-color .35s; }
+  .dots i.on { width: 18px; background: var(--accent); }
+  @media (max-width: 767px) {
+    .arrow { display: none; }
+    .pager { gap: 8px; }
+    .dots { display: flex; }
+  }
+
+  @media (max-width: 767px) {
+    .ge { height: 400vh; }
+    .eclipse { --w: 240vw; top: 76px; }
+    .ge-content { top: 64px; }
+    .flare { width: 90vw; }
+  }
+
+  /* Reduced motion: no pin, no rotation — show every level as a simple list inside the disc */
+  @media (prefers-reduced-motion: reduce) {
+    .ge { height: auto; }
+    .ge-pin { position: relative; height: auto; padding-bottom: 80px; }
+    .ge-stage { min-height: 900px; }
+    .badge, .lvl-word, .pager { display: none; }
+    .ge-steps { gap: 28px; }
+    .ge-step { grid-area: auto; opacity: 1; transform: none; filter: none; }
+  }
+</style>
+
+<script>
+  const sec = document.getElementById("growth-eclipse")!;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const eclipse = sec.querySelector<HTMLElement>(".eclipse")!;
+  const badges = [...sec.querySelectorAll<HTMLElement>(".badge")];
+  const steps = [...sec.querySelectorAll<HTMLElement>(".ge-step")];
+  const dots = [...sec.querySelectorAll<HTMLElement>(".dots i")];
+  const cur = sec.querySelector<HTMLElement>(".cur")!;
+  const arrows = [...sec.querySelectorAll<HTMLButtonElement>(".arrow")];
+  const n = steps.length;
+  let active = 0;
+  const clamp = (v: number, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+  const smooth = (t: number) => t * t * (3 - 2 * t);
+  let r = 0, gap = 0; // circle radius and angle between badges (radians)
+
+  function measure() {
+    r = eclipse.offsetWidth / 2;
+    gap = Math.min(300, innerWidth * 0.3) / r; // ~300px of arc between neighbouring badges
+  }
+
+  function render() {
+    const rect = sec.getBoundingClientRect();
+    const total = sec.offsetHeight - innerHeight;
+    const p = clamp(-rect.top / total);
+
+    // Sunrise: the planet rises into place as the section scrolls in
+    const rise = smooth(clamp(1 - rect.top / innerHeight));
+    eclipse.style.transform = `translateY(${(1 - rise) * 260}px)`;
+    eclipse.style.opacity = String(clamp(rise * 1.4));
+
+    // Each level gets an equal slice; the rim turns only in the middle of a slice, so every level dwells
+    const s = p * (n - 1);
+    const i = Math.min(n - 1, Math.floor(s));
+    const pos = i + smooth(clamp((s - i - 0.3) / 0.4));
+    active = Math.round(pos);
+
+    badges.forEach((b, k) => {
+      const a = (k - pos) * gap;
+      b.style.transform = `rotate(${a}rad) translateY(${-r}px)`;
+      b.style.opacity = String(clamp(1 - Math.abs(a) / (gap * 2.4)));
+      b.classList.toggle("on", k === active);
+    });
+    steps.forEach((el, k) => el.classList.toggle("on", k === active));
+    dots.forEach((d, k) => d.classList.toggle("on", k === active));
+    cur.textContent = String(active + 1).padStart(2, "0");
+    arrows[0].disabled = active === 0;
+    arrows[1].disabled = active === n - 1;
+  }
+
+  // Arrows scroll to the previous / next level's resting point (Lenis for the same smooth feel as wheel scrolling)
+  arrows.forEach((btn) => btn.addEventListener("click", () => {
+    const k = Math.max(0, Math.min(n - 1, active + Number(btn.dataset.dir)));
+    const y = sec.offsetTop + (sec.offsetHeight - innerHeight) * (k / (n - 1));
+    const lenis = (window as any).lenis;
+    lenis ? lenis.scrollTo(y, { duration: 1.2 }) : scrollTo({ top: y, behavior: reduce ? "auto" : "smooth" });
+  }));
+
+  if (reduce) {
+    steps.forEach((el) => el.classList.add("on"));
+  } else {
+    measure();
+    render();
+    addEventListener("scroll", render, { passive: true });
+    addEventListener("resize", () => { measure(); render(); });
+  }
+</script>

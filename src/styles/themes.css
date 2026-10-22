@@ -1,0 +1,42 @@
+/*
+  LPC themes. Every colour on the site comes from these variables.
+  To add a theme: copy a block, rename data-theme, change the values,
+  then add its name to src/config/theme.ts.
+*/
+
+/* Charcoal (current default) */
+:root,
+:root[data-theme="charcoal"] {
+  --bg: #0E0E10;          /* page background */
+  --surface: #18181B;     /* cards, nav */
+  --raised: #202024;      /* hover, featured cards */
+  --line: #2A2A2E;        /* 1px borders */
+  --text: #F4F4F5;        /* headings, primary text */
+  --text-2: #A1A1AA;      /* body copy */
+  --muted: #71717A;       /* labels, captions */
+  --accent: #FF5A01;      /* buttons, highlights */
+  --accent-ink: #FFFFFF;  /* text on accent buttons */
+  --data: #34D399;        /* money / growth numbers */
+  --glow-warm: #FF5A01;   /* hero / CTA glow */
+  --glow-cool: #3F3F46;   /* secondary glow */
+  --star: 245 247 252;    /* starfield base colour (r g b) */
+  --star-accent: 255 122 61; /* starfield accent colour (r g b) */
+}
+
+/* Original blue */
+:root[data-theme="blue"] {
+  --bg: #0D0C15;
+  --surface: #0B1226;
+  --raised: #121C38;
+  --line: #1E2A4D;
+  --text: #F5F7FC;
+  --text-2: #AEB8CF;
+  --muted: #7783A3;
+  --accent: #FF5A01;
+  --accent-ink: #FFFFFF;
+  --data: #34D399;
+  --glow-warm: #FF5A01;
+  --glow-cool: #1D3A8A;
+  --star: 245 247 252;
+  --star-accent: 255 122 61;
+}

@@ -1,0 +1,102 @@
+---
+// Hero: centred headline with one serif accent word, sub-copy, two CTAs, partner photos below.
+const applyUrl = "https://form.typeform.com/to/yWBgS4vK";
+import { url } from "../config/paths";
+// Stock placeholder portraits — swap for real, approved partner headshots in public/partners/
+const partners = [
+  { src: "/partners/stock-1.jpg", alt: "Partner" },
+  { src: "/partners/stock-2.jpg", alt: "Partner" },
+  { src: "/partners/stock-3.jpg", alt: "Partner" },
+  { src: "/partners/stock-4.jpg", alt: "Partner" },
+  { src: "/partners/stock-5.jpg", alt: "Partner" },
+];
+---
+<section id="top" class="hero relative flex min-h-svh items-center justify-center overflow-hidden px-5 pt-[104px] pb-[72px]">
+  <!-- Glow (Conversion-template style): stacked blurred conic gradients, clipped in a box below the CTAs -->
+  <div class="glow-box" aria-hidden="true">
+    <div class="g g-outer"></div>
+    <div class="g g-inner"></div>
+    <div class="g g-inner g-blend"></div>
+  </div>
+
+  <div class="relative z-10 mx-auto flex max-w-[1120px] flex-col items-center text-center">
+    <h1 class="h-in text-[clamp(40px,6.4vw,84px)] font-medium leading-[1.02] tracking-[-0.045em] text-text" style="--d:90ms">
+      We build and scale expert businesses to <span class="accent text-[1.08em] whitespace-nowrap">7 and 8 figures.</span>
+    </h1>
+
+    <p class="h-in mt-7 max-w-[640px] text-[clamp(16px,1.6vw,19px)] leading-relaxed text-text-2" style="--d:180ms">
+      Partnering with founders and experts to monetise their audience and expertise, and scale to 7 and 8 figures.
+    </p>
+
+    <div class="h-in mt-10 flex flex-col items-center gap-3 sm:flex-row" style="--d:270ms">
+      <a href={applyUrl} target="_blank" rel="noopener" class="hbtn hbtn-primary">Work with us</a>
+      <a href="#newsletter" class="hbtn hbtn-ghost">Join our mailing list</a>
+    </div>
+
+    <!-- Partner photos only -->
+    <div class="h-in mt-10 flex" style="--d:360ms">
+      {partners.map((p, n) => (
+        <img src={url(p.src)} alt={p.alt} width="44" height="44" class="avatar" style={`z-index:${10 - n}`} loading="eager" />
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .avatar {
+    width: 44px; height: 44px; margin-left: -10px; border-radius: 999px;
+    border: 2px solid var(--bg); object-fit: cover; background: var(--surface);
+    position: relative; transition: transform .25s var(--ease-out-soft);
+  }
+  .avatar:hover { transform: translateY(-3px); z-index: 20 !important; }
+  .avatar:first-child { margin-left: 0; }
+
+  /* Glow box sits behind the CTAs/avatars; overflow hidden like the template */
+  .glow-box {
+    position: absolute; left: 50%; top: 42%; transform: translateX(-50%); opacity: 1;
+    width: min(1600px, 140vw); height: 1100px; overflow: hidden; pointer-events: none;
+    /* soft fade at the edges so it never shows a box outline */
+    -webkit-mask-image: radial-gradient(closest-side, #000 35%, transparent), linear-gradient(to bottom, #000 40%, transparent 75%);
+    -webkit-mask-composite: source-in;
+            mask-image: radial-gradient(closest-side, #000 35%, transparent), linear-gradient(to bottom, #000 40%, transparent 75%);
+            mask-composite: intersect;
+  }
+  .g { position: absolute; left: 50%; top: 50%; border-radius: 50%; }
+  /* heavy grain over the glow for a textured, premium look */
+  .glow-box::after { content: ""; position: absolute; inset: 0; background-image: var(--noise); background-size: 180px; opacity: .55; mix-blend-mode: overlay; }
+  /* Outer: big multi-tone conic in LPC oranges, heavy blur */
+  .g-outer {
+    width: 760px; height: 560px; margin: -280px 0 0 -380px; filter: blur(110px);
+    background: conic-gradient(#FF3D00 0deg, #FF2A10 55deg, #FFB070 107deg, #FF8A3D 162deg, #8A2A00 252deg, #FF7A00 306deg, #FF3D00 360deg);
+    animation: spin 18s linear infinite;
+  }
+  /* Inner: warm hot core */
+  .g-inner {
+    width: 440px; height: 340px; margin: -170px 0 0 -220px; filter: blur(70px);
+    background: conic-gradient(#FFE2C2 0deg, #FF5A01 180deg, #FFB070 360deg);
+    animation: spin 12s linear infinite reverse;
+  }
+  .g-blend { mix-blend-mode: overlay; animation-duration: 9s; animation-direction: normal; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (max-width: 639px) { .g-outer { width: 460px; height: 420px; margin: -210px 0 0 -230px; } .g-inner { width: 280px; height: 260px; margin: -130px 0 0 -140px; } }
+  @media (prefers-reduced-motion: reduce) { .g { animation: none; } }
+
+  .hbtn {
+    display: inline-flex; align-items: center; justify-content: center;
+    height: 52px; padding: 0 26px; border-radius: 12px;
+    font-size: 16px; font-weight: 600;
+    transition: transform .2s var(--ease-out-soft), filter .2s, background-color .2s, border-color .2s;
+  }
+  .hbtn:hover { transform: translateY(-1px); }
+  .hbtn-primary { background: var(--accent); color: var(--accent-ink); }
+  .hbtn-primary:hover { filter: brightness(1.08); }
+  .hbtn-ghost { background: color-mix(in srgb, var(--surface) 80%, transparent); color: var(--text); border: 1px solid var(--line); }
+  .hbtn-ghost:hover { border-color: color-mix(in srgb, var(--text) 25%, transparent); }
+  @media (max-width: 639px) { .hbtn { width: 100%; min-width: 260px; } }
+
+  /* Load-in: staggered fade-up (content visible if JS/animation is off) */
+  @media (prefers-reduced-motion: no-preference) {
+    .h-in { animation: h-in .9s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: var(--d); }
+    @keyframes h-in { from { opacity: 0; transform: translateY(18px); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+  }
+</style>

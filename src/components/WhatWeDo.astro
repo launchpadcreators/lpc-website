@@ -1,0 +1,280 @@
+---
+// What we do — bento grid laid out like the Agnos template (4-column grid inside a framed panel),
+// filled only with our copy: the services from brief/04-copy-deck.md, section 5, grouped by type of service.
+// Each tile = a small working visual of that service (labelled with our service names, no made-up numbers)
+// + a ticked list of every service in the group.
+//  Row 1: Ads and content (3 cols) + Funnels (1 col)
+//  Row 2: Email and webinars (2 cols) + Sales (2 cols)
+//  Row 3: Product and retention (full width)
+const groups = {
+  ads: ["Paid ads (Meta, LinkedIn, YouTube)", "Creative testing", "Video ads", "Static ads", "Organic social strategy", "Content scripting", "Content production", "Brand and design"],
+  funnels: ["Landing pages", "Funnel builds", "Lead magnets", "Registration pages", "Tracking and attribution"],
+  email: ["Email and SMS sequences", "Webinar scripting and setup", "Live and evergreen webinars", "Masterclasses", "Launch planning"],
+  sales: ["Offer and pricing", "Sales process design", "Sales scripting and testing", "Setter and closer teams", "Conversion rate optimisation (CRO)", "Checkout and payment flows"],
+  product: ["Customer research", "Product development", "Community", "Customer success", "Retention", "Value ladder and ascension", "Reporting and data"],
+};
+const icons = {
+  ads: "M3 10v4h3l6 4V6L6 10H3z M16 9.5a3.5 3.5 0 0 1 0 5 M18.5 7a7 7 0 0 1 0 10",
+  funnels: "M3.5 5h17l-6.5 7.5V18l-4 2v-7.5z",
+  email: "M3.5 6.5h17v11h-17z M3.5 7.5l8.5 6 8.5-6",
+  sales: "M3 4h2.5l2.2 10h10l2-7H6.3 M9 19.5h.01 M17 19.5h.01",
+  product: "M3.5 7.5 12 3l8.5 4.5v9L12 21l-8.5-4.5z M3.5 7.5 12 12l8.5-4.5 M12 12v9",
+};
+const ads = [
+  { kind: "Video ad", platform: "YouTube", video: true },
+  { kind: "Static ad", platform: "Meta", video: false },
+  { kind: "Content post", platform: "LinkedIn", video: false },
+];
+const funnel = ["Landing page", "Lead magnet", "Registration"];
+const sequence = ["Email + SMS", "Webinar", "Masterclass", "Launch"];
+const pipeline = ["Offer", "Setter", "Closer", "Checkout"];
+const ladder = ["Community", "Product", "Customer success", "Retention", "Ascension"];
+const tick = "M3.5 8.5l3 3 6-7";
+---
+<section id="what-we-do" class="wd relative" aria-label="What we do">
+  <div class="mx-auto w-full max-w-[1080px] px-6">
+    <div class="text-center" data-reveal>
+      <h2 class="text-[clamp(30px,3.6vw,52px)] font-semibold leading-[1.05] tracking-[-0.04em] text-text">
+        One team, in-house,<br class="hidden md:block" /> across <em class="accent">every stage.</em>
+      </h2>
+      <p class="mx-auto mt-5 max-w-[620px] text-[clamp(15px,1.3vw,18px)] leading-[1.55] text-text-2">
+        Most businesses hire five suppliers for this. Our partners get one team that runs it as a single system.
+      </p>
+    </div>
+
+    <div class="bento">
+      <!-- Ads and content -->
+      <article class="tile s3 t-ads" style="--d:0ms">
+        <div class="txt">
+          <div class="head"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={icons.ads} /></svg></span><h3 class="name">Ads and content</h3></div>
+          <ul class="list">{groups.ads.map((v) => <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={tick} /></svg>{v}</li>)}</ul>
+        </div>
+        <div class="vis vis-ads" aria-hidden="true">
+          {ads.map((a, i) => (
+            <div class="ad" style={`--i:${i}`}>
+              <div class="ad-top"><span class="pf">{a.platform}</span><span class="kind">{a.kind}</span></div>
+              <div class={`ad-media${a.video ? " video" : ""}`}>{a.video && <span class="playmini"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" /></svg></span>}</div>
+              <span class="bar w80"></span><span class="bar w55"></span>
+              <span class="ad-cta">Learn more</span>
+            </div>
+          ))}
+          <div class="ab">
+            <p class="ab-title">Creative testing</p>
+            <div class="ab-row"><span>A</span><i style="--w:46%"></i></div>
+            <div class="ab-row win"><span>B</span><i style="--w:82%"></i></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Funnels -->
+      <article class="tile s1 t-funnel" style="--d:90ms">
+        <div class="head"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={icons.funnels} /></svg></span><h3 class="name">Funnels</h3></div>
+        <div class="vis vis-funnel" aria-hidden="true">
+          {funnel.map((f, i) => <div class="fstep" style={`--i:${i}`}>{f}</div>)}
+          {[0, 1, 2, 3].map((k) => <span class="drop" style={`--k:${k}`}></span>)}
+        </div>
+        <ul class="list">{groups.funnels.map((v) => <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={tick} /></svg>{v}</li>)}</ul>
+      </article>
+
+      <!-- Email and webinars -->
+      <article class="tile s2 t-email" style="--d:180ms">
+        <div class="head"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={icons.email} /></svg></span><h3 class="name">Email and webinars</h3></div>
+        <div class="vis vis-seq" aria-hidden="true">
+          <span class="seq-line"><i></i></span>
+          {sequence.map((s, i) => (
+            <div class="node" style={`--i:${i}`}>
+              <span class="dot">{s === "Webinar" && <b class="live">Live</b>}</span>
+              <span class="nl">{s}</span>
+            </div>
+          ))}
+        </div>
+        <ul class="list two">{groups.email.map((v) => <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={tick} /></svg>{v}</li>)}</ul>
+      </article>
+
+      <!-- Sales -->
+      <article class="tile s2 t-sales" style="--d:270ms">
+        <div class="head"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={icons.sales} /></svg></span><h3 class="name">Sales</h3></div>
+        <div class="vis vis-pipe" aria-hidden="true">
+          <div class="toast"><span class="tk"><svg viewBox="0 0 16 16"><path d={tick} /></svg></span>Call booked</div>
+          <div class="pipe">
+            {pipeline.map((p, i) => <span class="stage" style={`--i:${i}`}>{p}</span>)}
+            <span class="runner"></span>
+          </div>
+        </div>
+        <ul class="list two">{groups.sales.map((v) => <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={tick} /></svg>{v}</li>)}</ul>
+      </article>
+
+      <!-- Product and retention -->
+      <article class="tile s4 t-product" style="--d:360ms">
+        <div class="txt">
+          <div class="head"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={icons.product} /></svg></span><h3 class="name">Product and retention</h3></div>
+          <ul class="list two">{groups.product.map((v) => <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={tick} /></svg>{v}</li>)}</ul>
+        </div>
+        <div class="vis vis-ladder" aria-hidden="true">
+          <p class="vis-cap">Value ladder</p>
+          <div class="steps">
+            {ladder.map((l, i) => (
+              <div class="step" style={`--i:${i}`}><span class="col"></span><span class="sl">{l}</span></div>
+            ))}
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<style>
+  .wd { padding: clamp(96px, 14vh, 160px) 0; }
+
+  /* Framed panel holding a 4-column grid (Agnos: 20px padding + gaps, 16px frame / 8px tile radii) */
+  .bento {
+    margin-top: clamp(40px, 6vh, 64px); padding: 20px; border-radius: 18px;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+    background: color-mix(in srgb, var(--surface) 55%, var(--bg)); border: 1px solid var(--line);
+  }
+  .s1 { grid-column: span 1; } .s2 { grid-column: span 2; } .s3 { grid-column: span 3; } .s4 { grid-column: span 4; }
+
+  .tile {
+    position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 20px; padding: 24px;
+    border-radius: 12px; background: var(--surface); border: 1px solid var(--line);
+    transition: translate .8s var(--ease-out-soft) var(--d), opacity .8s var(--ease-out-soft) var(--d), border-color .3s;
+  }
+  :global(.reveal-ready) .tile { opacity: 0; translate: 0 24px; }
+  :global(.reveal-ready) .bento.in .tile { opacity: 1; translate: 0 0; }
+  .tile:hover { border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
+  .tile::after { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: var(--noise); background-size: 180px; opacity: .1; mix-blend-mode: overlay; }
+
+  .head { display: flex; align-items: center; gap: 12px; }
+  .icon {
+    width: 40px; height: 40px; flex-shrink: 0; display: grid; place-items: center; border-radius: 11px;
+    color: var(--accent); background: var(--raised); border: 1px solid var(--line); transition: background-color .3s, color .3s, border-color .3s;
+  }
+  .icon svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .tile:hover .icon { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .name { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; color: var(--text); }
+
+  /* Ticked service list */
+  .list { display: grid; gap: 9px; font-size: 14px; line-height: 1.35; color: var(--text-2); }
+  .list.two { grid-template-columns: 1fr 1fr; column-gap: 20px; }
+  .list li { display: flex; gap: 9px; align-items: flex-start; }
+  .list svg { width: 15px; height: 15px; flex-shrink: 0; margin-top: 1px; fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* Visual wells share one look: inset dark panel with a warm glow */
+  .vis {
+    position: relative; border-radius: 10px; overflow: hidden;
+    background: radial-gradient(80% 90% at 85% 110%, rgb(255 90 1 / .22), transparent 70%), color-mix(in srgb, #000 30%, var(--surface));
+    border: 1px solid var(--line);
+  }
+
+  /* --- Ads and content: fanned ad creatives + creative test --- */
+  .t-ads { display: grid; grid-template-columns: 1fr 1.25fr; gap: 24px; }
+  .t-ads .txt { display: flex; flex-direction: column; gap: 20px; }
+  .vis-ads { min-height: 300px; }
+  .ad {
+    position: absolute; top: 34px; left: calc(50% - 72px + (var(--i) - 1) * 92px); width: 144px; padding: 10px; border-radius: 12px;
+    background: var(--surface); border: 1px solid var(--line); box-shadow: 0 18px 40px -18px rgb(0 0 0 / .8);
+    transform: rotate(calc((var(--i) - 1) * 7deg)) translateY(calc(var(--i) * 0px)); transform-origin: 50% 120%;
+    animation: floaty 5s ease-in-out infinite; animation-delay: calc(var(--i) * -1.6s);
+  }
+  .ad:nth-child(2) { z-index: 2; top: 22px; }
+  @keyframes floaty { 50% { translate: 0 -6px; } }
+  .ad-top { display: flex; justify-content: space-between; align-items: center; gap: 6px; font-size: 9px; font-weight: 600; }
+  .pf { color: var(--accent); letter-spacing: .06em; text-transform: uppercase; }
+  .kind { color: var(--muted); }
+  .ad-media { margin-top: 8px; height: 92px; border-radius: 8px; display: grid; place-items: center; background: linear-gradient(135deg, #2a2a2f, #1c1c20); }
+  .ad-media.video { background: radial-gradient(70% 80% at 30% 20%, rgb(255 140 60 / .45), transparent 70%), #222226; }
+  .playmini { width: 28px; height: 28px; border-radius: 999px; display: grid; place-items: center; background: #fff; }
+  .playmini svg { width: 12px; height: 12px; fill: #0E0E10; margin-left: 2px; }
+  .bar { display: block; height: 6px; margin-top: 8px; border-radius: 99px; background: var(--raised); }
+  .w80 { width: 80%; } .w55 { width: 55%; }
+  .ad-cta { display: block; margin-top: 10px; padding: 5px 0; border-radius: 6px; text-align: center; font-size: 9px; font-weight: 600; color: var(--accent-ink); background: var(--accent); }
+  .ab {
+    position: absolute; left: 16px; right: 16px; bottom: 16px; z-index: 3; padding: 12px 14px; border-radius: 10px;
+    background: color-mix(in srgb, var(--surface) 85%, transparent); border: 1px solid var(--line); backdrop-filter: blur(8px);
+  }
+  .ab-title { font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .ab-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; font-size: 11px; font-weight: 700; color: var(--text-2); }
+  .ab-row i { flex: 1; height: 7px; border-radius: 99px; background: var(--raised); position: relative; overflow: hidden; }
+  .ab-row i::after { content: ""; position: absolute; inset: 0 auto 0 0; width: 0; border-radius: inherit; background: var(--muted); transition: width 1.4s var(--ease-out-soft) .6s; }
+  .ab-row.win i::after { background: var(--accent); box-shadow: 0 0 12px rgb(255 90 1 / .7); }
+  .ab-row.win span { color: var(--accent); }
+  .bento.in .ab-row i::after { width: var(--w); }
+
+  /* --- Funnels: leads drop through three steps --- */
+  .vis-funnel { padding: 14px 12px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .fstep {
+    position: relative; z-index: 1; width: calc(100% - var(--i) * 18%); padding: 9px 6px; border-radius: 8px; text-align: center;
+    font-size: 12px; font-weight: 600; color: var(--text); background: var(--surface); border: 1px solid var(--line);
+  }
+  .fstep:last-of-type { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); }
+  .drop { position: absolute; top: 4px; left: calc(50% - 3px + (var(--k) - 1.5) * 14px); width: 6px; height: 6px; border-radius: 99px; background: var(--accent); opacity: 0; animation: drop 2.8s linear infinite; animation-delay: calc(var(--k) * .7s); z-index: 0; }
+  @keyframes drop { 0% { opacity: 0; transform: translateY(0); } 15% { opacity: .9; } 85% { opacity: .9; } 100% { opacity: 0; transform: translateY(130px) translateX(calc((1.5 - var(--k)) * 14px)); } }
+
+  /* --- Email and webinars: sequence timeline --- */
+  .vis-seq { display: grid; grid-template-columns: repeat(4, 1fr); padding: 26px 10px 16px; }
+  .seq-line { position: absolute; left: 12.5%; right: 12.5%; top: 37px; height: 2px; background: var(--line); }
+  .seq-line i { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--accent); box-shadow: 0 0 10px rgb(255 90 1 / .8); animation: travel 4s var(--ease-out-soft) infinite; }
+  @keyframes travel { 0% { width: 0; opacity: 1; } 80% { width: 100%; opacity: 1; } 100% { width: 100%; opacity: 0; } }
+  .node { position: relative; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+  .node .dot { position: relative; width: 24px; height: 24px; border-radius: 999px; background: var(--surface); border: 2px solid var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--surface) 80%, transparent); }
+  .live { position: absolute; left: 50%; top: -22px; transform: translateX(-50%); padding: 2px 6px; border-radius: 99px; font-size: 9px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #fff; background: #E5372D; animation: pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 50% { box-shadow: 0 0 0 5px rgb(229 55 45 / .25); } }
+  .nl { font-size: 12px; font-weight: 600; color: var(--text); }
+
+  /* --- Sales: pipeline with a lead running through + booking toast --- */
+  .vis-pipe { padding: 54px 14px 18px; }
+  .pipe { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .stage { position: relative; z-index: 1; padding: 9px 4px; border-radius: 8px; text-align: center; font-size: 12px; font-weight: 600; color: var(--text); background: var(--surface); border: 1px solid var(--line); }
+  .stage:last-of-type { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); }
+  .runner { position: absolute; z-index: 2; top: -9px; left: 0; width: 8px; height: 8px; border-radius: 99px; background: #fff; box-shadow: 0 0 12px 2px rgb(255 140 60 / .9); animation: run 4s var(--ease-out-soft) infinite; }
+  @keyframes run { 0% { left: 6%; opacity: 0; } 10% { opacity: 1; } 85% { left: 90%; opacity: 1; } 100% { left: 90%; opacity: 0; } }
+  .toast {
+    position: absolute; right: 14px; top: 12px; display: flex; align-items: center; gap: 8px; padding: 6px 10px 6px 6px; border-radius: 99px;
+    font-size: 11px; font-weight: 600; color: var(--text); background: var(--surface); border: 1px solid var(--line);
+    animation: toast 4s ease-in-out infinite;
+  }
+  .tk { width: 18px; height: 18px; border-radius: 99px; display: grid; place-items: center; background: #34D399; }
+  .tk svg { width: 11px; height: 11px; fill: none; stroke: #0E0E10; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  @keyframes toast { 0%, 55% { opacity: 0; transform: translateY(-6px); } 65%, 92% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translateY(-6px); } }
+
+  /* --- Product and retention: value ladder fills step by step --- */
+  .t-product { display: grid; grid-template-columns: 1fr 1.1fr; gap: 24px; }
+  .t-product .txt { display: flex; flex-direction: column; gap: 20px; }
+  .vis-ladder { padding: 16px 18px 14px; display: flex; flex-direction: column; }
+  .vis-cap { font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .steps { flex: 1; min-height: 150px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; align-items: end; margin-top: 10px; }
+  .step { display: flex; flex-direction: column; justify-content: flex-end; height: 100%; gap: 8px; }
+  .col { display: block; height: 0; border-radius: 6px 6px 3px 3px; background: linear-gradient(180deg, var(--accent), color-mix(in srgb, var(--accent) 35%, var(--surface))); transition: height 1s var(--ease-out-soft) calc(.5s + var(--i) * 140ms); }
+  .bento.in .col { height: calc(24% + var(--i) * 17%); }
+  .sl { font-size: 11px; font-weight: 600; line-height: 1.25; text-align: center; color: var(--text-2); }
+
+  /* pause looping motion until the grid is on screen */
+  .ad, .drop, .seq-line i, .live, .runner, .toast { animation-play-state: paused; }
+  .bento.in :is(.ad, .drop, .seq-line i, .live, .runner, .toast) { animation-play-state: running; }
+
+  @media (max-width: 1023px) {
+    .bento { grid-template-columns: 1fr 1fr; }
+    .s1, .s2 { grid-column: span 1; }
+    .s3, .s4 { grid-column: span 2; }
+    .list.two { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 767px) {
+    .bento { grid-template-columns: 1fr; padding: 12px; gap: 12px; }
+    .s1, .s2, .s3, .s4 { grid-column: span 1; }
+    .t-ads, .t-product { grid-template-columns: 1fr; }
+    .ad { width: 104px; left: calc(50% - 52px + (var(--i) - 1) * 50px); }
+    .ad-media { height: 72px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(.reveal-ready) .tile { opacity: 1; translate: none; }
+    .ad, .drop, .seq-line i, .live, .runner, .toast { animation: none; }
+    .toast { opacity: 1; }
+    .seq-line i { width: 100%; }
+  }
+</style>
+
+<script>
+  // Tiles rise in one after another when the grid scrolls into view; visuals start then
+  const bento = document.querySelector<HTMLElement>("#what-we-do .bento")!;
+  new IntersectionObserver(([en], o) => { if (en.isIntersecting) { bento.classList.add("in"); o.disconnect(); } }, { threshold: 0.15 }).observe(bento);
+</script>
