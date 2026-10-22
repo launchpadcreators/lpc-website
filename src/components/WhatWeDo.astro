@@ -27,7 +27,7 @@ const ads = [
 ];
 const funnel = ["Landing page", "Lead magnet", "Registration"];
 const sequence = ["Email + SMS", "Webinar", "Masterclass", "Launch"];
-const pipeline = ["Offer", "Setter", "Closer", "Checkout"];
+const pipeline = ["Setter", "Closer", "Checkout"];
 const ladder = ["Community", "Product", "Customer success", "Retention", "Ascension"];
 const tick = "M3.5 8.5l3 3 6-7";
 ---
@@ -94,11 +94,23 @@ const tick = "M3.5 8.5l3 3 6-7";
       <!-- Sales -->
       <article class="tile s2 t-sales" style="--d:270ms">
         <div class="head"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={icons.sales} /></svg></span><h3 class="name">Sales</h3></div>
-        <div class="vis vis-pipe" aria-hidden="true">
-          <div class="toast"><span class="tk"><svg viewBox="0 0 16 16"><path d={tick} /></svg></span>Call booked</div>
-          <div class="pipe">
-            {pipeline.map((p, i) => <span class="stage" style={`--i:${i}`}>{p}</span>)}
-            <span class="runner"></span>
+        <!-- A lead moves through the sales team: the setter books the call, the closer gets the yes, checkout takes payment -->
+        <div class="vis vis-deal" aria-hidden="true">
+          <div class="cols">
+            {pipeline.map((p, i) => <div class={`dcol c${i + 1}`}><span class="col-h">{p}</span></div>)}
+          </div>
+          <div class="lane">
+            <div class="deal">
+              <span class="av"></span>
+              <div class="deal-txt">
+                <b>New lead</b>
+                <span class="st">
+                  <i class="s1">Call booked</i>
+                  <i class="s2">Offer accepted</i>
+                  <i class="s3"><svg viewBox="0 0 16 16"><path d={tick} /></svg>Paid</i>
+                </span>
+              </div>
+            </div>
           </div>
         </div>
         <ul class="list two">{groups.sales.map((v) => <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={tick} /></svg>{v}</li>)}</ul>
@@ -154,8 +166,8 @@ const tick = "M3.5 8.5l3 3 6-7";
   .name { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; color: var(--text); }
 
   /* Ticked service list */
-  .list { display: grid; gap: 9px; font-size: 14px; line-height: 1.35; color: var(--text-2); }
-  .list.two { grid-template-columns: 1fr 1fr; column-gap: 20px; }
+  /* Ticked lists flow into as many columns as fit, then wrap (2 on phones, more in wider tiles) */
+  .list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); gap: 9px 18px; font-size: 14px; line-height: 1.35; color: var(--text-2); }
   .list li { display: flex; gap: 9px; align-items: flex-start; }
   .list svg { width: 15px; height: 15px; flex-shrink: 0; margin-top: 1px; fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
@@ -221,21 +233,41 @@ const tick = "M3.5 8.5l3 3 6-7";
   @keyframes pulse { 50% { box-shadow: 0 0 0 5px rgb(229 55 45 / .25); } }
   .nl { font-size: 12px; font-weight: 600; color: var(--text); }
 
-  /* --- Sales: pipeline with a lead running through + booking toast --- */
-  .vis-pipe { padding: 54px 14px 18px; }
-  .pipe { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-  .stage { position: relative; z-index: 1; padding: 9px 4px; border-radius: 8px; text-align: center; font-size: 12px; font-weight: 600; color: var(--text); background: var(--surface); border: 1px solid var(--line); }
-  .stage:last-of-type { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); }
-  .runner { position: absolute; z-index: 2; top: -9px; left: 0; width: 8px; height: 8px; border-radius: 99px; background: #fff; box-shadow: 0 0 12px 2px rgb(255 140 60 / .9); animation: run 4s var(--ease-out-soft) infinite; }
-  @keyframes run { 0% { left: 6%; opacity: 0; } 10% { opacity: 1; } 85% { left: 90%; opacity: 1; } 100% { left: 90%; opacity: 0; } }
-  .toast {
-    position: absolute; right: 14px; top: 12px; display: flex; align-items: center; gap: 8px; padding: 6px 10px 6px 6px; border-radius: 99px;
-    font-size: 11px; font-weight: 600; color: var(--text); background: var(--surface); border: 1px solid var(--line);
-    animation: toast 4s ease-in-out infinite;
+  /* --- Sales: a lead card moves Setter → Closer → Checkout, its status updating at each step (one 7.5s loop) --- */
+  .vis-deal { position: relative; padding: 14px 12px 14px; }
+  .cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .dcol { height: 118px; border-radius: 9px; border: 1px dashed var(--line); padding: 9px 10px; }
+  .col-h { font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .c1 .col-h { animation: hl1 7.5s linear infinite; } .c2 .col-h { animation: hl2 7.5s linear infinite; } .c3 .col-h { animation: hl3 7.5s linear infinite; }
+  @keyframes hl1 { 0%, 31% { color: var(--accent); } 34%, 100% { color: var(--muted); } }
+  @keyframes hl2 { 0%, 31% { color: var(--muted); } 34%, 64% { color: var(--accent); } 67%, 100% { color: var(--muted); } }
+  @keyframes hl3 { 0%, 64% { color: var(--muted); } 67%, 100% { color: #34D399; } }
+  /* the card rides in a lane laid over the three columns */
+  .lane { position: absolute; left: 12px; right: 12px; top: 46px; height: 64px; }
+  .deal {
+    position: absolute; top: 0; left: 0; width: calc((100% - 16px) / 3); padding: 0 8px;
+    animation: deal 7.5s cubic-bezier(.65, 0, .35, 1) infinite;
   }
-  .tk { width: 18px; height: 18px; border-radius: 99px; display: grid; place-items: center; background: #34D399; }
-  .tk svg { width: 11px; height: 11px; fill: none; stroke: #0E0E10; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
-  @keyframes toast { 0%, 55% { opacity: 0; transform: translateY(-6px); } 65%, 92% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translateY(-6px); } }
+  .deal > * { position: relative; }
+  .deal::before { content: ""; position: absolute; inset: 0 2px; border-radius: 9px; background: var(--surface); border: 1px solid var(--line); box-shadow: 0 10px 24px -12px rgb(0 0 0 / .8); }
+  .deal { display: flex; align-items: center; gap: 9px; height: 58px; }
+  .av { width: 26px; height: 26px; flex-shrink: 0; margin-left: 4px; border-radius: 99px; background: linear-gradient(135deg, #FFB070, var(--accent)); }
+  .deal-txt { display: grid; gap: 3px; min-width: 0; }
+  .deal-txt b { font-size: 12px; font-weight: 600; color: var(--text); }
+  .st { position: relative; height: 15px; }
+  .st i { position: absolute; left: 0; top: 0; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; font-style: normal; font-size: 11px; font-weight: 600; opacity: 0; }
+  .st .s1 { color: var(--accent); animation: st1 7.5s linear infinite; }
+  .st .s2 { color: var(--accent); animation: st2 7.5s linear infinite; }
+  .st .s3 { color: #34D399; animation: st3 7.5s linear infinite; }
+  .s3 svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  @keyframes deal {
+    0% { left: 0; opacity: 0; transform: translateY(6px); } 5% { opacity: 1; transform: none; }
+    27% { left: 0; } 35% { left: calc((100% + 8px) / 3); } 60% { left: calc((100% + 8px) / 3); }
+    68% { left: calc((100% + 8px) * 2 / 3); } 93% { left: calc((100% + 8px) * 2 / 3); opacity: 1; } 100% { left: calc((100% + 8px) * 2 / 3); opacity: 0; }
+  }
+  @keyframes st1 { 0%, 30% { opacity: 1; } 33%, 100% { opacity: 0; } }
+  @keyframes st2 { 0%, 31% { opacity: 0; } 34%, 63% { opacity: 1; } 66%, 100% { opacity: 0; } }
+  @keyframes st3 { 0%, 64% { opacity: 0; } 67%, 100% { opacity: 1; } }
 
   /* --- Product and retention: value ladder fills step by step --- */
   .t-product { display: grid; grid-template-columns: 1fr 1.1fr; gap: 24px; }
@@ -249,26 +281,32 @@ const tick = "M3.5 8.5l3 3 6-7";
   .sl { font-size: 11px; font-weight: 600; line-height: 1.25; text-align: center; color: var(--text-2); }
 
   /* pause looping motion until the grid is on screen */
-  .ad, .drop, .seq-line i, .live, .runner, .toast { animation-play-state: paused; }
-  .bento.in :is(.ad, .drop, .seq-line i, .live, .runner, .toast) { animation-play-state: running; }
+  /* (Sales parts share one clock: they all start together when the grid comes into view) */
+  .bento :is(.ad, .drop, .seq-line i, .live, .deal, .col-h, .st i) { animation-play-state: paused; }
+  .bento.in :is(.ad, .drop, .seq-line i, .live, .deal, .col-h, .st i) { animation-play-state: running; }
 
   @media (max-width: 1023px) {
     .bento { grid-template-columns: 1fr 1fr; }
     .s1, .s2 { grid-column: span 1; }
     .s3, .s4 { grid-column: span 2; }
-    .list.two { grid-template-columns: 1fr; }
   }
   @media (max-width: 767px) {
     .bento { grid-template-columns: 1fr; padding: 12px; gap: 12px; }
     .s1, .s2, .s3, .s4 { grid-column: span 1; }
     .t-ads, .t-product { grid-template-columns: 1fr; }
+    /* two columns of services on phones */
+    .tile { padding: 20px 18px; }
+    .list { grid-template-columns: repeat(auto-fill, minmax(min(100%, 112px), 1fr)); gap: 9px 12px; font-size: 13px; }
+    .list li { gap: 7px; }
+    .list svg { width: 13px; height: 13px; }
     .ad { width: 104px; left: calc(50% - 52px + (var(--i) - 1) * 50px); }
     .ad-media { height: 72px; }
   }
   @media (prefers-reduced-motion: reduce) {
     :global(.reveal-ready) .tile { opacity: 1; translate: none; }
-    .ad, .drop, .seq-line i, .live, .runner, .toast { animation: none; }
-    .toast { opacity: 1; }
+    .ad, .drop, .seq-line i, .live, .deal, .col-h, .st i { animation: none !important; }
+    .deal { left: calc((100% + 8px) * 2 / 3); }
+    .s3 { opacity: 1; }
     .seq-line i { width: 100%; }
   }
 </style>

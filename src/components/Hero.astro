@@ -2,13 +2,12 @@
 // Hero: centred headline with one serif accent word, sub-copy, two CTAs, partner photos below.
 const applyUrl = "https://form.typeform.com/to/yWBgS4vK";
 import { url } from "../config/paths";
-// Stock placeholder portraits — swap for real, approved partner headshots in public/partners/
+// Partner faces: square 160px crops of the Partners card photos (public/partners/avatars/)
 const partners = [
-  { src: "/partners/stock-1.jpg", alt: "Partner" },
-  { src: "/partners/stock-2.jpg", alt: "Partner" },
-  { src: "/partners/stock-3.jpg", alt: "Partner" },
-  { src: "/partners/stock-4.jpg", alt: "Partner" },
-  { src: "/partners/stock-5.jpg", alt: "Partner" },
+  { src: "/partners/avatars/nicolas-boucher.jpg", alt: "Nicolas Boucher" },
+  { src: "/partners/avatars/joseph-mcclendon.jpg", alt: "Joseph McClendon III" },
+  { src: "/partners/avatars/chris-donnelly.jpg", alt: "Chris Donnelly" },
+  { src: "/partners/avatars/jo-bird.jpg", alt: "Jo Bird" },
 ];
 ---
 <section id="top" class="hero relative flex min-h-svh items-center justify-center overflow-hidden px-5 pt-[104px] pb-[72px]">
@@ -88,7 +87,7 @@ const partners = [
     transition: transform .2s var(--ease-out-soft), filter .2s, background-color .2s, border-color .2s;
   }
   .hbtn:hover { transform: translateY(-1px); }
-  .hbtn-primary { background: var(--accent); color: var(--accent-ink); }
+  .hbtn-primary { background: var(--accent-grad); color: var(--accent-ink); }
   .hbtn-primary:hover { filter: brightness(1.08); }
   .hbtn-ghost { background: color-mix(in srgb, var(--surface) 80%, transparent); color: var(--text); border: 1px solid var(--line); }
   .hbtn-ghost:hover { border-color: color-mix(in srgb, var(--text) 25%, transparent); }

@@ -14,8 +14,7 @@ const nav = [
   <div class="mx-auto w-full max-w-[1080px] px-6">
     <div class="top">
       <a href="#top" class="brand" aria-label="Launchpad Creators, back to top">
-        <img src={url("logo.svg")} alt="" width="28" height="24" />
-        <span>Launchpad Creators</span>
+        <img src={url("logo-full.png")} alt="Launchpad Creators" width="907" height="190" />
       </a>
       <nav class="links" aria-label="Footer">
         {nav.map((n) => <a href={n.href}>{n.label}</a>)}
@@ -37,7 +36,8 @@ const nav = [
 <style>
   .ft { padding: 48px 0 40px; border-top: 1px solid var(--line); background: color-mix(in srgb, var(--surface) 40%, var(--bg)); }
   .top { display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
-  .brand { display: inline-flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 700; letter-spacing: -0.02em; color: var(--text); }
+  .brand { display: inline-flex; align-items: center; }
+  .brand img { display: block; height: 34px; width: auto; }
   .links { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; font-size: 14px; color: var(--text-2); }
   .links a { transition: color .2s; }
   .links a:hover { color: var(--text); }

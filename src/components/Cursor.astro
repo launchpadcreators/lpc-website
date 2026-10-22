@@ -63,9 +63,9 @@
       if (!el.classList.contains("on")) el.classList.add("on");
       // hover / text states: only from real mouse movement (not when the page scrolls under a still cursor,
       // which made the hover size flicker), and only when the element under the mouse changes
-      if (e.target !== lastTarget) {
+      if (e.target !== lastTarget && e.target instanceof Element) {
         lastTarget = e.target;
-        const t = e.target as Element;
+        const t = e.target;
         el.classList.toggle("hover", !!t.closest("a, button, [role='tab'], label, summary, select"));
         el.classList.toggle("text", !!t.closest("input:not([type='submit']):not([type='button']), textarea"));
       }

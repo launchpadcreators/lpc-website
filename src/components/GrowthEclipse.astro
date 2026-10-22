@@ -57,27 +57,19 @@ const pad = (n: number) => String(n).padStart(2, "0");
 
   .ge-stage { position: relative; flex: 1; }
 
-  /* The planet: a huge circle whose top cap shows; --r (radius) is read by the badge maths */
+  /* The planet: a huge circle whose top cap shows; --r (radius) is read by the badge maths.
+     Wider than the screen (140vw) so the rim curves out through the left and right edges, not the bottom. */
   .eclipse {
-    --w: min(1560px, 118vw);
+    --w: 140vw;
     position: absolute; left: 50%; top: clamp(70px, 11vh, 110px);
     width: var(--w); height: var(--w); margin-left: calc(var(--w) / -2);
     will-change: transform;
   }
-  /* The mask lives on an oversized wrapper so it doesn't clip the rim's outer glow:
-     rim fades out towards the screen edges and the disc fades into the page at the bottom */
-  .disc-mask {
-    position: absolute; inset: -160px;
-    -webkit-mask-image: linear-gradient(90deg, transparent 4%, #000 28%, #000 72%, transparent 96%), linear-gradient(#000 38%, transparent 60%);
-    -webkit-mask-composite: source-in;
-            mask-image: linear-gradient(90deg, transparent 4%, #000 28%, #000 72%, transparent 96%), linear-gradient(#000 38%, transparent 60%);
-            mask-composite: intersect;
-  }
+  /* Just the glowing rim — no dark fill — and it runs out at the screen edges (the pin clips it) */
+  .disc-mask { position: absolute; inset: -160px; }
   .disc {
     position: absolute; inset: 160px; border-radius: 50%;
-    background:
-      radial-gradient(60% 18% at 50% 0%, rgb(255 90 1 / .16), transparent 70%),
-      color-mix(in srgb, #000 45%, var(--bg));
+    background: radial-gradient(60% 18% at 50% 0%, rgb(255 90 1 / .16), transparent 70%);
     border: 1px solid rgb(255 186 140 / .9);
     box-shadow:
       0 0 0 1px rgb(255 90 1 / .35),
