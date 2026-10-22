@@ -206,7 +206,7 @@ const tick = "M3.5 8.5l3 3 6-7";
     position: absolute; left: 16px; right: 16px; bottom: 16px; z-index: 3; padding: 12px 14px; border-radius: 10px;
     background: color-mix(in srgb, var(--surface) 85%, transparent); border: 1px solid var(--line); backdrop-filter: blur(8px);
   }
-  @media (hover: none) and (pointer: coarse) { .ab { background: color-mix(in srgb, var(--surface) 95%, transparent); backdrop-filter: none; } }
+  @media (hover: none) and (pointer: coarse) and (max-width: 1023px) { .ab { background: color-mix(in srgb, var(--surface) 95%, transparent); backdrop-filter: none; } }
   .ab-title { font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
   .ab-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; font-size: 11px; font-weight: 700; color: var(--text-2); }
   .ab-row i { flex: 1; height: 7px; border-radius: 99px; background: var(--raised); position: relative; overflow: hidden; }

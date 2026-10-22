@@ -205,7 +205,7 @@ const blockers = [
     background: color-mix(in srgb, var(--surface) 75%, transparent); backdrop-filter: blur(6px);
     transition: opacity .6s var(--ease-out-soft), transform .6s var(--ease-out-soft);
   }
-  @media (hover: none) and (pointer: coarse) { .blocker { background: color-mix(in srgb, var(--surface) 92%, transparent); backdrop-filter: none; } }
+  @media (hover: none) and (pointer: coarse) and (max-width: 1023px) { .blocker { background: color-mix(in srgb, var(--surface) 92%, transparent); backdrop-filter: none; } }
   .blocker.on { opacity: 1; transform: translate(-50%, 0) scale(1); }
   .blocker.gone { opacity: 0; transform: translate(-50%, -8px) scale(.96); }
 
