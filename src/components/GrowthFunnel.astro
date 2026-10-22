@@ -4,7 +4,7 @@
 // Desktop: the section pins. First the funnel builds itself: bands drop in from above and stack from the bottom up
 // (Deliver and scale lands first, Attract last). Then it walks the levels top to bottom: the active band turns
 // orange and opens, a progress bar fills on the left, and leads flow down through the funnel.
-// Phones: no pin; the funnel stacks in as it scrolls into view and you tap a band to open it (one at a time).
+// Phones: no pin; the funnel stacks in as it scrolls into view, then its bands open one after another as you scroll.
 import { applyUrl, stages } from "../data/growth-stages";
 const pad = (n: number) => String(n).padStart(2, "0");
 ---
@@ -199,7 +199,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
     b.setAttribute("aria-expanded", String(i === active));
   });
 
-  // Phones: tap a band to open it (tap the open one to close it); the first is open to start
+  // Phones: scrolling opens the bands in turn (mobileWalk below); a tap opens one straight away; the first is open to start
   bands.forEach((b, i) => b.addEventListener("click", () => {
     if (mobile.matches) setActive(b.classList.contains("on") ? -1 : i);
   }));
@@ -209,8 +209,20 @@ const pad = (n: number) => String(n).padStart(2, "0");
   };
   mobile.addEventListener("change", onMode);
 
+  // Phones: the bands open one after another as the funnel moves up the screen (its top edge travelling from
+  // 72% to 12% of the screen height walks 01 → 05). The funnel's top doesn't move when a band opens, so the
+  // hand-over between bands never jitters. A tap still opens a band straight away.
+  let mobileActive = 0;
+  const mobileWalk = () => {
+    const top = funnel.getBoundingClientRect().top;
+    const start = innerHeight * 0.72, end = innerHeight * 0.12;
+    const p = clamp((start - top) / (start - end));
+    const a = Math.min(n - 1, Math.floor(p * n));
+    if (a !== mobileActive) { mobileActive = a; setActive(a); }
+  };
+
   function render() {
-    if (mobile.matches) return;
+    if (mobile.matches) { mobileWalk(); return; }
     const r = sec.getBoundingClientRect();
     const p = clamp(-r.top / (sec.offsetHeight - innerHeight));
 
