@@ -80,7 +80,14 @@ const models = [
   }
   .card::after { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: var(--noise); background-size: 180px; opacity: .1; mix-blend-mode: overlay; }
   /* Growth Partner leads: warm glow from the top corner */
-  .c-growth { background: radial-gradient(90% 60% at 100% 0%, rgb(255 61 0 / .18), transparent 60%), var(--surface); border-color: color-mix(in srgb, var(--accent) 35%, var(--line)); }
+  /* Tom's review: this card looked flat like the Work with us card did, so it gets a warm gradient too */
+  .c-growth {
+    background:
+      radial-gradient(90% 55% at 100% 0%, rgb(255 61 0 / .32), transparent 62%),
+      linear-gradient(165deg, rgb(255 61 0 / .16) 0%, rgb(255 61 0 / .04) 45%, transparent 75%),
+      var(--surface);
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+  }
   .card:hover { transform: translateY(-3px); }
   .card.lit { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), 0 24px 60px -24px rgb(255 61 0 / .6); }
 
