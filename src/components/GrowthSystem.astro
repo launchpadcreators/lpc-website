@@ -2,7 +2,7 @@
 // Launchpad Growth System (Atlas-style): the section pins, and the five stage cards slide in one at a time
 // and land side by side in one row. The card that just landed turns orange and hands it on.
 // Mobile: cards stack vertically with an orange progress line.
-import { applyUrl, stages } from "../data/growth-stages";
+import { stages } from "../data/growth-stages";
 ---
 <section id="growth-system" class="gs relative" aria-label="The Launchpad Growth System">
   <div class="gs-pin">
@@ -27,10 +27,6 @@ import { applyUrl, stages } from "../data/growth-stages";
           </li>
         ))}
       </ol>
-
-      <div class="gs-cta">
-        <a href={applyUrl} target="_blank" rel="noopener" class="cta">See if you're a fit <span aria-hidden="true">→</span></a>
-      </div>
     </div>
   </div>
 </section>
@@ -71,14 +67,6 @@ import { applyUrl, stages } from "../data/growth-stages";
   .card.on .name, .card.on .line { color: var(--accent-ink); }
   .card.on .num { color: rgb(255 255 255 / .75); }
 
-  .gs-cta { display: flex; justify-content: center; margin-top: clamp(16px, 3vh, 36px); opacity: 0; transform: translateY(10px); transition: opacity .5s var(--ease-out-soft), transform .5s var(--ease-out-soft); }
-  .gs-cta.show { opacity: 1; transform: none; }
-  .cta {
-    display: inline-flex; align-items: center; gap: 8px; height: 52px; padding: 0 26px; border-radius: 12px;
-    background: var(--accent-grad); color: var(--accent-ink); font-size: 16px; font-weight: 600;
-    transition: transform .2s var(--ease-out-soft), filter .2s;
-  }
-  .cta:hover { transform: translateY(-1px); filter: brightness(1.08); }
 
   /* Mobile / tablet portrait: no pin, vertical stack with an orange progress line down the side */
   @media (max-width: 899px) {
@@ -92,14 +80,12 @@ import { applyUrl, stages } from "../data/growth-stages";
     .cards::before { background: var(--line); }
     .cards::after { background: var(--accent); transform-origin: top; transform: scaleY(var(--fill, 0)); }
     .card { min-height: 0; }
-    .gs-cta { opacity: 1; transform: none; justify-content: flex-start; }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .gs { height: auto; }
     .gs-pin { position: relative; height: auto; padding: 80px 0; }
     .card { transform: none !important; opacity: 1 !important; }
-    .gs-cta { opacity: 1; transform: none; }
   }
 </style>
 
@@ -110,7 +96,6 @@ import { applyUrl, stages } from "../data/growth-stages";
   const mobile = matchMedia("(max-width: 899px)");
   const list = sec.querySelector<HTMLElement>(".cards")!;
   const cards = [...sec.querySelectorAll<HTMLElement>(".card")];
-  const cta = sec.querySelector<HTMLElement>(".gs-cta")!;
   const clamp = (v: number) => Math.max(0, Math.min(1, v));
   const seg = (p: number, a: number, b: number) => clamp((p - a) / (b - a));
   const ease = (t: number) => 1 - Math.pow(1 - t, 3);
@@ -129,7 +114,6 @@ import { applyUrl, stages } from "../data/growth-stages";
       if (e > 0.6) active = i;
     });
     cards.forEach((c, i) => c.classList.toggle("on", i === active));
-    cta.classList.toggle("show", p > 0.84);
   }
 
   function stacked() {

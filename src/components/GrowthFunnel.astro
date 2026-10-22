@@ -5,7 +5,7 @@
 // (Deliver and scale lands first, Attract last). Then it walks the levels top to bottom: the active band turns
 // orange and opens, a progress bar fills on the left, and leads flow down through the funnel.
 // Phones: no pin; the funnel stacks in as it scrolls into view, then its bands open one after another as you scroll.
-import { applyUrl, stages } from "../data/growth-stages";
+import { stages } from "../data/growth-stages";
 const pad = (n: number) => String(n).padStart(2, "0");
 ---
 <section id="growth-funnel" class="gf relative" aria-label="The Launchpad Growth System (funnel)">
@@ -21,7 +21,6 @@ const pad = (n: number) => String(n).padStart(2, "0");
           <div class="segs">{stages.map(() => <span class="seg"><i></i></span>)}</div>
           <span class="count"><b class="cur">01</b> / {pad(stages.length)}</span>
         </div>
-        <a href={applyUrl} target="_blank" rel="noopener" class="cta">See if you're a fit <span aria-hidden="true">→</span></a>
       </div>
 
       <div class="gf-visual">
@@ -60,14 +59,6 @@ const pad = (n: number) => String(n).padStart(2, "0");
   .seg i { display: block; height: 100%; background: var(--accent); transform-origin: left; transform: scaleX(var(--f, 0)); box-shadow: 0 0 10px rgb(255 61 0 / .6); }
   .count { font-size: 13px; font-variant-numeric: tabular-nums; color: var(--muted); }
   .count b { color: var(--text); font-weight: 600; }
-
-  .cta {
-    display: inline-flex; align-items: center; gap: 8px; margin-top: clamp(22px, 3.5vh, 34px); height: 50px; padding: 0 24px; border-radius: 12px;
-    background: var(--accent-grad); color: var(--accent-ink); font-size: 15px; font-weight: 600;
-    opacity: 0; transform: translateY(8px); transition: opacity .5s, transform .5s var(--ease-out-soft), filter .2s;
-  }
-  .cta.show { opacity: 1; transform: none; }
-  .cta:hover { filter: brightness(1.08); }
 
   /* The funnel. --taper = how far in (% of the width) the bottom edge sits; the script turns it into each band's
      shape from the bands' real positions, so the sides stay one straight line as bands open and close. */
@@ -123,7 +114,6 @@ const pad = (n: number) => String(n).padStart(2, "0");
     /* text block melts into the grid so the button can sit after the funnel */
     .gf-text { display: contents; }
     .gf-visual { order: 1; }
-    .cta { opacity: 1; transform: none; order: 2; justify-self: start; margin-top: 0; }
     .funnel { --taper: 24; gap: 6px; }
     .band { cursor: pointer; -webkit-tap-highlight-color: transparent; }
     .b-in { min-height: 54px; padding: 8px calc(var(--bp, 0px) + 10px); }
@@ -138,7 +128,6 @@ const pad = (n: number) => String(n).padStart(2, "0");
   @media (prefers-reduced-motion: reduce) {
     .gf { height: auto; } .gf-pin { position: relative; height: auto; padding: 96px 0; }
     .band { transform: none !important; opacity: 1 !important; }
-    .cta { opacity: 1; transform: none; }
     .flow { display: none; }
   }
 </style>
@@ -152,7 +141,6 @@ const pad = (n: number) => String(n).padStart(2, "0");
   const bands = [...sec.querySelectorAll<HTMLElement>(".band")];
   const fills = [...sec.querySelectorAll<HTMLElement>(".seg i")];
   const cur = sec.querySelector<HTMLElement>(".cur")!;
-  const cta = sec.querySelector<HTMLElement>(".cta")!;
   const n = bands.length;
   const clamp = (v: number) => Math.max(0, Math.min(1, v));
   const seg = (p: number, a: number, b: number) => clamp((p - a) / (b - a));
@@ -244,7 +232,6 @@ const pad = (n: number) => String(n).padStart(2, "0");
     setActive(active);
     fills.forEach((f, i) => f.style.setProperty("--f", String(clamp(w * n - i))));
     cur.textContent = String(Math.max(active, 0) + 1).padStart(2, "0");
-    cta.classList.toggle("show", p > 0.9);
   }
 
   if (mobile.matches) setActive(0);
