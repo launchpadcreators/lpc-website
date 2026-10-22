@@ -53,15 +53,16 @@ const pad = (n: number) => String(n).padStart(2, "0");
 <style>
   .ge { height: 440vh; }
   .ge-pin { position: sticky; top: 0; height: 100svh; display: flex; flex-direction: column; overflow: hidden; }
-  .ge-head { padding-top: clamp(100px, 15vh, 160px); }
+  /* clear room under the fixed navbar (~80px tall) so the headline never touches it */
+  .ge-head { padding-top: clamp(124px, 17vh, 176px); }
 
   .ge-stage { position: relative; flex: 1; }
 
   /* The planet: a huge circle whose top cap shows; --r (radius) is read by the badge maths.
-     Wider than the screen (140vw) so the rim curves out through the left and right edges, not the bottom. */
+     Much wider than the screen (190vw) for a flatter horizon that curves out through the left and right edges. */
   .eclipse {
-    --w: 140vw;
-    position: absolute; left: 50%; top: clamp(70px, 11vh, 110px);
+    --w: 190vw;
+    position: absolute; left: 50%; top: clamp(64px, 9vh, 96px);
     width: var(--w); height: var(--w); margin-left: calc(var(--w) / -2);
     will-change: transform;
   }
