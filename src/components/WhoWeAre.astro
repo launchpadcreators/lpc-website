@@ -93,13 +93,13 @@ const specialisms = ["Paid media", "Creative", "Content", "Funnels and AI", "Sal
   :global(.reveal-ready) .grid3.in .card { opacity: 1; translate: 0 0; }
   .card:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
   .card::after { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: var(--noise); background-size: 180px; opacity: .1; mix-blend-mode: overlay; }
-  .team { background: radial-gradient(90% 70% at 0% 100%, rgb(255 61 0 / .2), transparent 65%), var(--surface); flex-direction: row; align-items: flex-start; gap: 28px; }
+  .team { background: radial-gradient(90% 70% at 0% 100%, rgb(var(--accent-rgb) / .2), transparent 65%), var(--surface); flex-direction: row; align-items: flex-start; gap: 28px; }
   .team-num { flex-shrink: 0; }
   .team-txt .desc { margin-top: 0; }
   .team .spec { padding-top: 16px; }
 
   /* Our story: text card with a warm glow from the top corner; the closing line sits at the bottom */
-  .story { padding: clamp(28px, 3vw, 36px); background: radial-gradient(90% 60% at 0% 0%, rgb(255 61 0 / .16), transparent 62%), var(--surface); }
+  .story { padding: clamp(28px, 3vw, 36px); background: radial-gradient(90% 60% at 0% 0%, rgb(var(--accent-rgb) / .16), transparent 62%), var(--surface); }
   .story-txt { margin-top: 18px; display: grid; gap: 14px; font-size: clamp(15px, 1.25vw, 17px); line-height: 1.65; color: var(--text-2); }
   .story-end { margin-top: auto; padding-top: 24px; font-size: clamp(19px, 1.7vw, 23px); font-weight: 600; letter-spacing: -0.02em; line-height: 1.3; color: var(--text); }
 

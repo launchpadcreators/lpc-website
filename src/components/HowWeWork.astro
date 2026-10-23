@@ -78,17 +78,17 @@ const models = [
      Growth Partner, they should look the same) */
   .c-growth, .c-consult {
     background:
-      radial-gradient(90% 55% at 100% 0%, rgb(255 61 0 / .32), transparent 62%),
-      linear-gradient(165deg, rgb(255 61 0 / .16) 0%, rgb(255 61 0 / .04) 45%, transparent 75%),
+      radial-gradient(90% 55% at 100% 0%, rgb(var(--accent-rgb) / .32), transparent 62%),
+      linear-gradient(165deg, rgb(var(--accent-rgb) / .16) 0%, rgb(var(--accent-rgb) / .04) 45%, transparent 75%),
       var(--surface);
     border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
   }
   .card:hover { transform: translateY(-3px); }
-  .card.lit { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), 0 24px 60px -24px rgb(255 61 0 / .6); }
+  .card.lit { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), 0 24px 60px -24px rgb(var(--accent-rgb) / .6); }
 
   .card-head { display: flex; align-items: center; gap: 14px; }
   .badge { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 11px; font-size: 13px; font-weight: 700; color: var(--accent); background: var(--raised); border: 1px solid var(--line); }
-  .c-growth .badge, .c-consult .badge { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); }
+  .c-growth .badge, .c-consult .badge { color: var(--accent-ink); background: var(--accent-fill); border-color: var(--accent-fill); }
   .name { font-size: clamp(24px, 2.3vw, 30px); font-weight: 600; letter-spacing: -0.03em; color: var(--text); }
 
   .rows { grid-row: span 5; margin-top: 26px; display: grid; grid-template-rows: subgrid; }

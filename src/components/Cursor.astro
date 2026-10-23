@@ -1,6 +1,6 @@
 ---
-// Custom cursor: the Launchpad logo mark (inline SVG), upright. Its tip is the hotspot and it sits exactly on the
-// mouse, like the normal cursor (no trailing, no turning). Grows slightly over links and buttons, shrinks a touch
+// Custom cursor: the Launchpad logo mark (inline SVG), tilted to the left like the Windows arrow. Its tip is the
+// hotspot and it sits exactly on the mouse, like the normal cursor (no trailing, no turning). Grows slightly over links and buttons, shrinks a touch
 // on press; hands back to the native text cursor over text fields. Mouse/trackpad only.
 ---
 <div id="cursor" aria-hidden="true">
@@ -11,6 +11,7 @@
   #cursor {
     position: fixed; left: 0; top: 0; z-index: 9999; width: 22px; height: 19px; pointer-events: none;
     opacity: 0; transition: opacity .25s; will-change: translate; contain: layout style;
+    rotate: -22deg; /* fixed tilt like the Windows arrow; turns around the tip (transform-origin set in the script) */
   }
   /* no stroke (it rendered jaggy at this size): a soft shadow keeps it readable on light areas */
   #cursor svg {

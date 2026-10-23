@@ -1,6 +1,6 @@
 ---
 import "../styles/global.css";
-import { THEME, THEMES } from "../config/theme";
+import { THEME, THEMES, ACCENT, ACCENTS } from "../config/theme";
 import Cursor from "../components/Cursor.astro";
 import { url } from "../config/paths";
 
@@ -14,14 +14,15 @@ const { title, description, noindex = false } = Astro.props;
 const hidden = noindex || import.meta.env.PUBLIC_NOINDEX === "true";
 ---
 <!doctype html>
-<html lang="en-GB" data-theme={THEME}>
+<html lang="en-GB" data-theme={THEME} data-accent={ACCENT}>
   <head>
     <meta charset="utf-8" />
     {import.meta.env.DEV && (
-      // Dev-only preview: add ?theme=blue to the URL. Not included in the production build.
-      <script is:inline define:vars={{ themes: THEMES }}>
-        const t = new URLSearchParams(location.search).get("theme");
+      // Dev-only preview: add ?theme=blue or ?accent=orange to the URL. Not included in the production build.
+      <script is:inline define:vars={{ themes: THEMES, accents: ACCENTS }}>
+        const q = new URLSearchParams(location.search), t = q.get("theme"), a = q.get("accent");
         if (t && themes.includes(t)) document.documentElement.dataset.theme = t;
+        if (a && accents.includes(a)) document.documentElement.dataset.accent = a;
       </script>
     )}
     <meta name="viewport" content="width=device-width, initial-scale=1" />

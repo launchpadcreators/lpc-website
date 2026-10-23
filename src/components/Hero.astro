@@ -64,16 +64,16 @@ const strip = [
   .hero.inview .g { animation-play-state: running; }
   /* heavy grain over the glow for a textured, premium look */
   .glow-box::after { content: ""; position: absolute; inset: 0; background-image: var(--noise); background-size: 180px; opacity: .55; mix-blend-mode: overlay; }
-  /* Outer: big multi-tone conic in LPC oranges, heavy blur */
+  /* Outer: big multi-tone conic in the accent colour (themes.css), heavy blur */
   .g-outer {
     width: 760px; height: 560px; margin: -280px 0 0 -380px; filter: blur(110px);
-    background: conic-gradient(#FF3D00 0deg, #FF2A10 55deg, #FF9A6A 107deg, #FF6A2E 162deg, #8A1E00 252deg, #FF5A1A 306deg, #FF3D00 360deg);
+    background: var(--hero-glow-outer);
     animation: spin 18s linear infinite;
   }
-  /* Inner: warm hot core */
+  /* Inner: hot core */
   .g-inner {
     width: 440px; height: 340px; margin: -170px 0 0 -220px; filter: blur(70px);
-    background: conic-gradient(#FFE2C2 0deg, #FF3D00 180deg, #FF9A6A 360deg);
+    background: var(--hero-glow-inner);
     animation: spin 12s linear infinite reverse;
   }
   .g-blend { mix-blend-mode: overlay; animation-duration: 9s; animation-direction: normal; }

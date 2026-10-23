@@ -143,12 +143,12 @@ const blockers = [
   .gc.broken svg .ceil-r { transform: translate(14px, 3px); }
 
   /* Cracks: each push snaps one more group of fracture lines out from the impact point */
-  svg .crack { fill: none; stroke: rgb(255 236 220 / .85); stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1 2; stroke-dashoffset: 1; transition: stroke-dashoffset .35s var(--ease-out-soft), opacity .6s; }
+  svg .crack { fill: none; stroke: rgb(var(--accent-pale-rgb) / .85); stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1 2; stroke-dashoffset: 1; transition: stroke-dashoffset .35s var(--ease-out-soft), opacity .6s; }
   svg .cracks.on .crack { stroke-dashoffset: 0; }
   .gc.broken svg .crack { opacity: .25; }
 
   /* Shards: invisible glass until it breaks, then they fly out and fade */
-  svg .shard { fill: rgb(255 240 228 / .9); stroke: rgb(255 115 55 / .6); stroke-width: .6; opacity: 0; transform-box: fill-box; transform-origin: center; }
+  svg .shard { fill: rgb(var(--accent-pale-rgb) / .9); stroke: rgb(var(--accent-soft-rgb) / .6); stroke-width: .6; opacity: 0; transform-box: fill-box; transform-origin: center; }
   .gc.broken svg .shard { animation: shard 1.1s cubic-bezier(.2, .7, .3, 1) forwards; }
   @keyframes shard {
     0% { opacity: 1; transform: none; }
@@ -158,7 +158,7 @@ const blockers = [
   /* Pressure: an orange glow building at the impact point while you push */
   .pressure {
     position: absolute; width: 220px; height: 120px; margin: -60px 0 0 -110px; border-radius: 50%; pointer-events: none;
-    background: radial-gradient(closest-side, rgb(255 170 100 / .7), rgb(255 61 0 / .35) 45%, transparent);
+    background: radial-gradient(closest-side, rgb(var(--accent-soft-rgb) / .7), rgb(var(--accent-rgb) / .35) 45%, transparent);
     filter: blur(10px); opacity: 0; transform: scale(.5);
   }
   .gc.broken .pressure { transition: opacity .8s, transform .8s var(--ease-out-soft); opacity: 0 !important; transform: scale(1.8) !important; }

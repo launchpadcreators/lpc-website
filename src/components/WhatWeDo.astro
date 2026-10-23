@@ -164,7 +164,7 @@ const tick = "M3.5 8.5l3 3 6-7";
     color: var(--accent); background: var(--raised); border: 1px solid var(--line); transition: background-color .3s, color .3s, border-color .3s;
   }
   .icon svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
-  .tile:hover .icon { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .tile:hover .icon { background: var(--accent-fill); border-color: var(--accent-fill); color: var(--accent-ink); }
   .name { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; color: var(--text); }
 
   /* Ticked service list */
@@ -176,7 +176,7 @@ const tick = "M3.5 8.5l3 3 6-7";
   /* Visual wells share one look: inset dark panel with a warm glow */
   .vis {
     position: relative; border-radius: 10px; overflow: hidden;
-    background: radial-gradient(80% 90% at 85% 110%, rgb(255 61 0 / .22), transparent 70%), color-mix(in srgb, #000 30%, var(--surface));
+    background: radial-gradient(80% 90% at 85% 110%, rgb(var(--accent-rgb) / .22), transparent 70%), color-mix(in srgb, #000 30%, var(--surface));
     border: 1px solid var(--line);
   }
 
@@ -196,12 +196,12 @@ const tick = "M3.5 8.5l3 3 6-7";
   .pf { color: var(--accent); letter-spacing: .06em; text-transform: uppercase; }
   .kind { color: var(--muted); }
   .ad-media { margin-top: 8px; height: 92px; border-radius: 8px; display: grid; place-items: center; background: linear-gradient(135deg, #2a2a2f, #1c1c20); }
-  .ad-media.video { background: radial-gradient(70% 80% at 30% 20%, rgb(255 115 55 / .45), transparent 70%), #222226; }
+  .ad-media.video { background: radial-gradient(70% 80% at 30% 20%, rgb(var(--accent-soft-rgb) / .45), transparent 70%), #222226; }
   .playmini { width: 28px; height: 28px; border-radius: 999px; display: grid; place-items: center; background: #fff; }
   .playmini svg { width: 12px; height: 12px; fill: #0E0E10; margin-left: 2px; }
   .bar { display: block; height: 6px; margin-top: 8px; border-radius: 99px; background: var(--raised); }
   .w80 { width: 80%; } .w55 { width: 55%; }
-  .ad-cta { display: block; margin-top: 10px; padding: 5px 0; border-radius: 6px; text-align: center; font-size: 9px; font-weight: 600; color: var(--accent-ink); background: var(--accent); }
+  .ad-cta { display: block; margin-top: 10px; padding: 5px 0; border-radius: 6px; text-align: center; font-size: 9px; font-weight: 600; color: var(--accent-ink); background: var(--accent-fill); }
   .ab {
     position: absolute; left: 16px; right: 16px; bottom: 16px; z-index: 3; padding: 12px 14px; border-radius: 10px;
     background: color-mix(in srgb, var(--surface) 85%, transparent); border: 1px solid var(--line); backdrop-filter: blur(8px);
@@ -211,7 +211,7 @@ const tick = "M3.5 8.5l3 3 6-7";
   .ab-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; font-size: 11px; font-weight: 700; color: var(--text-2); }
   .ab-row i { flex: 1; height: 7px; border-radius: 99px; background: var(--raised); position: relative; overflow: hidden; }
   .ab-row i::after { content: ""; position: absolute; inset: 0 auto 0 0; width: 0; border-radius: inherit; background: var(--muted); transition: width 1.4s var(--ease-out-soft) .6s; }
-  .ab-row.win i::after { background: var(--accent); box-shadow: 0 0 12px rgb(255 61 0 / .7); }
+  .ab-row.win i::after { background: var(--accent); box-shadow: 0 0 12px rgb(var(--accent-rgb) / .7); }
   .ab-row.win span { color: var(--accent); }
   .bento.in .ab-row i::after { width: var(--w); }
 
@@ -221,14 +221,14 @@ const tick = "M3.5 8.5l3 3 6-7";
     position: relative; z-index: 1; width: calc(100% - var(--i) * 18%); padding: 9px 6px; border-radius: 8px; text-align: center;
     font-size: 12px; font-weight: 600; color: var(--text); background: var(--surface); border: 1px solid var(--line);
   }
-  .fstep:last-of-type { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); }
+  .fstep:last-of-type { color: var(--accent-ink); background: var(--accent-fill); border-color: var(--accent-fill); }
   .drop { position: absolute; top: 4px; left: calc(50% - 3px + (var(--k) - 1.5) * 14px); width: 6px; height: 6px; border-radius: 99px; background: var(--accent); opacity: 0; animation: drop 2.8s linear infinite; animation-delay: calc(var(--k) * .7s); z-index: 0; }
   @keyframes drop { 0% { opacity: 0; transform: translateY(0); } 15% { opacity: .9; } 85% { opacity: .9; } 100% { opacity: 0; transform: translateY(130px) translateX(calc((1.5 - var(--k)) * 14px)); } }
 
   /* --- Email and webinars: sequence timeline --- */
   .vis-seq { display: grid; grid-template-columns: repeat(4, 1fr); padding: 26px 10px 16px; }
   .seq-line { position: absolute; left: 12.5%; right: 12.5%; top: 37px; height: 2px; background: var(--line); }
-  .seq-line i { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--accent); box-shadow: 0 0 10px rgb(255 61 0 / .8); animation: travel 4s var(--ease-out-soft) infinite; }
+  .seq-line i { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--accent); box-shadow: 0 0 10px rgb(var(--accent-rgb) / .8); animation: travel 4s var(--ease-out-soft) infinite; }
   @keyframes travel { 0% { width: 0; opacity: 1; } 80% { width: 100%; opacity: 1; } 100% { width: 100%; opacity: 0; } }
   .node { position: relative; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
   .node .dot { position: relative; width: 24px; height: 24px; border-radius: 999px; background: var(--surface); border: 2px solid var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--surface) 80%, transparent); }
@@ -254,7 +254,7 @@ const tick = "M3.5 8.5l3 3 6-7";
   .deal > * { position: relative; }
   .deal::before { content: ""; position: absolute; inset: 0 2px; border-radius: 9px; background: var(--surface); border: 1px solid var(--line); box-shadow: 0 10px 24px -12px rgb(0 0 0 / .8); }
   .deal { display: flex; align-items: center; gap: 9px; height: 58px; }
-  .av { width: 26px; height: 26px; flex-shrink: 0; margin-left: 4px; border-radius: 99px; background: linear-gradient(135deg, #FF9A6A, var(--accent)); }
+  .av { width: 26px; height: 26px; flex-shrink: 0; margin-left: 4px; border-radius: 99px; background: linear-gradient(135deg, var(--accent-light), var(--accent)); }
   .deal-txt { display: grid; gap: 3px; min-width: 0; }
   .deal-txt b { font-size: 12px; font-weight: 600; color: var(--text); }
   .st { position: relative; height: 15px; }

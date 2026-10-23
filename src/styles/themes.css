@@ -2,6 +2,7 @@
   LPC themes. Every colour on the site comes from these variables.
   To add a theme: copy a block, rename data-theme, change the values,
   then add its name to src/config/theme.ts.
+  The accent colour (orange or electric blue) is a separate switch: ACCENT in src/config/theme.ts.
 */
 
 /* Charcoal (current default) */
@@ -14,13 +15,9 @@
   --text: #F4F4F5;        /* headings, primary text */
   --text-2: #A1A1AA;      /* body copy */
   --muted: #71717A;       /* labels, captions */
-  --accent: #FF3D00;      /* buttons, highlights */
-  --accent-ink: #FFFFFF;  /* text on accent buttons */
   --data: #34D399;        /* money / growth numbers */
-  --glow-warm: #FF3D00;   /* hero / CTA glow */
   --glow-cool: #3F3F46;   /* secondary glow */
   --star: 245 247 252;    /* starfield base colour (r g b) */
-  --star-accent: 255 100 50; /* starfield accent colour (r g b) */
 }
 
 /* Original blue */
@@ -32,11 +29,45 @@
   --text: #F5F7FC;
   --text-2: #AEB8CF;
   --muted: #7783A3;
-  --accent: #FF3D00;
-  --accent-ink: #FFFFFF;
   --data: #34D399;
-  --glow-warm: #FF3D00;
   --glow-cool: #1D3A8A;
   --star: 245 247 252;
-  --star-accent: 255 100 50;
+}
+
+/* ---------- Accent colours ---------- */
+
+/* Orange (the original brand accent) */
+:root,
+:root[data-accent="orange"] {
+  --accent: #FF3D00;          /* highlights: text, numbers, lines, dots */
+  --accent-fill: #FF3D00;     /* solid fills behind white text (active cards, badges) */
+  --accent-ink: #FFFFFF;      /* text on accent fills and buttons */
+  --accent-rgb: 255 61 0;     /* accent as "r g b" for see-through glows */
+  --accent-soft-rgb: 255 125 70;  /* lighter tint for glows and highlights */
+  --accent-pale-rgb: 255 238 224; /* near-white tint (glass cracks, shards) */
+  --accent-light: #FF9A6A;
+  --accent-grad: linear-gradient(135deg, #FF7A45 0%, #FF3D00 52%, #B82A00 100%); /* buttons */
+  --accent-card: radial-gradient(110% 120% at 0% 0%, #FF7A45 0%, #FF3D00 48%, #B82A00 100%); /* closing card */
+  --glow-warm: #FF3D00;       /* hero / CTA glow */
+  --star-accent: 255 100 50;  /* starfield accent colour (r g b) */
+  --hero-glow-outer: conic-gradient(#FF3D00 0deg, #FF2A10 55deg, #FF9A6A 107deg, #FF6A2E 162deg, #8A1E00 252deg, #FF5A1A 306deg, #FF3D00 360deg);
+  --hero-glow-inner: conic-gradient(#FFE2C2 0deg, #FF3D00 180deg, #FF9A6A 360deg);
+}
+
+/* Electric blue (Tom, review 2: "spaceship engine" blue). Electric #0052FF buttons and glow,
+   with a brighter azure #0A84FF for highlights so text never looks muted */
+:root[data-accent="electric"] {
+  --accent: #0A84FF;
+  --accent-fill: #0052FF;
+  --accent-ink: #FFFFFF;
+  --accent-rgb: 10 132 255;
+  --accent-soft-rgb: 90 160 255;
+  --accent-pale-rgb: 225 238 255;
+  --accent-light: #8CC4FF;
+  --accent-grad: linear-gradient(135deg, #5A8BFF 0%, #0052FF 52%, #0039B3 100%);
+  --accent-card: radial-gradient(110% 120% at 0% 0%, #5A8BFF 0%, #0052FF 48%, #0039B3 100%);
+  --glow-warm: #0052FF;
+  --star-accent: 60 150 255;
+  --hero-glow-outer: conic-gradient(#0052FF 0deg, #1F5BFF 55deg, #8FB0FF 107deg, #3D74FF 162deg, #001E7A 252deg, #2A63FF 306deg, #0052FF 360deg);
+  --hero-glow-inner: conic-gradient(#DCE6FF 0deg, #0052FF 180deg, #8FB0FF 360deg);
 }
