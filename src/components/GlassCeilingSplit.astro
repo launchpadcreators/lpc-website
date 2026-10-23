@@ -7,7 +7,7 @@
 // Copy: brief/04-copy-deck.md 3A with Tom's Loom changes (new headline, no "talent" framing, quotes lead-in, six quotes).
 // Phones: no pin; everything stacks and the chart plays its story as it scrolls through the screen.
 const paras = [
-  "Great content, a strong network, sheer graft and a bit of luck.",
+  "You can only go so far with great content, a strong network, a good product, sheer graft and maybe a bit of luck.",
   "Then growth stalls. Reach plateaus, every launch depends on how hard you push that month, and revenue rises and falls with your content.",
   "The ceiling isn't your audience or your expertise. It's the missing system.",
 ];
@@ -20,7 +20,7 @@ const quotes = [
   "My organic social metrics have slowed down.",
 ];
 // Chart authored on a 600x340 grid; the panel keeps that aspect ratio so nothing stretches.
-const IMPACT = { x: 352, y: 165 };
+const IMPACT = { x: 370, y: 165 };
 const axis = [
   { t: "$1M/mo", y: 34 },
   { t: "$100K/mo", y: 122 },
@@ -28,20 +28,21 @@ const axis = [
   { t: "$0", y: 290 },
 ];
 const cracks = [
-  ["M352 165 L336 160 L322 163 L310 157", "M352 165 L368 169 L382 165"],
-  ["M352 165 L348 151 L351 139 L345 128", "M352 165 L362 154 L376 150 L388 140", "M322 163 L314 172"],
-  ["M352 165 L341 176 L336 188", "M352 165 L366 178 L370 190", "M382 165 L398 161 L414 166 L428 162", "M310 157 L294 160 L278 155"],
+  ["M370 165 L354 160 L340 163 L328 157", "M370 165 L386 169 L400 165"],
+  ["M370 165 L366 151 L369 139 L363 128", "M370 165 L380 154 L394 150 L406 140", "M340 163 L332 172"],
+  ["M370 165 L359 176 L354 188", "M370 165 L384 178 L388 190", "M400 165 L416 161 L432 166 L446 162", "M328 157 L312 160 L296 155"],
 ];
 const shards = [
-  { d: "M348 161 L355 157 L356 165 Z", x: -22, y: -40, r: -140 },
-  { d: "M357 162 L364 160 L362 168 Z", x: 28, y: -46, r: 160 },
-  { d: "M341 163 L348 165 L344 170 Z", x: -40, y: -18, r: -90 },
-  { d: "M363 165 L370 164 L368 171 Z", x: 46, y: -22, r: 120 },
-  { d: "M350 167 L355 170 L349 173 Z", x: -12, y: 34, r: 200 },
-  { d: "M355 156 L360 152 L362 158 Z", x: 12, y: -62, r: -220 },
+  { d: "M366 161 L373 157 L374 165 Z", x: -22, y: -40, r: -140 },
+  { d: "M375 162 L382 160 L380 168 Z", x: 28, y: -46, r: 160 },
+  { d: "M359 163 L366 165 L362 170 Z", x: -40, y: -18, r: -90 },
+  { d: "M381 165 L388 164 L386 171 Z", x: 46, y: -22, r: 120 },
+  { d: "M368 167 L373 170 L367 173 Z", x: -12, y: 34, r: 200 },
+  { d: "M373 156 L378 152 L380 158 Z", x: 12, y: -62, r: -220 },
 ];
-const grey = "M96 290 C160 290 196 252 236 210 S290 172 324 172 C420 172 500 174 580 173";
-const orange = "M324 172 C380 172 414 152 452 120 S536 48 576 36";
+// flat, slowly rising before the ceiling; a steep climb after the break (Tom, review 2)
+const grey = "M96 205 C170 204 240 198 290 186 S320 172 340 172 C420 172 500 174 580 173";
+const orange = "M340 172 C390 172 420 140 455 92 S530 18 576 8";
 ---
 <section id="glass-ceiling-split" class="gx relative" aria-label="The glass ceiling (split layout)">
   <div class="gx-pin">
@@ -49,7 +50,7 @@ const orange = "M324 172 C380 172 414 152 452 120 S536 48 576 36";
 
       <div class="gx-copy">
         <h2 class="text-[clamp(28px,min(3.3vw,5.4vh),48px)] font-semibold leading-[1.06] tracking-[-0.04em] text-text">
-          The things that get you from your first milestone <em class="accent">won't get you past the next one.</em>
+          The things that got you to $20K–$60K a month <em class="accent">won't be what gets you to $1M a month.</em>
         </h2>
         <div class="paras">
           {paras.map((p, i) => <p class:list={["para", { strong: i === 2 }]} data-i={i}>{p}</p>)}
@@ -70,7 +71,7 @@ const orange = "M324 172 C380 172 414 152 452 120 S536 48 576 36";
                 <stop offset=".6" stop-color="var(--accent)" stop-opacity=".06" />
                 <stop offset="1" stop-color="var(--accent)" stop-opacity="0" />
               </linearGradient>
-              <linearGradient id="gx-fade-x" x1=".54" y1="0" x2=".8" y2="0">
+              <linearGradient id="gx-fade-x" x1=".567" y1="0" x2=".82" y2="0">
                 <stop offset="0" stop-color="#fff" stop-opacity="0" /><stop offset="1" stop-color="#fff" stop-opacity="1" />
               </linearGradient>
               <linearGradient id="gx-line" x1="0" y1="0" x2="1" y2="0">
@@ -91,10 +92,10 @@ const orange = "M324 172 C380 172 414 152 452 120 S536 48 576 36";
             {shards.map((sh) => <path class="shard" d={sh.d} style={`--x:${sh.x}px;--y:${sh.y}px;--r:${sh.r}deg`} />)}
             <path class="grey" pathLength="1" d={grey} />
             <text class="lbl talent-lbl" x="580" y="194" text-anchor="end">On talent alone</text>
-            <path class="area" mask="url(#gx-mask)" d={`${orange} L576 300 L324 300 Z`} />
+            <path class="area" mask="url(#gx-mask)" d={`${orange} L576 300 L340 300 Z`} />
             <path class="orange halo" pathLength="1" filter="url(#gx-glow)" d={orange} />
             <path class="orange main" pathLength="1" d={orange} />
-            <text class="lbl sys-lbl" x="548" y="42" text-anchor="end">With the system</text>
+            <text class="lbl sys-lbl" x="576" y="58" text-anchor="end">With the system</text>
           </svg>
           <span class="tip" aria-hidden="true"></span>
           <span class="pressure" style={`left:${(IMPACT.x / 600) * 100}%;top:${(IMPACT.y / 340) * 100}%`} aria-hidden="true"></span>

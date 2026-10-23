@@ -36,23 +36,19 @@ const counter = "M191.854 106.978C189.069 102.15 182.101 102.15 179.315 106.978L
       </div>
     </div>
 
-    <!-- Closing moment (Tom's review): a big LAUNCHPAD whose "A" is our rocket. It launches by itself 1.5s after the footer
-         comes into view, then on hover or tap: rumble, flame, lift-off through the word, then it comes back down
-         and lands in its slot. -->
-    <div class="lp-wrap">
-      <button class="lp" type="button" aria-label="Launch the rocket">
-        <span aria-hidden="true">L</span><span class="slot" aria-hidden="true">
+    <!-- Closing moment (Tom's reviews): a big LAUNCHPAD whose "A" is our rocket mark, in white. When you reach the
+         bottom of the page it rumbles, lifts off with a faded blue trail and flies away out of sight. It resets once
+         the word is scrolled out of view, so it flies again next time. Decorative only. -->
+    <div class="lp-wrap" aria-hidden="true">
+      <div class="lp">
+        <span>L</span><span class="slot">
           <span class="rocket">
             <span class="trail"></span>
             <span class="flame"></span>
-            <svg viewBox="0 0 372 324">
-              <!-- same gradient as the buttons (--accent-grad), top-left light to bottom-right deep -->
-              <defs><linearGradient id="lp-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF7A45" /><stop offset=".52" stop-color="#FF3D00" /><stop offset="1" stop-color="#B82A00" /></linearGradient></defs>
-              <path class="counter" d={counter} /><path class="body" d={mark} />
-            </svg>
+            <svg viewBox="0 0 372 324"><path class="counter" d={counter} /><path class="body" d={mark} /></svg>
           </span>
-        </span><span aria-hidden="true">UNCHPAD</span>
-      </button>
+        </span><span>UNCHPAD</span>
+      </div>
     </div>
   </div>
 </footer>
@@ -73,97 +69,72 @@ const counter = "M191.854 106.978C189.069 102.15 182.101 102.15 179.315 106.978L
   .legal a:hover { color: var(--text); }
   @media (max-width: 767px) { .links { gap: 18px; } }
 
-  /* Big LAUNCHPAD: sized to the column width (container units), faint letters, the rocket A in orange */
+  /* Big LAUNCHPAD: sized to the column width (container units), faint letters, the rocket A in white */
   .lp-wrap { container-type: inline-size; margin-top: clamp(28px, 5vw, 56px); }
   .lp {
-    display: block; width: 100%; padding: 0 0 .06em; border: 0; background: none; cursor: pointer;
     font-size: 16.6cqw; font-weight: 800; line-height: .8; letter-spacing: -0.055em; white-space: nowrap; text-align: center;
-    color: color-mix(in srgb, var(--text) 7%, transparent); transition: color .5s;
-    user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent;
+    padding-bottom: .06em; color: color-mix(in srgb, var(--text) 7%, transparent);
+    user-select: none; -webkit-user-select: none;
   }
-  .lp:hover { color: color-mix(in srgb, var(--text) 11%, transparent); }
-  .lp:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; border-radius: 10px; }
   /* The A slot keeps its width while the rocket is away, so the word never reflows */
   .slot { position: relative; display: inline-block; width: .84em; height: .73em; margin: 0 .015em 0 -.01em; vertical-align: baseline; }
-  .rocket { position: absolute; inset: 0; color: var(--accent); }
-  .rocket svg { position: absolute; inset: 0; width: 100%; height: 100%; fill: currentColor; filter: drop-shadow(0 0 .05em rgb(255 61 0 / .4)); transition: transform .4s var(--ease-out-soft); }
+  .rocket { position: absolute; inset: 0; }
+  /* white mark, a touch bigger than the letters (scaled from its base so it still sits on the baseline) */
+  .rocket svg {
+    position: absolute; inset: 0; width: 100%; height: 100%; transform: scale(1.12); transform-origin: 50% 100%;
+    filter: drop-shadow(0 0 .05em rgb(255 255 255 / .28));
+  }
+  .rocket .body { fill: #fff; }
   .rocket .counter { fill: var(--ft-bg); }
-  /* button gradient with a thin light outline */
-  .rocket .body { fill: url(#lp-grad); stroke: rgb(255 200 175 / .55); stroke-width: 1.2px; vector-effect: non-scaling-stroke; }
-  .lp:hover .rocket svg { transform: translateY(-3%); }
-  /* flame comes out of the notch at the bottom of the mark */
+  /* small white-blue engine flame out of the notch at the bottom of the mark */
   .flame {
-    position: absolute; left: 50%; top: 76%; width: .2em; height: .5em; margin-left: -.1em; transform-origin: 50% 0;
+    position: absolute; left: 50%; top: 82%; width: .18em; height: .42em; margin-left: -.09em; transform-origin: 50% 0;
     border-radius: 50% 50% 50% 50% / 28% 28% 72% 72%;
-    background: radial-gradient(50% 60% at 50% 22%, #FFF3D6 0%, #FFB36B 32%, var(--accent) 66%, transparent 100%);
+    background: radial-gradient(50% 60% at 50% 22%, #fff 0%, #d6e6ff 34%, rgb(110 160 255 / .7) 66%, transparent 100%);
     filter: blur(.01em); opacity: 0; transform: scaleY(0);
   }
-  /* exhaust trail hangs from the engine and travels with the rocket, so it's always behind it, never ahead */
+  /* faded blue exhaust trail hanging from the engine, travelling with the rocket */
   .trail {
-    position: absolute; left: 50%; top: 80%; width: .12em; height: 2.4em; margin-left: -.06em; border-radius: 99px;
-    transform-origin: 50% 0; transform: scaleY(0); opacity: 0; filter: blur(.03em);
-    background: linear-gradient(to bottom, rgb(255 110 60 / .55), rgb(255 140 100 / .22) 30%, rgb(255 255 255 / .06) 65%, transparent);
+    position: absolute; left: 50%; top: 86%; width: .11em; height: 2.4em; margin-left: -.055em; border-radius: 99px;
+    transform-origin: 50% 0; transform: scaleY(0); opacity: 0; filter: blur(.035em);
+    background: linear-gradient(to bottom, rgb(185 212 255 / .5), rgb(120 165 255 / .18) 35%, rgb(255 255 255 / .04) 70%, transparent);
   }
 
-  /* One 4.2s flight: rumble → lift-off (accelerating, out of the top) → out of sight →
-     the same rocket comes back down, braking on its flame, and lands in the slot with a small bounce.
-     It ends exactly where it started, so it can fly again on the next hover. */
-  .lp.go .rocket { animation: lp-rocket 4.2s both; }
-  .lp.go .flame { animation: lp-flame 4.2s both, lp-flicker .1s steps(2) infinite; }
-  .lp.go .trail { animation: lp-trail 4.2s both; }
+  /* One 2.6s launch, one way: short rumble → accelerating lift-off → fades as it leaves the top of the footer */
+  .lp.go .rocket { animation: lp-rocket 2.6s forwards; }
+  .lp.go .flame { animation: lp-flame 2.6s forwards, lp-flicker .1s steps(2) infinite; }
+  .lp.go .trail { animation: lp-trail 2.6s forwards; }
   @keyframes lp-rocket {
     0% { transform: none; opacity: 1; animation-timing-function: linear; }
-    3% { transform: translate(-1.4%, 0); } 6% { transform: translate(1.4%, -1%); }
-    9% { transform: translate(-1.4%, 0); } 12% { transform: translate(1.2%, -1%); }
-    13% { transform: translate(0, -2%); animation-timing-function: cubic-bezier(.55, 0, .85, .4); }
-    36% { transform: translateY(-440%); opacity: 1; }
-    38% { transform: translateY(-480%); opacity: 0; }
-    54% { transform: translateY(-480%); opacity: 0; }
-    57% { transform: translateY(-420%); opacity: 1; animation-timing-function: cubic-bezier(.2, .65, .35, 1); }
-    88% { transform: translateY(0); }
-    91% { transform: translateY(2.5%); }
-    94% { transform: translateY(-1%); }
-    100% { transform: none; opacity: 1; }
+    5% { transform: translate(-1.2%, 0); } 10% { transform: translate(1.2%, -1%); } 15% { transform: translate(-1%, 0); }
+    18% { transform: translate(0, -2%); animation-timing-function: cubic-bezier(.55, 0, .85, .4); }
+    72% { transform: translateY(-420%); opacity: 1; }
+    88%, 100% { transform: translateY(-540%); opacity: 0; }
   }
   @keyframes lp-flame {
-    0% { transform: scaleY(0); opacity: 0; } 3% { transform: scaleY(.45); opacity: 1; } 13% { transform: scaleY(1.1); }
-    36% { transform: scaleY(1.7); opacity: 1; } 38%, 55% { transform: scaleY(0); opacity: 0; }
-    59% { transform: scaleY(1.2); opacity: 1; } 86% { transform: scaleY(.6); opacity: 1; } 90%, 100% { transform: scaleY(0); opacity: 0; }
+    0% { transform: scaleY(0); opacity: 0; } 5% { transform: scaleY(.45); opacity: 1; } 18% { transform: scaleY(1.05); }
+    72% { transform: scaleY(1.5); opacity: 1; } 88%, 100% { transform: scaleY(1.5); opacity: 0; }
   }
   @keyframes lp-flicker { 50% { scale: .88 1.14; } }
-  /* grows only once the rocket is moving, lengthening as it speeds up; gone before the landing */
+  /* grows only once the rocket is moving, lengthening as it speeds up, then fades with it */
   @keyframes lp-trail {
-    0%, 14% { transform: scaleY(0); opacity: 0; } 20% { transform: scaleY(.2); opacity: .8; }
-    34% { transform: scaleY(1); opacity: .7; } 37%, 100% { transform: scaleY(1); opacity: 0; }
+    0%, 18% { transform: scaleY(0); opacity: 0; } 26% { transform: scaleY(.25); opacity: .75; }
+    72% { transform: scaleY(1); opacity: .55; } 92%, 100% { transform: scaleY(1); opacity: 0; }
   }
   @media (prefers-reduced-motion: reduce) { .lp.go :is(.rocket, .flame, .trail) { animation: none; } }
 </style>
 
 <script>
-  // First flight is automatic, 1.5s after the word comes into view (once per visit).
-  // After that it only flies on hover, or tap on phones (ignored while a flight is running).
-  const lp = document.querySelector<HTMLButtonElement>(".ft .lp")!;
-  const rocket = lp.querySelector<HTMLElement>(".rocket")!;
+  // Launch once the big word is (almost) fully on screen, i.e. you've reached the bottom; reset when it's scrolled
+  // out of view so it flies again on the next visit to the bottom. Reduced motion: the rocket just stays put.
+  const lp = document.querySelector<HTMLElement>(".ft .lp")!;
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const FLIGHT = 4200, FIRST_DELAY = 1500;
-  let busy = false;
-  let flightTimer = 0, firstTimer = 0;
-  const done = () => { clearTimeout(flightTimer); lp.classList.remove("go"); busy = false; };
-  function launch() {
-    if (reduce || busy) return;
-    busy = true;
-    lp.classList.remove("go");
-    void lp.offsetWidth; // restart the animation
-    lp.classList.add("go");
-    flightTimer = window.setTimeout(done, FLIGHT + 200); // backup in case animationend is missed (e.g. tab hidden mid-flight)
+  let timer = 0;
+  if (!reduce) {
+    new IntersectionObserver(([en]) => {
+      clearTimeout(timer);
+      if (en.intersectionRatio >= 0.85) timer = window.setTimeout(() => lp.classList.add("go"), 350);
+      else if (!en.isIntersecting) lp.classList.remove("go");
+    }, { threshold: [0, 0.85] }).observe(lp);
   }
-  rocket.addEventListener("animationend", (e) => { if (e.target === rocket) done(); });
-  lp.addEventListener("mouseenter", launch);
-  lp.addEventListener("click", launch);
-  // scrolling away before the 1.5s is up cancels it, so the first flight is never missed off screen
-  const io = new IntersectionObserver(([en]) => {
-    clearTimeout(firstTimer);
-    if (en.isIntersecting) firstTimer = window.setTimeout(() => { io.disconnect(); launch(); }, FIRST_DELAY);
-  }, { threshold: 0.7 });
-  io.observe(lp);
 </script>

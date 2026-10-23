@@ -3,13 +3,14 @@
 // then social proof (Tom's review): overlapping partner faces + "Partnering with the world's best creators and entrepreneurs."
 import { url } from "../config/paths";
 const applyUrl = "https://form.typeform.com/to/yWBgS4vK";
-// Tom's order. Square face crops live in public/partners/avatars/.
+// Square face crops live in public/partners/avatars/. The right-most face is the only one shown in full in the overlap,
+// so the most important partners sit on the right (Tom, review 2): Chris right-most.
 const strip = [
-  { name: "Chris Donnelly", img: "partners/avatars/chris-donnelly.jpg" },
-  { name: "Joseph McClendon III", img: "partners/avatars/joseph-mcclendon.jpg" },
-  { name: "Nicolas Boucher", img: "partners/avatars/nicolas-boucher.jpg" },
-  { name: "Jo Bird", img: "partners/avatars/jo-bird.jpg" },
   { name: "Tobi Oluwole", img: "partners/avatars/tobi-oluwole.jpg" },
+  { name: "Jo Bird", img: "partners/avatars/jo-bird.jpg" },
+  { name: "Nicolas Boucher", img: "partners/avatars/nicolas-boucher.jpg" },
+  { name: "Joseph McClendon III", img: "partners/avatars/joseph-mcclendon.jpg" },
+  { name: "Chris Donnelly", img: "partners/avatars/chris-donnelly.jpg" },
 ];
 ---
 <section id="top" class="hero relative flex min-h-svh flex-col items-center justify-center overflow-hidden px-5 pt-[104px] pb-[56px]">

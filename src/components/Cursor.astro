@@ -44,7 +44,8 @@
 
     // Spring tuning: natural frequency (rad/s) and damping ratio. 1 = critically damped: eases in with no overshoot,
     // so the motion never reverses at the end (a reversal made the heading spin round for a split second).
-    const OMEGA = 18, ZETA = 1;
+    // 42 keeps it ~24 ms behind the mouse: still smooth, but close enough that clicking feels direct (Tom found 18 slow).
+    const OMEGA = 42, ZETA = 1;
     const K = OMEGA * OMEGA, C = 2 * ZETA * OMEGA;
 
     let mx = 0, my = 0;           // mouse
@@ -108,7 +109,7 @@
       const speed = Math.hypot(vx, vy); // px/s
       if (!reduce) {
         if (speed > 120) heading = (Math.atan2(vy, vx) * 180) / Math.PI + 90;
-        const k = 1 - Math.pow(1 - 0.18, frameMs / 16.667);
+        const k = 1 - Math.pow(1 - 0.26, frameMs / 16.667);
         angle += turn(angle, heading) * k;
         el.style.rotate = `${angle.toFixed(2)}deg`;
       }

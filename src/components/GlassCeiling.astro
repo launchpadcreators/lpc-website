@@ -7,27 +7,27 @@
 // Hitting the ceiling is physical: at the end of beat 2 the scroll turns heavy (you have to push),
 // each push cracks the glass a little more with a thud, then it shatters and the orange line goes through.
 const steps = [
-  // Tom's Loom review (brief/05): replaces "You grew on talent."
-  { t: "The things that get you from your first milestone <em class='accent'>won't get you past the next one.</em>", s: "Great content, a strong network, sheer graft and a bit of luck.", long: true },
+  // Tom's Loom reviews (brief/05, brief/07): headline and sub-line in his words
+  { t: "The things that got you to $20K–$60K a month <em class='accent'>won't be what gets you to $1M a month.</em>", s: "You can only go so far with great content, a strong network, a good product, sheer graft and maybe a bit of luck.", long: true },
   { t: "Then it <em class='accent'>stalled.</em>", s: "Reach plateaus. Every launch depends on how hard you push that month.", hint: "Keep scrolling to break through" },
   { t: "The ceiling is the <em class='accent'>missing system.</em>", s: "Not your audience. Not your expertise." },
 ];
 // Glass breaks where the orange breakout crosses the ceiling (authored 1200x420 grid)
-const IMPACT = { x: 670, y: 186 };
+const IMPACT = { x: 700, y: 186 };
 const cracks = [
-  ["M670 186 L640 178 L612 182 L590 172", "M670 186 L702 192 L728 186"],
-  ["M670 186 L662 160 L668 138 L656 118", "M670 186 L690 166 L716 158 L740 140", "M612 182 L596 198"],
-  ["M670 186 L650 206 L640 228", "M670 186 L696 210 L704 232", "M728 186 L760 180 L790 188 L820 182", "M590 172 L560 176 L530 168"],
+  ["M700 186 L670 178 L642 182 L620 172", "M700 186 L732 192 L758 186"],
+  ["M700 186 L692 160 L698 138 L686 118", "M700 186 L720 166 L746 158 L770 140", "M642 182 L626 198"],
+  ["M700 186 L680 206 L670 228", "M700 186 L726 210 L734 232", "M758 186 L790 180 L820 188 L850 182", "M620 172 L590 176 L560 168"],
 ];
 const shards = [
-  { d: "M664 180 L676 174 L678 188 Z", x: -40, y: -70, r: -140 },
-  { d: "M680 182 L692 178 L688 192 Z", x: 50, y: -80, r: 160 },
-  { d: "M652 184 L664 186 L656 194 Z", x: -70, y: -30, r: -90 },
-  { d: "M690 186 L702 184 L698 196 Z", x: 80, y: -40, r: 120 },
-  { d: "M668 188 L676 192 L666 198 Z", x: -20, y: 60, r: 200 },
-  { d: "M676 172 L684 166 L688 176 Z", x: 20, y: -110, r: -220 },
-  { d: "M644 178 L652 174 L654 182 Z", x: -100, y: -60, r: 80 },
-  { d: "M700 178 L708 174 L712 184 Z", x: 110, y: -70, r: -60 },
+  { d: "M694 180 L706 174 L708 188 Z", x: -40, y: -70, r: -140 },
+  { d: "M710 182 L722 178 L718 192 Z", x: 50, y: -80, r: 160 },
+  { d: "M682 184 L694 186 L686 194 Z", x: -70, y: -30, r: -90 },
+  { d: "M720 186 L732 184 L728 196 Z", x: 80, y: -40, r: 120 },
+  { d: "M698 188 L706 192 L696 198 Z", x: -20, y: 60, r: 200 },
+  { d: "M706 172 L714 166 L718 176 Z", x: 20, y: -110, r: -220 },
+  { d: "M674 178 L682 174 L684 182 Z", x: -100, y: -60, r: 80 },
+  { d: "M730 178 L738 174 L742 184 Z", x: 110, y: -70, r: -60 },
 ];
 // Things people say at this stage (Tom's review added the last three). x/y = % of the content-width chart layer.
 const blockers = [
@@ -54,8 +54,9 @@ const blockers = [
       </div>
 
       <div class="gc-chart">
-        <!-- Curves are C1-continuous: the grey S-curve flattens to a horizontal tangent at x=560,
-             and the orange breakout leaves from that same point with the same tangent, so the fork has no kink.
+        <!-- Curves are C1-continuous: the grey line stays nearly flat, rising slowly to a horizontal tangent at x=640,
+             and the orange breakout leaves from that same point with the same tangent, then climbs steeply (Tom, review 2),
+             rising past the top of the chart behind the headline.
              Shapes are authored on a 1200x420 grid (data-d) and rescaled to the real pixel size by the script,
              so strokes never stretch and the line-draw / tip maths stay exact. -->
         <svg viewBox="0 0 1200 420" preserveAspectRatio="none" class="h-full w-full" aria-hidden="true">
@@ -65,7 +66,7 @@ const blockers = [
               <stop offset=".5" stop-color="var(--accent)" stop-opacity=".08" />
               <stop offset="1" stop-color="var(--accent)" stop-opacity="0" />
             </linearGradient>
-            <linearGradient id="gc-fade-x" x1=".467" y1="0" x2=".717" y2="0">
+            <linearGradient id="gc-fade-x" x1=".533" y1="0" x2=".783" y2="0">
               <stop offset="0" stop-color="#fff" stop-opacity="0" /><stop offset="1" stop-color="#fff" stop-opacity="1" />
             </linearGradient>
             <!-- Breakout line starts in the grey of the stalled line and warms into orange; its glow fades in from nothing -->
@@ -93,10 +94,10 @@ const blockers = [
           {shards.map((sh) => (
             <path class="shard" data-d={sh.d} d={sh.d} style={`--x:${sh.x}px;--y:${sh.y}px;--r:${sh.r}deg`} />
           ))}
-          <path class="grey" pathLength="1" data-d="M0 400 C180 400 300 340 400 276 S500 196 560 196 C760 196 980 198 1200 196" d="M0 400 C180 400 300 340 400 276 S500 196 560 196 C760 196 980 198 1200 196" />
-          <path class="area" mask="url(#gc-mask)" data-d="M560 196 C660 196 720 170 800 130 S1000 44 1200 28 L1200 420 L560 420 Z" d="M560 196 C660 196 720 170 800 130 S1000 44 1200 28 L1200 420 L560 420 Z" />
-          <path class="orange halo" pathLength="1" filter="url(#gc-glow)" data-d="M560 196 C660 196 720 170 800 130 S1000 44 1200 28" d="M560 196 C660 196 720 170 800 130 S1000 44 1200 28" />
-          <path class="orange" pathLength="1" data-d="M560 196 C660 196 720 170 800 130 S1000 44 1200 28" d="M560 196 C660 196 720 170 800 130 S1000 44 1200 28" />
+          <path class="grey" pathLength="1" data-d="M0 236 C220 234 400 226 520 214 S600 196 640 196 C820 196 1000 197 1200 196" d="M0 236 C220 234 400 226 520 214 S600 196 640 196 C820 196 1000 197 1200 196" />
+          <path class="area" mask="url(#gc-mask)" data-d="M640 196 C730 196 800 150 880 40 S1080 -260 1200 -330 L1200 420 L640 420 Z" d="M640 196 C730 196 800 150 880 40 S1080 -260 1200 -330 L1200 420 L640 420 Z" />
+          <path class="orange halo" pathLength="1" filter="url(#gc-glow)" data-d="M640 196 C730 196 800 150 880 40 S1080 -260 1200 -330" d="M640 196 C730 196 800 150 880 40 S1080 -260 1200 -330" />
+          <path class="orange" pathLength="1" data-d="M640 196 C730 196 800 150 880 40 S1080 -260 1200 -330" d="M640 196 C730 196 800 150 880 40 S1080 -260 1200 -330" />
         </svg>
         <span class="tip" aria-hidden="true"></span>
         <span class="pressure" style={`left:${(IMPACT.x / 1200) * 100}%;top:${(IMPACT.y / 420) * 100}%`} aria-hidden="true"></span>
@@ -121,13 +122,17 @@ const blockers = [
     padding-top: var(--gc-top, 160px); padding-bottom: 6vh; }
 
 
-  .gc-copy { position: relative; min-height: clamp(150px, 15vw, 210px); }
+  /* z-index: the steep breakout line climbs behind the headline, never over it */
+  .gc-copy { position: relative; z-index: 2; min-height: clamp(150px, 15vw, 210px); }
   .step { position: absolute; inset: 0 0 auto 0; text-align: center; opacity: 0; transform: translateY(14px); transition: opacity .5s var(--ease-out-soft), transform .5s var(--ease-out-soft); }
   .step.on { opacity: 1; transform: none; }
 
   /* Full-bleed chart: runs edge to edge of the viewport and fades out at both sides, so no line ever stops at a hard edge */
   .gc-chart { position: relative; margin-top: 2vh; min-height: 220px; width: 100vw; margin-left: calc(50% - 50vw); }
+  /* The SVG reaches 85% of the chart's height above it, so the steep breakout can climb up behind the headline
+     (the edge-fade mask would otherwise clip anything outside the chart's own box) */
   .gc-chart svg {
+    position: absolute; left: 0; bottom: 0; width: 100%; height: 185%;
     overflow: visible;
     -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%);
     mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%);
@@ -276,13 +281,17 @@ const blockers = [
   }
 
   // Rescale the 1200x420 authored shapes to the chart's real pixel size (coordinates are x,y pairs)
+  // The SVG is taller than the chart (headroom above it, see CSS): authored y 0..420 maps onto the bottom part
+  let headroom = 0;
   function layout() {
     const w = svg.clientWidth, h = svg.clientHeight;
     if (!w || !h) return;
+    const ch = h / 1.85; // the chart's own height
+    headroom = h - ch;
     svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
     shapes.forEach((el) => {
       let i = 0;
-      el.setAttribute("d", el.dataset.d!.replace(/-?\d+(\.\d+)?/g, (n) => ((i++ % 2 ? (+n * h) / 420 : (+n * w) / 1200).toFixed(1))));
+      el.setAttribute("d", el.dataset.d!.replace(/-?\d+(\.\d+)?/g, (n) => ((i++ % 2 ? (+n * ch) / 420 + headroom : (+n * w) / 1200).toFixed(1))));
     });
     orangeLen = orange.getTotalLength();
   }
@@ -334,7 +343,7 @@ const blockers = [
       o.style.visibility = draw > 0.001 ? "" : "hidden"; // no stray round cap at the fork before the breakout
     });
     const pt = orange.getPointAtLength(orangeLen * draw);
-    tip.style.transform = `translate(${pt.x}px, ${pt.y}px)`;
+    tip.style.transform = `translate(${pt.x}px, ${pt.y - headroom}px)`; // tip is placed in chart coordinates
     // Dot fades with the chart's right-edge fade, so it never sits half-cut at the screen edge
     tip.style.opacity = draw > 0.01 ? String(clamp((1 - pt.x / svg.clientWidth) / 0.14) * clamp(draw / 0.2)) : "0";
     area.style.opacity = String(seg(p, 0.72, 0.94));

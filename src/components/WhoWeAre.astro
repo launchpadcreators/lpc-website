@@ -1,6 +1,6 @@
 ---
-// Who we are — origin story, then a grid: the founders' photo (tall, left), the two co-founder cards, and the
-// 12-strong team card underneath them. Copy: brief/04-copy-deck.md, section 7.
+// Who we are — headline, then a grid: the "Our story" card (tall, left), the two co-founder cards with their own
+// photos, and the 12-strong team card underneath them (Tom, review 2). Copy: brief/04-copy-deck.md, section 7.
 // Founder facts are still marked [CONFIRM] in the copy deck.
 import { url } from "../config/paths";
 // Same order as the founders photo: Tom (left), Dan (right).
@@ -8,12 +8,12 @@ import { url } from "../config/paths";
 const liIcon = "M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z";
 const founders = [
   {
-    name: "Tom Pestridge", area: "f-a", linkedin: "https://www.linkedin.com/in/tom-pestridge/",
+    name: "Tom Pestridge", area: "f-a", photo: "team/tom.jpg", linkedin: "https://www.linkedin.com/in/tom-pestridge/",
     line: "Marketing leader and agency founder. Took a travel company to £7M a year as its growth partner.", // [CONFIRM: "£500K to £7M" or "£0 to £7M"]
     stats: [{ v: "£7M", l: "A year, as growth partner" }, { v: "~200K", l: "LinkedIn followers" }],
   },
   {
-    name: "Dan Mian", area: "f-b", linkedin: "https://www.linkedin.com/in/danmian/",
+    name: "Dan Mian", area: "f-b", photo: "team/dan.jpg", linkedin: "https://www.linkedin.com/in/danmian/",
     line: "Performance marketer (Forbes, BT). Founded Gradvance and grew it to $500K.", // [CONFIRM]
     stats: [{ v: "200K+", l: "LinkedIn followers" }, { v: "$500K", l: "Grew Gradvance to" }],
   },
@@ -26,26 +26,23 @@ const specialisms = ["Paid media", "Creative", "Content", "Funnels and AI", "Sal
       <h2 class="text-[clamp(30px,3.6vw,52px)] font-semibold leading-[1.05] tracking-[-0.04em] text-text">
         Full-fledged <em class="accent">growth partners.</em>
       </h2>
-      <!-- Origin story (Tom's review: about 50% longer, how we discovered full-funnel marketing and the Growth System).
-           Copy deck 7 body plus the 12-strong team line from the video brief; split in two for easier reading. -->
-      <div class="story mx-auto mt-6 max-w-[700px] text-[clamp(15px,1.3vw,18px)] leading-[1.65] text-text-2">
-        <p>We've built and scaled our own businesses, and run growth for others. Doing both, we kept learning the same thing: you can't fix growth with one channel. Ads alone, sales alone or organic alone all hit the same ceiling.</p>
-        <p>It takes the whole funnel working as one system. So we built the Launchpad Growth System, then started Launchpad to run it for our partners, with a 12-strong team behind it. <span class="text-text">We run their growth like it's our own.</span></p>
-      </div>
     </div>
 
     <div class="grid3">
-      <!-- The founders -->
-      <figure class="card photo" style="--d:0ms">
-        <img src={url("team/founders.jpg")} alt="Launchpad Creators co-founders Tom Pestridge (left) and Dan Mian (right)" loading="lazy" decoding="async" draggable="false" />
-        <figcaption>
-          <span class="kicker">Co-founders</span>
-          <span class="cap-names">Tom Pestridge &amp; Dan Mian</span>
-        </figcaption>
-      </figure>
+      <!-- Our story. [PLACEHOLDER until Tom sends the story: how we started the company and what we believe in.
+           For now: the origin story from copy deck 7 plus the 12-strong team line from the video brief.] -->
+      <article class="card story" style="--d:0ms">
+        <p class="kicker">Our story</p>
+        <div class="story-txt">
+          <p>We've built and scaled our own businesses, and run growth for others. Doing both, we kept learning the same thing: you can't fix growth with one channel. Ads alone, sales alone or organic alone all hit the same ceiling.</p>
+          <p>It takes the whole funnel working as one system. So we built the Launchpad Growth System, then started Launchpad to run it for our partners, with a 12-strong team behind it.</p>
+        </div>
+        <p class="story-end">We run their growth like it's our own.</p>
+      </article>
 
       {founders.map((f, i) => (
         <article class={`card founder ${f.area}`} style={`--d:${(i + 1) * 110}ms`}>
+          <div class="fphoto"><img src={url(f.photo)} alt={f.name} width="540" height="405" loading="lazy" decoding="async" draggable="false" /></div>
           <p class="kicker">Co-founder</p>
           <h3 class="fname">{f.name}</h3>
           <p class="desc">{f.line}</p>
@@ -76,15 +73,14 @@ const specialisms = ["Paid media", "Creative", "Content", "Funnels and AI", "Sal
 
 <style>
   .wa { padding: clamp(96px, 14vh, 160px) 0; }
-  .story p + p { margin-top: 14px; }
 
-  /* Photo spans both rows on the left; founders sit side by side; team card runs underneath them */
+  /* Story card spans both rows on the left; founders sit side by side; team card runs underneath them */
   .grid3 {
     margin-top: clamp(40px, 6vh, 64px); display: grid; gap: 20px;
     grid-template-columns: 0.95fr 1fr 1fr;
-    grid-template-areas: "photo fa fb" "photo team team";
+    grid-template-areas: "story fa fb" "story team team";
   }
-  .photo { grid-area: photo; }
+  .story { grid-area: story; }
   .f-a { grid-area: fa; }
   .f-b { grid-area: fb; }
   .team { grid-area: team; }
@@ -102,13 +98,14 @@ const specialisms = ["Paid media", "Creative", "Content", "Funnels and AI", "Sal
   .team-txt .desc { margin-top: 0; }
   .team .spec { padding-top: 16px; }
 
-  /* Founders photo: fills its tall card, soft fade at the bottom for the caption, slow zoom on hover */
-  .photo { margin: 0; padding: 0; min-height: 460px; }
-  .photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; filter: saturate(.9); transition: scale 1.2s var(--ease-out-soft), filter .6s; }
-  .photo:hover img { scale: 1.04; filter: saturate(1); }
-  .photo::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(180deg, transparent 55%, rgb(0 0 0 / .78) 100%); }
-  .photo figcaption { position: absolute; left: 24px; right: 24px; bottom: 22px; z-index: 2; display: grid; gap: 6px; }
-  .cap-names { font-size: 18px; font-weight: 600; letter-spacing: -0.02em; color: #fff; }
+  /* Our story: text card with a warm glow from the top corner; the closing line sits at the bottom */
+  .story { padding: clamp(28px, 3vw, 36px); background: radial-gradient(90% 60% at 0% 0%, rgb(255 61 0 / .16), transparent 62%), var(--surface); }
+  .story-txt { margin-top: 18px; display: grid; gap: 14px; font-size: clamp(15px, 1.25vw, 17px); line-height: 1.65; color: var(--text-2); }
+  .story-end { margin-top: auto; padding-top: 24px; font-size: clamp(19px, 1.7vw, 23px); font-weight: 600; letter-spacing: -0.02em; line-height: 1.3; color: var(--text); }
+
+  /* Founder photo: full-bleed at the top of the card */
+  .fphoto { margin: -28px -28px 22px; aspect-ratio: 4 / 3; overflow: hidden; background: var(--raised); }
+  .fphoto img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
 
   .kicker { font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
   .big { margin-top: 14px; font-size: clamp(56px, 6vw, 80px); font-weight: 800; letter-spacing: -0.05em; line-height: .9; color: var(--text); font-variant-numeric: tabular-nums; }
@@ -132,12 +129,10 @@ const specialisms = ["Paid media", "Creative", "Content", "Funnels and AI", "Sal
   .li:hover span { transform: translateX(3px); }
 
   @media (max-width: 1023px) {
-    .grid3 { grid-template-columns: 1fr 1fr; grid-template-areas: "photo photo" "fa fb" "team team"; }
-    .photo { min-height: 420px; }
+    .grid3 { grid-template-columns: 1fr 1fr; grid-template-areas: "story story" "fa fb" "team team"; }
   }
   @media (max-width: 767px) {
-    .grid3 { grid-template-columns: 1fr; grid-template-areas: "photo" "fa" "fb" "team"; }
-    .photo { min-height: 380px; }
+    .grid3 { grid-template-columns: 1fr; grid-template-areas: "story" "fa" "fb" "team"; }
     .team { flex-direction: column; gap: 16px; }
   }
   @media (prefers-reduced-motion: reduce) { :global(.reveal-ready) .card { opacity: 1; translate: none; } }
