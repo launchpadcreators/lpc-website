@@ -4,7 +4,8 @@
 // Desktop: the funnel appears as a whole when it comes into view (bands drop in quickly from the bottom up).
 // The section pins and scrolling walks the levels top to bottom: the active band turns
 // orange and opens, a progress bar fills on the left, and leads flow down through the funnel.
-// Phones: no pin; the funnel stacks in as it scrolls into view, then its bands open one after another as you scroll.
+// Phones: the funnel drops in as it scrolls into view, then stays pinned while its bands open one after another,
+// and the page moves on once all five have opened.
 import { stages } from "../data/growth-stages";
 const pad = (n: number) => String(n).padStart(2, "0");
 ---
@@ -41,6 +42,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
           </li>
         </ol>
       </div>
+      <div class="gf-track" aria-hidden="true"></div>
     </div>
   </div>
 </section>
@@ -111,6 +113,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
   .gf:not(.inview) .flow i { animation-play-state: paused; }
 
   /* Phones / tablet portrait: no pin, text then funnel then the button */
+  .gf-track { display: none; }
   @media (max-width: 899px) {
     .gf { height: auto; padding: 72px 0 64px; }
     .gf-pin { position: relative; height: auto; display: block; overflow: visible; }
@@ -119,6 +122,12 @@ const pad = (n: number) => String(n).padStart(2, "0");
     /* text block melts into the grid so the button can sit after the funnel */
     .gf-text { display: contents; }
     .gf-visual { order: 1; }
+    /* heading and line centred on phones */
+    .gf-text h2, .sub { text-align: center; margin-inline: auto; }
+    /* pinned while the levels open: the funnel sticks (vertically centred, below the header) for the length of the
+       track after it, about 40% of a screen of scrolling per level */
+    .gf-visual { position: sticky; top: max(84px, calc(50svh - 230px)); align-self: start; z-index: 1; }
+    .gf-track { display: block; order: 2; height: 200svh; margin-top: -28px; }
     .funnel { --taper: 24; gap: 6px; }
     .band { cursor: pointer; -webkit-tap-highlight-color: transparent; }
     .b-in { min-height: 54px; padding: 8px calc(var(--bp, 0px) + 10px); }
@@ -197,14 +206,17 @@ const pad = (n: number) => String(n).padStart(2, "0");
   };
   mobile.addEventListener("change", onMode);
 
-  // Phones: the bands open one after another as the funnel moves up the screen (its top edge travelling from
-  // 72% to 12% of the screen height walks 01 → 05). The funnel's top doesn't move when a band opens, so the
-  // hand-over between bands never jitters. A tap still opens a band straight away.
+  // Phones: the funnel is pinned (sticky) while the track after it scrolls past; progress through the track walks
+  // 01 → 05. Progress is measured from where the funnel would sit unpinned (just under the line above it), which
+  // doesn't change when a band opens, so the hand-over between bands never jitters. A tap still opens a band.
+  const sub = sec.querySelector<HTMLElement>(".sub")!;
+  const visual = sec.querySelector<HTMLElement>(".gf-visual")!;
+  const track = sec.querySelector<HTMLElement>(".gf-track")!;
   let mobileActive = 0;
   const mobileWalk = () => {
-    const top = funnel.getBoundingClientRect().top;
-    const start = innerHeight * 0.72, end = innerHeight * 0.12;
-    const p = clamp((start - top) / (start - end));
+    const stickTop = parseFloat(getComputedStyle(visual).top) || 0;
+    const naturalTop = sub.getBoundingClientRect().bottom + 28; // grid gap between the line and the funnel
+    const p = clamp((stickTop - naturalTop) / (track.offsetHeight * 0.92));
     const a = Math.min(n - 1, Math.floor(p * n));
     if (a !== mobileActive) { mobileActive = a; setActive(a); }
   };
