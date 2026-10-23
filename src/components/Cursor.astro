@@ -1,10 +1,7 @@
 ---
-// Custom cursor: the Launchpad logo mark (inline SVG). Its tip is the hotspot; while moving it rotates around the
-// tip to point where it's heading (like an aircraft) and keeps that heading when the mouse stops. Grows slightly
-// over links and buttons; hands back to the native text cursor over text fields. Mouse/trackpad only.
-// Motion: the mark sits exactly on the mouse, like the normal cursor (no trailing, so clicking feels direct).
-// Only the turning is animated: the heading comes from the mouse's smoothed direction of travel, and the mark eases
-// round to it on a soft, critically damped spring. Scrolling only turns it (down/up), never moves it.
+// Custom cursor: the Launchpad logo mark (inline SVG), upright. Its tip is the hotspot and it sits exactly on the
+// mouse, like the normal cursor (no trailing, no turning). Grows slightly over links and buttons, shrinks a touch
+// on press; hands back to the native text cursor over text fields. Mouse/trackpad only.
 ---
 <div id="cursor" aria-hidden="true">
   <svg viewBox="0 0 372 324" shape-rendering="geometricPrecision"><path d="M168.26 10.0056C175.957 -3.33512 195.211 -3.33512 202.908 10.0056L368.812 297.573C377.101 311.941 362.012 328.46 346.955 321.5L203.626 255.25C192.18 249.959 178.988 249.959 167.543 255.25L24.2135 321.5C9.15635 328.46 -5.93323 311.941 2.35608 297.573L168.26 10.0056ZM191.854 106.978C189.069 102.15 182.101 102.15 179.315 106.978L119.273 211.051C116.273 216.25 121.734 222.228 127.183 219.71L179.054 195.733C183.197 193.819 187.971 193.819 192.113 195.733L243.985 219.71C249.434 222.228 254.895 216.25 251.895 211.051L191.854 106.978Z" /></svg>
@@ -13,7 +10,7 @@
 <style is:global>
   #cursor {
     position: fixed; left: 0; top: 0; z-index: 9999; width: 22px; height: 19px; pointer-events: none;
-    opacity: 0; transition: opacity .25s; will-change: translate, rotate; contain: layout style;
+    opacity: 0; transition: opacity .25s; will-change: translate; contain: layout style;
   }
   /* no stroke (it rendered jaggy at this size): a soft shadow keeps it readable on light areas */
   #cursor svg {
@@ -32,7 +29,6 @@
 
 <script>
   const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
-  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const el = document.getElementById("cursor")!;
 
   if (!fine) {
@@ -42,84 +38,21 @@
     const TIP_X = el.offsetWidth / 2, TIP_Y = 0; // hotspot = tip of the mark (top centre)
     el.style.transformOrigin = `${TIP_X}px ${TIP_Y}px`;
 
-    // Rotation spring: natural frequency (rad/s) and damping. Critically damped (1) eases in with no overshoot,
-    // so the nose never swings past the new heading; 11 gives a soft, unhurried turn.
-    const OMEGA = 11, ZETA = 1;
-    const K = OMEGA * OMEGA, C = 2 * ZETA * OMEGA;
-
-    let mx = 0, my = 0;           // mouse (the mark is drawn exactly here)
-    let svx = 0, svy = 0;         // smoothed mouse velocity, px/s (only used for the heading)
-    let lastMoveT = 0;
-    let angle = 0, angVel = 0, heading = 0, running = false, seen = false;
     let lastTarget: EventTarget | null = null;
-
-    // shortest way round between two angles (degrees)
-    const turn = (a: number, b: number) => ((((b - a) % 360) + 540) % 360) - 180;
-    const place = () => { el.style.translate = `${mx - TIP_X}px ${my - TIP_Y}px`; };
-    const wake = () => { if (!running) { running = true; last = performance.now(); requestAnimationFrame(frame); } };
-
-    const onMove = (e: PointerEvent) => {
+    addEventListener("pointermove", (e: PointerEvent) => {
       if (e.pointerType !== "mouse") return;
-      const now = e.timeStamp || performance.now();
-      if (seen) {
-        // direction of travel from the raw movement, smoothed so tiny jitters don't flick the heading
-        const dt = Math.max(1, now - lastMoveT) / 1000;
-        const k = 0.3;
-        svx += ((e.clientX - mx) / dt - svx) * k;
-        svy += ((e.clientY - my) / dt - svy) * k;
-      }
-      lastMoveT = now;
-      mx = e.clientX; my = e.clientY;
-      seen = true;
-      place(); // position updates straight away, on the event itself
+      el.style.translate = `${e.clientX - TIP_X}px ${e.clientY - TIP_Y}px`;
       if (!el.classList.contains("on")) el.classList.add("on");
-      // hover / text states: only from real mouse movement (not when the page scrolls under a still cursor,
-      // which made the hover size flicker), and only when the element under the mouse changes
+      // hover / text states: only from real mouse movement, and only when the element under the mouse changes
       if (e.target !== lastTarget && e.target instanceof Element) {
         lastTarget = e.target;
         const t = e.target;
         el.classList.toggle("hover", !!t.closest("a, button, [role='tab'], label, summary, select"));
         el.classList.toggle("text", !!t.closest("input:not([type='submit']):not([type='button']), textarea"));
       }
-      if (!reduce && Math.hypot(svx, svy) > 160) heading = (Math.atan2(svy, svx) * 180) / Math.PI + 90;
-      wake();
-    };
-    addEventListener("pointermove", onMove, { passive: true });
-
-    // Scrolling turns the mark to fly with the page (points down while scrolling down, up while scrolling up).
-    // Rotation only: the position stays exactly under the mouse.
-    let lastScroll = scrollY;
-    addEventListener("scroll", () => {
-      const d = scrollY - lastScroll; lastScroll = scrollY;
-      if (!seen || reduce || Math.abs(d) < 1) return;
-      heading = d > 0 ? 180 : 0;
-      wake();
     }, { passive: true });
     addEventListener("pointerdown", () => el.classList.add("down"));
     addEventListener("pointerup", () => el.classList.remove("down"));
     document.addEventListener("mouseleave", () => el.classList.remove("on"));
-
-    let last = performance.now();
-    function frame(now: number) {
-      let dt = Math.min(50, now - last) / 1000; last = now;
-      // velocity fades out once the mouse stops, so the heading holds where it ended
-      if (now - lastMoveT > 60) { svx *= 0.8; svy *= 0.8; }
-
-      if (!reduce) {
-        // rotation spring in ≤4 ms sub-steps: smooth and the same at 60 Hz and 120 Hz
-        while (dt > 0) {
-          const h = Math.min(dt, 0.004);
-          angVel += (K * turn(angle, heading) - C * angVel) * h;
-          angle += angVel * h;
-          dt -= h;
-        }
-        el.style.rotate = `${angle.toFixed(2)}deg`;
-      }
-
-      // sleep when the turn has settled and the mouse is still (wakes on the next move or scroll)
-      const settled = Math.abs(turn(angle, heading)) < 0.2 && Math.abs(angVel) < 1 && now - lastMoveT > 120;
-      if (settled || reduce) { running = false; return; }
-      requestAnimationFrame(frame);
-    }
   }
 </script>
