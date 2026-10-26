@@ -169,16 +169,11 @@ const parts = (s: string) => s.split(/(\d+(?:\.\d+)?)/).map((t, i) => (i % 2 ? {
   @media (max-width: 767px) {
     .card { flex-basis: 86%; }
   }
-  @media (prefers-reduced-motion: reduce) {
-    :global(.reveal-ready) .card { opacity: 1; translate: none; }
-  }
 </style>
 
 <script>
   const sec = document.getElementById("results")!;
-  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  // Rotating word: a new one every 2.2s (skipped while the tab is hidden; reduced motion keeps the first word)
+  // Rotating word: a new one every 2.2s (skipped while the tab is hidden)
   const slot = sec.querySelector<HTMLElement>(".rot-slot")!;
   const words = [...slot.querySelectorAll<HTMLElement>(".rot-word")];
   let w = 0;
@@ -186,17 +181,15 @@ const parts = (s: string) => s.split(/(\d+(?:\.\d+)?)/).map((t, i) => (i % 2 ? {
   fit();
   addEventListener("resize", fit);
   document.fonts?.ready.then(fit);
-  if (!reduce) {
-    setInterval(() => {
-      if (document.hidden) return;
-      const prev = words[w];
-      w = (w + 1) % words.length;
-      prev.classList.remove("on"); prev.classList.add("out");
-      words[w].classList.remove("out"); words[w].classList.add("on");
-      setTimeout(() => prev.classList.remove("out"), 520);
-      fit();
-    }, 2200);
-  }
+  setInterval(() => {
+    if (document.hidden) return;
+    const prev = words[w];
+    w = (w + 1) % words.length;
+    prev.classList.remove("on"); prev.classList.add("out");
+    words[w].classList.remove("out"); words[w].classList.add("on");
+    setTimeout(() => prev.classList.remove("out"), 520);
+    fit();
+  }, 2200);
 
   const viewport = sec.querySelector<HTMLElement>(".viewport")!;
   const track = sec.querySelector<HTMLElement>(".track")!;
@@ -234,7 +227,7 @@ const parts = (s: string) => s.split(/(\d+(?:\.\d+)?)/).map((t, i) => (i % 2 ? {
     visible = en.isIntersecting;
     if (!visible || viewport.classList.contains("in")) return;
     viewport.classList.add("in");
-    if (!reduce) all.forEach((c, i) => c.querySelectorAll<HTMLElement>(".count").forEach((el) => countUp(el, (i % n) * 110 + 350)));
+    all.forEach((c, i) => c.querySelectorAll<HTMLElement>(".count").forEach((el) => countUp(el, (i % n) * 110 + 350)));
   }, { threshold: 0.2 });
   io.observe(viewport);
 
@@ -245,7 +238,7 @@ const parts = (s: string) => s.split(/(\d+(?:\.\d+)?)/).map((t, i) => (i % 2 ? {
   const dotsBox = sec.querySelector<HTMLElement>(".dots")!;
   const dots: HTMLButtonElement[] = [];
   const place = (animate: boolean) => {
-    track.style.transition = animate && !reduce ? `transform ${SLIDE}ms cubic-bezier(.22, .8, .3, 1)` : "none";
+    track.style.transition = animate ? `transform ${SLIDE}ms cubic-bezier(.22, .8, .3, 1)` : "none";
     track.style.transform = `translateX(${-index * step() + offset}px)`;
     const at = ((index % n) + n) % n;
     dots.forEach((d, k) => { d.classList.toggle("on", k === at); d.setAttribute("aria-selected", String(k === at)); });
@@ -261,7 +254,7 @@ const parts = (s: string) => s.split(/(\d+(?:\.\d+)?)/).map((t, i) => (i % 2 ? {
   // Autoplay: one card every 1.5s while the row is on screen; pauses on hover, keyboard focus and drag
   let hover = false, dragging = false, timer = 0;
   const tick = () => { if (visible && !hover && !dragging && !document.hidden) go(index + 1); };
-  const restart = () => { clearInterval(timer); if (!reduce) timer = window.setInterval(tick, EVERY); };
+  const restart = () => { clearInterval(timer); timer = window.setInterval(tick, EVERY); };
 
   // Arrows and one dot per partner
   real.forEach((_, k) => {

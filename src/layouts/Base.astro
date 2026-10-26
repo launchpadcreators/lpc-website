@@ -41,21 +41,17 @@ const hidden = noindex || import.meta.env.PUBLIC_NOINDEX === "true";
     <script>
       import Lenis from "lenis";
 
-      const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-      // Smooth scroll (skipped for reduced motion)
-      if (!reduce) {
-        const lenis = new Lenis({ duration: 1.1, smoothWheel: true });
-        const raf = (t: number) => { lenis.raf(t); requestAnimationFrame(raf); };
-        requestAnimationFrame(raf);
-        (window as any).lenis = lenis; // sections use it for programmatic scrolls (e.g. step arrows)
-        document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((a) =>
-          a.addEventListener("click", (e) => {
-            const id = a.getAttribute("href")!;
-            if (id.length > 1) { e.preventDefault(); lenis.scrollTo(id, { offset: -80 }); }
-          })
-        );
-      }
+      // Smooth scroll
+      const lenis = new Lenis({ duration: 1.1, smoothWheel: true, respectReducedMotion: false });
+      const raf = (t: number) => { lenis.raf(t); requestAnimationFrame(raf); };
+      requestAnimationFrame(raf);
+      (window as any).lenis = lenis; // sections use it for programmatic scrolls (e.g. step arrows)
+      document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((a) =>
+        a.addEventListener("click", (e) => {
+          const id = a.getAttribute("href")!;
+          if (id.length > 1) { e.preventDefault(); lenis.scrollTo(id, { offset: -80 }); }
+        })
+      );
 
       // Scroll reveals: content stays visible if this script never runs
       document.documentElement.classList.add("reveal-ready");

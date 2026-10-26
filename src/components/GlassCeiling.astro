@@ -236,21 +236,11 @@ const blockers = [
     .blocker:is([data-b="0"], [data-b="2"], [data-b="4"]) { left: 25% !important; }
     .blocker:is([data-b="1"], [data-b="3"], [data-b="5"]) { left: 75% !important; }
   }
-
-  /* Reduced motion: no pinning; show the final state */
-  @media (prefers-reduced-motion: reduce) {
-    .gc { height: auto; } .gc-pin { position: relative; height: auto; padding: 80px 0; }
-    .gc-inner { height: auto; } .gc-chart { height: 300px; }
-    .step[data-i="2"] { opacity: 1; transform: none; position: relative; }
-    svg .grey, svg .orange { stroke-dashoffset: 0; } svg .area, svg .ceil, .ceil-label { opacity: 1; }
-    .push-hint, .pressure { display: none; }
-  }
 </style>
 
 <script>
   import { onScrollInView } from "../lib/scroll";
   const sec = document.getElementById("glass-ceiling")!;
-  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const steps = [...sec.querySelectorAll<HTMLElement>(".step")];
   const blockers = [...sec.querySelectorAll<HTMLElement>(".blocker")];
   const grey = sec.querySelector<SVGPathElement>(".grey")!;
@@ -355,16 +345,14 @@ const blockers = [
   const gsPin = document.querySelector<HTMLElement>("#growth-system .gs-pin");
   const gsLabel = document.querySelector<HTMLElement>("#growth-system h2");
   function syncTop() {
-    if (!gsPin || !gsLabel || reduce || matchMedia("(max-width: 899px)").matches) return sec.style.removeProperty("--gc-top");
+    if (!gsPin || !gsLabel || matchMedia("(max-width: 899px)").matches) return sec.style.removeProperty("--gc-top");
     sec.style.setProperty("--gc-top", `${Math.round(gsLabel.getBoundingClientRect().top - gsPin.getBoundingClientRect().top)}px`);
   }
   syncTop();
   if (gsPin) new ResizeObserver(syncTop).observe(gsPin);
 
   layout();
-  new ResizeObserver(() => { layout(); if (!reduce) render(); }).observe(svg);
-  if (!reduce) {
-    render();
-    onScrollInView(sec, render);
-  }
+  new ResizeObserver(() => { layout(); render(); }).observe(svg);
+  render();
+  onScrollInView(sec, render);
 </script>

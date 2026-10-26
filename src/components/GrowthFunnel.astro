@@ -136,17 +136,11 @@ const pad = (n: number) => String(n).padStart(2, "0");
     .b-lvl { font-size: 10px; }
     .flow { opacity: 1; }
   }
-  @media (prefers-reduced-motion: reduce) {
-    .gf { height: auto; } .gf-pin { position: relative; height: auto; padding: 96px 0; }
-    .band { transform: none !important; opacity: 1 !important; }
-    .flow { display: none; }
-  }
 </style>
 
 <script>
   import { markInView, onScrollInView } from "../lib/scroll";
   const sec = document.getElementById("growth-funnel")!;
-  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const mobile = matchMedia("(max-width: 899px)");
   const funnel = sec.querySelector<HTMLElement>(".funnel")!;
   const bands = [...sec.querySelectorAll<HTMLElement>(".band")];
@@ -237,8 +231,6 @@ const pad = (n: number) => String(n).padStart(2, "0");
   }
 
   if (mobile.matches) setActive(0);
-  if (!reduce) {
-    render();
-    onScrollInView(sec, render);
-  }
+  render();
+  onScrollInView(sec, render);
 </script>

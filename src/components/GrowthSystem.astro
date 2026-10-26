@@ -81,18 +81,11 @@ import { stages } from "../data/growth-stages";
     .cards::after { background: var(--accent); transform-origin: top; transform: scaleY(var(--fill, 0)); }
     .card { min-height: 0; }
   }
-
-  @media (prefers-reduced-motion: reduce) {
-    .gs { height: auto; }
-    .gs-pin { position: relative; height: auto; padding: 80px 0; }
-    .card { transform: none !important; opacity: 1 !important; }
-  }
 </style>
 
 <script>
   import { onScrollInView } from "../lib/scroll";
   const sec = document.getElementById("growth-system")!;
-  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const mobile = matchMedia("(max-width: 899px)");
   const list = sec.querySelector<HTMLElement>(".cards")!;
   const cards = [...sec.querySelectorAll<HTMLElement>(".card")];
@@ -133,11 +126,6 @@ import { stages } from "../data/growth-stages";
 
   const render = () => (mobile.matches ? stacked() : desktop());
 
-  if (reduce) {
-    cards.forEach((c) => c.classList.add("landed"));
-    cards[cards.length - 1].classList.add("on");
-  } else {
-    render();
-    onScrollInView(sec, render);
-  }
+  render();
+  onScrollInView(sec, render);
 </script>

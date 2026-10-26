@@ -147,22 +147,11 @@ const pad = (n: number) => String(n).padStart(2, "0");
     .ge-content { top: 64px; }
     .flare { width: 90vw; }
   }
-
-  /* Reduced motion: no pin, no rotation — show every level as a simple list inside the disc */
-  @media (prefers-reduced-motion: reduce) {
-    .ge { height: auto; }
-    .ge-pin { position: relative; height: auto; padding-bottom: 80px; }
-    .ge-stage { min-height: 900px; }
-    .badge, .lvl-word, .pager { display: none; }
-    .ge-steps { gap: 28px; }
-    .ge-step { grid-area: auto; opacity: 1; transform: none; filter: none; }
-  }
 </style>
 
 <script>
   import { onScrollInView } from "../lib/scroll";
   const sec = document.getElementById("growth-eclipse")!;
-  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const eclipse = sec.querySelector<HTMLElement>(".eclipse")!;
   const badges = [...sec.querySelectorAll<HTMLElement>(".badge")];
   const steps = [...sec.querySelectorAll<HTMLElement>(".ge-step")];
@@ -214,25 +203,21 @@ const pad = (n: number) => String(n).padStart(2, "0");
     const k = Math.max(0, Math.min(n - 1, active + Number(btn.dataset.dir)));
     const y = sec.offsetTop + (sec.offsetHeight - innerHeight) * (k / (n - 1));
     const lenis = (window as any).lenis;
-    lenis ? lenis.scrollTo(y, { duration: 1.2 }) : scrollTo({ top: y, behavior: reduce ? "auto" : "smooth" });
+    lenis ? lenis.scrollTo(y, { duration: 1.2 }) : scrollTo({ top: y, behavior: "smooth" });
   }));
 
   // Same headline height as the Growth System (and glass ceiling) headline; mobile keeps the CSS padding
   const gsPin = document.querySelector<HTMLElement>("#growth-system .gs-pin");
   const gsLabel = document.querySelector<HTMLElement>("#growth-system h2");
   function syncTop() {
-    if (!gsPin || !gsLabel || reduce || matchMedia("(max-width: 899px)").matches) return sec.style.removeProperty("--ge-top");
+    if (!gsPin || !gsLabel || matchMedia("(max-width: 899px)").matches) return sec.style.removeProperty("--ge-top");
     sec.style.setProperty("--ge-top", `${Math.round(gsLabel.getBoundingClientRect().top - gsPin.getBoundingClientRect().top)}px`);
   }
   syncTop();
   if (gsPin) new ResizeObserver(syncTop).observe(gsPin);
 
-  if (reduce) {
-    steps.forEach((el) => el.classList.add("on"));
-  } else {
-    measure();
-    render();
-    addEventListener("resize", measure);
-    onScrollInView(sec, render);
-  }
+  measure();
+  render();
+  addEventListener("resize", measure);
+  onScrollInView(sec, render);
 </script>

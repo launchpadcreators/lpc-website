@@ -49,26 +49,23 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
 </style>
 
 <script>
-  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const els = document.querySelectorAll<HTMLElement>("#numbers .count");
   const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractionDigits: d, maximumFractionDigits: d });
-  if (!reduce) {
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => {
-        if (!e.isIntersecting) return;
-        io.unobserve(e.target);
-        const el = e.target as HTMLElement;
-        const to = parseFloat(el.dataset.to!), dec = parseInt(el.dataset.dec!), from = to * 0.6;
-        const dur = 1400, t0 = performance.now();
-        const step = (t: number) => {
-          const p = Math.min(1, (t - t0) / dur), ease = 1 - Math.pow(1 - p, 3);
-          el.textContent = fmt(from + (to - from) * ease, dec);
-          if (p < 1) requestAnimationFrame(step);
-        };
-        el.textContent = fmt(from, dec);
-        requestAnimationFrame(step);
-      });
-    }, { threshold: 0.5 });
-    els.forEach((el) => io.observe(el));
-  }
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      io.unobserve(e.target);
+      const el = e.target as HTMLElement;
+      const to = parseFloat(el.dataset.to!), dec = parseInt(el.dataset.dec!), from = to * 0.6;
+      const dur = 1400, t0 = performance.now();
+      const step = (t: number) => {
+        const p = Math.min(1, (t - t0) / dur), ease = 1 - Math.pow(1 - p, 3);
+        el.textContent = fmt(from + (to - from) * ease, dec);
+        if (p < 1) requestAnimationFrame(step);
+      };
+      el.textContent = fmt(from, dec);
+      requestAnimationFrame(step);
+    });
+  }, { threshold: 0.5 });
+  els.forEach((el) => io.observe(el));
 </script>

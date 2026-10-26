@@ -99,32 +99,29 @@ const mark = "M168.26 10.0056C175.957 -3.33512 195.211 -3.33512 202.908 10.0056L
   const trail = rocket.querySelector<HTMLElement>(".trail")!;
   const clamp = (v: number) => Math.max(0, Math.min(1, v));
 
-  if (matchMedia("(prefers-reduced-motion: reduce)").matches) rocket.remove();
-  else {
-    const render = () => {
-      const r = card.getBoundingClientRect();
-      const end = Math.max(innerHeight - 24 - r.height, innerHeight * 0.12); // card fully in view (or its top near the top, if taller than the screen)
-      const climb = innerHeight + rocket.offsetHeight; // from just below the screen to just above it
-      const start = end + climb / 2; // 2x the scroll speed
-      const p = clamp((start - r.top) / (start - end));
-      rocket.style.visibility = p > 0 && p < 1 ? "visible" : "hidden";
-      // from just below the screen up and out past the top, gently speeding up
-      const lift = Math.pow(p, 1.1) * climb;
-      rocket.style.transform = `translate3d(0, ${-lift}px, 0)`;
-      // fade by where it is on screen: starts once its top passes a third of the way down from the top of the
-      // screen, fully faded as it leaves, so the fade is always visible
-      const y = innerHeight - lift; // rocket's top edge on screen
-      const fadeFrom = innerHeight * 0.34, fadeTo = -rocket.offsetHeight * 0.4;
-      const f = clamp((fadeFrom - y) / (fadeFrom - fadeTo));
-      rocket.style.opacity = String(1 - f * f * (3 - 2 * f));
-      // flame and trail are already lit when it appears, and stretch out as it speeds up
-      flame.style.transform = `scaleY(${0.9 + p * 0.7})`;
-      flame.style.opacity = "1";
-      flame.classList.toggle("lit", p > 0);
-      trail.style.transform = `scaleY(${0.55 + p * 0.45})`;
-      trail.style.opacity = "0.8";
-    };
-    render();
-    onScrollInView(card, render, "200% 0px");
-  }
+  const render = () => {
+    const r = card.getBoundingClientRect();
+    const end = Math.max(innerHeight - 24 - r.height, innerHeight * 0.12); // card fully in view (or its top near the top, if taller than the screen)
+    const climb = innerHeight + rocket.offsetHeight; // from just below the screen to just above it
+    const start = end + climb / 2; // 2x the scroll speed
+    const p = clamp((start - r.top) / (start - end));
+    rocket.style.visibility = p > 0 && p < 1 ? "visible" : "hidden";
+    // from just below the screen up and out past the top, gently speeding up
+    const lift = Math.pow(p, 1.1) * climb;
+    rocket.style.transform = `translate3d(0, ${-lift}px, 0)`;
+    // fade by where it is on screen: starts once its top passes a third of the way down from the top of the
+    // screen, fully faded as it leaves, so the fade is always visible
+    const y = innerHeight - lift; // rocket's top edge on screen
+    const fadeFrom = innerHeight * 0.34, fadeTo = -rocket.offsetHeight * 0.4;
+    const f = clamp((fadeFrom - y) / (fadeFrom - fadeTo));
+    rocket.style.opacity = String(1 - f * f * (3 - 2 * f));
+    // flame and trail are already lit when it appears, and stretch out as it speeds up
+    flame.style.transform = `scaleY(${0.9 + p * 0.7})`;
+    flame.style.opacity = "1";
+    flame.classList.toggle("lit", p > 0);
+    trail.style.transform = `scaleY(${0.55 + p * 0.45})`;
+    trail.style.opacity = "0.8";
+  };
+  render();
+  onScrollInView(card, render, "200% 0px");
 </script>

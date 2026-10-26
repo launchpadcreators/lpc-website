@@ -135,20 +135,17 @@ const specialisms = ["Paid media", "Creative", "Content", "Funnels and AI", "Sal
     .grid3 { grid-template-columns: 1fr; grid-template-areas: "story" "fa" "fb" "team"; }
     .team { flex-direction: column; gap: 16px; }
   }
-  @media (prefers-reduced-motion: reduce) { :global(.reveal-ready) .card { opacity: 1; translate: none; } }
 </style>
 
 <script>
   const sec = document.getElementById("about")!;
   const grid = sec.querySelector<HTMLElement>(".grid3")!;
-  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   new IntersectionObserver(([en], o) => {
     if (!en.isIntersecting) return;
     o.disconnect();
     grid.classList.add("in");
     // count the team size up from 0
     const el = sec.querySelector<HTMLElement>(".count")!;
-    if (reduce) return;
     const to = Number(el.dataset.n), t0 = performance.now();
     const tick = (t: number) => { const k = Math.min(1, (t - t0) / 1200); el.textContent = String(Math.round(to * (1 - Math.pow(1 - k, 3)))); if (k < 1) requestAnimationFrame(tick); };
     requestAnimationFrame(tick);

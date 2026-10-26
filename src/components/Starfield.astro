@@ -18,7 +18,6 @@
 <script>
   const canvas = document.getElementById("starfield") as HTMLCanvasElement;
   const ctx = canvas.getContext("2d")!;
-  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const DPR = Math.min(window.devicePixelRatio || 1, 2);
 
   type Star = { x: number; y: number; r: number; a: number; tw: number; ph: number; depth: number; orange: boolean; vx: number; vy: number };
@@ -58,12 +57,12 @@
     const time = t / 1000;
     const k = dt / 16.7; // drift per frame scaled to elapsed time, so speed is the same at 30 and 60fps
     for (const s of stars) {
-      if (!reduce) { s.x += s.vx * k; s.y += s.vy * k; }
+      s.x += s.vx * k; s.y += s.vy * k;
       if (s.x < -2) s.x = w + 2; if (s.x > w + 2) s.x = -2;
       if (s.y < -2) s.y = h + 2; if (s.y > h + 2) s.y = -2;
       // parallax: nearer stars move more with scroll
       const py = (((s.y - scrollY * (0.04 + s.depth * 0.12)) % h) + h) % h;
-      const twinkle = reduce ? 1 : 0.55 + 0.45 * Math.sin(time * s.tw + s.ph);
+      const twinkle = 0.55 + 0.45 * Math.sin(time * s.tw + s.ph);
       const alpha = s.a * twinkle;
       ctx.fillStyle = s.orange ? ACCENT_RGB : STAR_RGB;
       ctx.globalAlpha = s.orange ? alpha : alpha * 0.9;
@@ -92,5 +91,5 @@
   window.addEventListener("resize", resize, { passive: true });
   window.addEventListener("scroll", () => { scrollY = window.scrollY; }, { passive: true });
   document.addEventListener("visibilitychange", () => { running = !document.hidden; });
-  if (reduce) draw(0, 16.7); else requestAnimationFrame(loop);
+  requestAnimationFrame(loop);
 </script>
