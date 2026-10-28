@@ -4,10 +4,22 @@ The website for Launchpad Creators (LPC), launchpadcreators.com. Anyone can ask 
 
 **Before doing anything, read [CHANGELOG.md](CHANGELOG.md).** It's the update history and current status. **After every change, add an entry to it** (see the bottom of this file).
 
+## ⚠ Critical rules (the server)
+
+Anything touching the 123reg server (the upload job, the File Browser, SFTP, DNS) follows **[docs/DEPLOY-123REG.md](docs/DEPLOY-123REG.md)**. Read it first. In short:
+1. **Only ever write to `html/lpc-preview/`** until a launch plan is agreed and written there. Never touch WordPress files, `platform/`, the live homepage or DNS.
+2. **Always `dry-run` first and read the log** before any upload. Every full path must be inside `lpc-preview`.
+3. **Check results more than once:** the job log, the preview URL, **and** that the live site (homepage, privacy, terms, login) is unchanged.
+4. **Sanity-check your own checks** before reporting them.
+5. **Backup first** (123reg Backups tab). **One small, verified step at a time.**
+6. **Never** put passwords, logins or the SFTP address in the repo, chat or logs.
+7. **Log every server action in CHANGELOG.md:** mode, run link, what changed, what was checked.
+
 ## Where things stand
 
 - `main` publishes automatically to the **preview**, https://launchpadcreators.github.io/lpc-website/. It's hidden from Google.
 - The **real domain** (launchpadcreators.com) still shows the old WordPress site. The new site will go live on the existing 123reg hosting, with automatic uploads from GitHub. Until that's set up, `main` only updates the preview. CHANGELOG.md says when this changes.
+- The **123reg preview** (https://launchpadcreators.com/lpc-preview/) is updated by the manual GitHub job "Preview to 123reg"; see [docs/DEPLOY-123REG.md](docs/DEPLOY-123REG.md).
 - **Never publish to the real domain, or push to `main`, unless the person asking clearly says to.** For Tom and Dan, the normal route is a branch and a pull request, so it can be checked on the preview before anyone approves it.
 
 ## Copy rules (most important)
