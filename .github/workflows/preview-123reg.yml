@@ -1,0 +1,88 @@
+# Uploads the site to the hidden /lpc-preview/ folder on the 123reg hosting over SFTP.
+# Manual for now: Actions tab → "Preview to 123reg" → Run workflow, then pick a mode:
+#   dry-run (default): lists what would change, uploads nothing
+#   one-file-test:     uploads only lpc-preview/deploy-test.txt (time + commit), to prove the login works
+#   full:              updates the whole lpc-preview folder
+# It only ever works inside the lpc-preview folder (which must already exist), never WordPress or the live homepage.
+# Needs the repo secrets SFTP_HOST, SFTP_USER and SFTP_PASSWORD (optional SFTP_ROOT: the web root, if the login
+# doesn't start there).
+name: Preview to 123reg
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "dry-run = list changes only; one-file-test = upload deploy-test.txt only; full = update lpc-preview"
+        type: choice
+        options: [dry-run, one-file-test, full]
+        default: dry-run
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sftp-preview
+  cancel-in-progress: false
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    env:
+      BASE_PATH: /lpc-preview
+      PUBLIC_NOINDEX: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24 # Astro 7 needs Node >= 22.23.4
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+
+      - name: Install lftp
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+
+      - name: Upload to /lpc-preview/
+        env:
+          SFTP_HOST: ${{ secrets.SFTP_HOST }}
+          SFTP_USER: ${{ secrets.SFTP_USER }}
+          LFTP_PASSWORD: ${{ secrets.SFTP_PASSWORD }}
+          SFTP_ROOT: ${{ secrets.SFTP_ROOT }}
+          MODE: ${{ inputs.mode }}
+        run: |
+          set -euo pipefail
+          for v in SFTP_HOST SFTP_USER LFTP_PASSWORD; do
+            [ -n "${!v}" ] || { echo "Missing secret: $v"; exit 1; }
+          done
+          ROOT="${SFTP_ROOT:-.}"
+          [ -f dist/index.html ] || { echo "Build output missing"; exit 1; }
+          lftp_run() {
+            lftp -c "set sftp:auto-confirm yes; set net:max-retries 2; set net:timeout 30; open --env-password -u \"$SFTP_USER\" sftp://$SFTP_HOST; $1"
+          }
+
+          echo "== Landing folder on the server:"
+          lftp_run "pwd; cd \"$ROOT\"; pwd"
+
+          # Safety: only continue if the lpc-preview folder already exists here (we made it by hand; the job never creates it)
+          if ! lftp_run "cd \"$ROOT\"; cls -1 -d lpc-preview" | grep -qx 'lpc-preview/\?'; then
+            echo "Stopping: no lpc-preview folder in '$ROOT'. Nothing was changed. Set the SFTP_ROOT secret if the login starts elsewhere."
+            exit 1
+          fi
+          echo "== lpc-preview folder found"
+
+          # mirror only inside lpc-preview/ (--delete removes old files there and nowhere else)
+          FLAGS="--reverse --delete --verbose --parallel=4"
+          case "$MODE" in
+            dry-run)
+              echo "== DRY RUN: listing changes only, nothing will be uploaded"
+              lftp_run "cd \"$ROOT\"; mirror $FLAGS --dry-run dist/ lpc-preview/" ;;
+            one-file-test)
+              printf 'Upload test from GitHub\nTime: %s\nCommit: %s\n' "$(date -u '+%Y-%m-%d %H:%M UTC')" "$GITHUB_SHA" > deploy-test.txt
+              echo "== ONE-FILE TEST: uploading lpc-preview/deploy-test.txt only"
+              lftp_run "cd \"$ROOT\"; cd lpc-preview; put deploy-test.txt; cls -l deploy-test.txt" ;;
+            full)
+              echo "== FULL: updating the lpc-preview folder"
+              lftp_run "cd \"$ROOT\"; mirror $FLAGS dist/ lpc-preview/" ;;
+            *) echo "Unknown mode: $MODE"; exit 1 ;;
+          esac
+          echo "== Done"
