@@ -12,6 +12,9 @@ const pad = (n: number) => String(n).padStart(2, "0");
 <section id="growth-funnel" class="gf relative" aria-label="The Launchpad Growth System (funnel)">
   <div class="gf-pin">
     <div class="gf-inner mx-auto w-full max-w-[1240px] px-5">
+      <!-- phones/tablet: marks where the pinned block would sit unpinned (progress is measured from it) -->
+      <div class="gf-anchor" aria-hidden="true"></div>
+      <div class="gf-stage">
 
       <div class="gf-text">
         <h2 class="text-[clamp(28px,min(3.3vw,5.6vh),48px)] font-semibold leading-[1.06] tracking-[-0.04em] text-text">
@@ -41,6 +44,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
             {[-26, 18, -10, 30, 4, -20, 12].map((x, k) => <i style={`--x:${x}%;--d:${k * -0.5}s`}></i>)}
           </li>
         </ol>
+      </div>
       </div>
       <div class="gf-track" aria-hidden="true"></div>
     </div>
@@ -112,22 +116,24 @@ const pad = (n: number) => String(n).padStart(2, "0");
   }
   .gf:not(.inview) .flow i { animation-play-state: paused; }
 
-  /* Phones / tablet portrait: no pin, text then funnel then the button */
-  .gf-track { display: none; }
+  /* Desktop: the stage wrapper steps aside so text and funnel stay two grid columns */
+  .gf-stage { display: contents; }
+  .gf-anchor, .gf-track { display: none; }
+  /* Phones / tablet portrait: heading, line and funnel pinned together */
   @media (max-width: 899px) {
     .gf { height: auto; padding: 72px 0 64px; }
     .gf-pin { position: relative; height: auto; display: block; overflow: visible; }
-    .gf-inner { grid-template-columns: 1fr; gap: 28px; padding-top: 0; }
+    .gf-inner { display: block; padding-top: 0; }
     .rail { display: none; }
-    /* text block melts into the grid so the button can sit after the funnel */
-    .gf-text { display: contents; }
-    .gf-visual { order: 1; }
-    /* heading and line centred on phones */
+    /* heading and line centred, kept close to the funnel */
     .gf-text h2, .sub { text-align: center; margin-inline: auto; }
-    /* pinned while the levels open: the funnel sticks (vertically centred, below the header) for the length of the
-       track after it, about 40% of a screen of scrolling per level */
-    .gf-visual { position: sticky; top: max(84px, calc(50svh - 230px)); align-self: start; z-index: 1; }
-    .gf-track { display: block; order: 2; height: 200svh; margin-top: -28px; }
+    .sub { margin-top: 10px; }
+    .gf-visual { margin-top: 22px; }
+    /* pinned while the levels open: the whole block sticks, centred under the header (--stick, set by the script),
+       for the length of the track after it, about 40% of a screen of scrolling per level */
+    .gf-anchor { display: block; height: 0; }
+    .gf-stage { display: block; position: sticky; top: var(--stick, 84px); z-index: 1; }
+    .gf-track { display: block; height: 200svh; }
     .funnel { --taper: 24; gap: 6px; }
     .band { cursor: pointer; -webkit-tap-highlight-color: transparent; }
     .b-in { min-height: 54px; padding: 8px calc(var(--bp, 0px) + 10px); }
@@ -135,6 +141,16 @@ const pad = (n: number) => String(n).padStart(2, "0");
     .b-name { font-size: 16px; }
     .b-lvl { font-size: 10px; }
     .flow { opacity: 1; }
+  }
+  /* Short phones (e.g. 375×667): a more compact block so heading, line and funnel all fit under the navbar */
+  @media (max-width: 899px) and (max-height: 740px) {
+    .gf-text h2 { font-size: 24px; }
+    .sub { font-size: 14px; line-height: 1.45; margin-top: 8px; }
+    .gf-visual { margin-top: 14px; }
+    .gf-title { font-size: 15px; }
+    .funnel { gap: 4px; margin-top: 10px; }
+    .b-in { min-height: 44px; padding-block: 5px; }
+    .b-line { font-size: 12px; line-height: 1.35; }
   }
 </style>
 
@@ -195,22 +211,37 @@ const pad = (n: number) => String(n).padStart(2, "0");
     if (mobile.matches) setActive(b.classList.contains("on") ? -1 : i);
   }));
   const onMode = () => {
-    if (mobile.matches) { sec.classList.remove("walking"); setActive(0); }
+    if (mobile.matches) { sec.classList.remove("walking"); setActive(0); placeStage(); }
     else render();
   };
   mobile.addEventListener("change", onMode);
 
-  // Phones: the funnel is pinned (sticky) while the track after it scrolls past; progress through the track walks
-  // 01 → 05. Progress is measured from where the funnel would sit unpinned (just under the line above it), which
-  // doesn't change when a band opens, so the hand-over between bands never jitters. A tap still opens a band.
-  const sub = sec.querySelector<HTMLElement>(".sub")!;
-  const visual = sec.querySelector<HTMLElement>(".gf-visual")!;
+  // Phones: heading, line and funnel are pinned together (sticky) while the track after them scrolls past; progress
+  // through the track walks 01 → 05. Progress is measured from where the block would sit unpinned (the anchor just
+  // above it), which doesn't change when a band opens, so the hand-over between bands never jitters. A tap still opens a band.
+  const stage = sec.querySelector<HTMLElement>(".gf-stage")!;
+  const anchor = sec.querySelector<HTMLElement>(".gf-anchor")!;
   const track = sec.querySelector<HTMLElement>(".gf-track")!;
+  const HEADER = 84; // clear of the fixed navbar
+  let stickTop = HEADER;
+  // Centre the block in the space under the navbar, sized for its tallest state (the band with the longest line open),
+  // so it never shifts or runs off screen as the bands take turns; if even that's too tall, keep its bottom on screen
+  const mores = [...sec.querySelectorAll<HTMLElement>(".b-more")];
+  const lines = [...sec.querySelectorAll<HTMLElement>(".b-line")];
+  const placeStage = () => {
+    if (!mobile.matches) return;
+    const closed = stage.offsetHeight - mores.reduce((h, m) => h + m.offsetHeight, 0);
+    const tallest = closed + Math.max(...lines.map((l) => l.scrollHeight)) + 5; // + the open line's padding-top
+    const free = innerHeight - HEADER;
+    stickTop = Math.round(tallest <= free ? HEADER + (free - tallest) / 2 : innerHeight - tallest - 8);
+    stage.style.setProperty("--stick", `${stickTop}px`);
+  };
+  placeStage();
+  addEventListener("resize", placeStage);
+  document.fonts?.ready.then(placeStage);
   let mobileActive = 0;
   const mobileWalk = () => {
-    const stickTop = parseFloat(getComputedStyle(visual).top) || 0;
-    const naturalTop = sub.getBoundingClientRect().bottom + 28; // grid gap between the line and the funnel
-    const p = clamp((stickTop - naturalTop) / (track.offsetHeight * 0.92));
+    const p = clamp((stickTop - anchor.getBoundingClientRect().top) / (track.offsetHeight * 0.92));
     const a = Math.min(n - 1, Math.floor(p * n));
     if (a !== mobileActive) { mobileActive = a; setActive(a); }
   };
