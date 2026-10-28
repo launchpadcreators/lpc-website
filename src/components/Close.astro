@@ -2,8 +2,9 @@
 // Close — one wide orange card (apply, Typeform) with a mini mailing-list card (Kit) sitting inside it on the right,
 // inside a framed panel (frame drops away on mobile). Stacks on mobile.
 // Copy: brief/04-copy-deck.md, section 8.
-// TODO: connect the mailing list form to Kit once Tom shares the form embed / ID.
+// The mailing list posts straight to Kit (form 10103548) with our own markup, so Kit's script and styles aren't loaded.
 import { applyUrl } from "../data/growth-stages";
+const kitAction = "https://app.kit.com/forms/10103548/subscriptions";
 ---
 <section id="newsletter" class="cl relative" aria-label="Apply or join the mailing list">
   <div class="mx-auto w-full max-w-[1080px] px-6">
@@ -23,9 +24,10 @@ import { applyUrl } from "../data/growth-stages";
           <div class="mini">
             <h3 class="mini-title">Learn how to scale.</h3>
             <p class="mini-body">Weekly tips, frameworks and behind-the-scenes breakdowns from the businesses we grow.</p>
-            <form class="form" novalidate>
-              <label class="field"><span class="sr-only">First name</span><input name="first_name" type="text" placeholder="First name" autocomplete="given-name" required /></label>
-              <label class="field"><span class="sr-only">Email</span><input name="email" type="email" placeholder="Email" autocomplete="email" required /></label>
+            <!-- action/method let it still work (on Kit's own page) if the script below never runs -->
+            <form class="form" action={kitAction} method="post" novalidate>
+              <label class="field"><span class="sr-only">First name</span><input name="fields[first_name]" type="text" placeholder="First name" autocomplete="given-name" required /></label>
+              <label class="field"><span class="sr-only">Email</span><input name="email_address" type="email" placeholder="Email" autocomplete="email" required /></label>
               <button class="btn-accent" type="submit">Join the list</button>
               <p class="note" role="status" aria-live="polite"></p>
             </form>
@@ -106,17 +108,31 @@ import { applyUrl } from "../data/growth-stages";
 </style>
 
 <script>
-  // Mailing list: basic validation for now. TODO: post to Kit (form ID from Tom) instead of showing this note.
+  // Mailing list: validate, then post to Kit in the background and show the result in the note
   const form = document.querySelector<HTMLFormElement>("#newsletter .form")!;
   const note = form.querySelector<HTMLElement>(".note")!;
-  form.addEventListener("submit", (e) => {
+  const button = form.querySelector<HTMLButtonElement>("button")!;
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const email = form.elements.namedItem("email") as HTMLInputElement;
-    const name = form.elements.namedItem("first_name") as HTMLInputElement;
+    const email = form.elements.namedItem("email_address") as HTMLInputElement;
+    const name = form.elements.namedItem("fields[first_name]") as HTMLInputElement;
     if (!name.value.trim() || !email.validity.valid || !email.value) {
       note.textContent = "Please add your first name and a valid email.";
       return;
     }
-    note.textContent = "Sign-up isn't connected yet. It'll go live once the Kit form is set up.";
+    button.disabled = true;
+    note.textContent = "";
+    try {
+      const res = await fetch(form.action, { method: "POST", body: new FormData(form), headers: { Accept: "application/json" } });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.status !== "success") throw new Error(data.errors?.messages?.[0] || "");
+      // Kit's own success message for this form
+      note.textContent = "Success! Now check your email to confirm your subscription.";
+      form.reset();
+    } catch (err) {
+      note.textContent = (err as Error).message || "Something went wrong. Please try again.";
+    } finally {
+      button.disabled = false;
+    }
   });
 </script>
