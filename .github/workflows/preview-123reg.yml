@@ -79,6 +79,8 @@ jobs:
             lftp_run "cls -1 -a -F ." || true
             echo "== Top of the server (/):"
             lftp_run "cls -1 -F /" || true
+            echo "== Inside SFTP_ROOT ('$ROOT'):"
+            lftp_run "cd \"$ROOT\"; pwd; cls -1 -a -F ." || true
             echo "== Any lpc-preview one or two levels below the top:"
             lftp_run "cls -1 -d /*/lpc-preview; cls -1 -d /*/*/lpc-preview" || true
             echo "== Done (nothing was changed)."
