@@ -3,16 +3,16 @@
 // a full-width chart draws on the page background, and one short line of copy swaps per beat:
 //  1. "The things that get you to your first milestone…" → grey line rises
 //  2. "Then it stalled."                   → line flattens under the dashed glass ceiling, blockers pop up
-//  3. "The ceiling is the missing system." → orange line breaks through
+//  3. "The ceiling is the missing system." → accent-coloured line breaks through
 // Hitting the ceiling is physical: at the end of beat 2 the scroll turns heavy (you have to push),
-// each push cracks the glass a little more with a thud, then it shatters and the orange line goes through.
+// each push cracks the glass a little more with a thud, then it shatters and the accent-coloured line goes through.
 const steps = [
   // Tom's Loom reviews (brief/05, brief/07): headline and sub-line in his words
   { t: "The things that got you to $20K–$60K a month <em class='accent'>won't be what gets you to $1M a month.</em>", s: "You can only go so far with great content, a strong network, a good product, sheer graft and maybe a bit of luck.", long: true },
   { t: "Then it <em class='accent'>stalled.</em>", s: "Reach plateaus. Every launch depends on how hard you push that month.", hint: "Keep scrolling to break through" },
   { t: "The ceiling is the <em class='accent'>missing system.</em>", s: "Not your audience. Not your expertise." },
 ];
-// Glass breaks where the orange breakout crosses the ceiling (authored 1200x420 grid)
+// Glass breaks where the accent-coloured breakout crosses the ceiling (authored 1200x420 grid)
 const IMPACT = { x: 700, y: 186 };
 const cracks = [
   ["M700 186 L670 178 L642 182 L620 172", "M700 186 L732 192 L758 186"],
@@ -55,7 +55,7 @@ const blockers = [
 
       <div class="gc-chart">
         <!-- Curves are C1-continuous: the grey line stays nearly flat, rising slowly to a horizontal tangent at x=640,
-             and the orange breakout leaves from that same point with the same tangent, then climbs steeply (Tom, review 2),
+             and the accent-coloured breakout leaves from that same point with the same tangent, then climbs steeply (Tom, review 2),
              rising past the top of the chart behind the headline.
              Shapes are authored on a 1200x420 grid (data-d) and rescaled to the real pixel size by the script,
              so strokes never stretch and the line-draw / tip maths stay exact. -->
@@ -69,7 +69,7 @@ const blockers = [
             <linearGradient id="gc-fade-x" x1=".533" y1="0" x2=".783" y2="0">
               <stop offset="0" stop-color="#fff" stop-opacity="0" /><stop offset="1" stop-color="#fff" stop-opacity="1" />
             </linearGradient>
-            <!-- Breakout line starts in the grey of the stalled line and warms into orange; its glow fades in from nothing -->
+            <!-- Breakout line starts in the grey of the stalled line and warms into the accent colour; its glow fades in from nothing -->
             <linearGradient id="gc-line" x1="0" y1="0" x2="1" y2="0">
               <stop offset="0" stop-color="var(--text)" stop-opacity=".3" />
               <stop offset=".38" stop-color="var(--accent)" stop-opacity="1" />

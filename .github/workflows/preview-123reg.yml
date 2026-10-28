@@ -1,13 +1,12 @@
 # Uploads the site to the hidden /lpc-preview/ folder on the 123reg hosting over SFTP.
 # Manual for now: Actions tab → "Preview to 123reg" → Run workflow, then pick a mode:
-#   find-folder:       read-only; prints which folder under the login's home holds lpc-preview (use it as SFTP_ROOT)
-#   look-around:       read-only; lists the home folder, the server's top folder, and any lpc-preview near the top
-#   dry-run (default): lists what would change, uploads nothing
+#   dry-run (default): read-only; lists what would change and prints SAFETY CHECK PASSED/FAILED
 #   one-file-test:     uploads only lpc-preview/deploy-test.txt (time + commit), to prove the login works
-#   full:              updates the whole lpc-preview folder
+#   full:              runs the same plan check first, then updates the lpc-preview folder (stops if the check fails)
+#   look-around / find-folder: read-only diagnostics (list folders); used to find the website folder
 # It only ever works inside the lpc-preview folder (which must already exist), never WordPress or the live homepage.
-# Needs the repo secrets SFTP_HOST, SFTP_USER and SFTP_PASSWORD (optional SFTP_ROOT: the web root, if the login
-# doesn't start there).
+# Needs the repo secrets SFTP_HOST, SFTP_USER, SFTP_PASSWORD and SFTP_ROOT (= html, the website folder under the
+# login's home). Full details: docs/DEPLOY-123REG.md.
 name: Preview to 123reg
 
 on:
@@ -96,17 +95,34 @@ jobs:
 
           # mirror only inside lpc-preview/ (--delete removes old files there and nowhere else)
           FLAGS="--reverse --delete --verbose --parallel=4"
+          # Plan check: a dry run, then an automatic verdict. Every full path in the plan (mkdir/rm/chmod lines)
+          # must be inside <SFTP_ROOT>/lpc-preview, or the job stops before anything is uploaded.
+          plan_check() {
+            lftp_run "cd \"$ROOT\"; mirror $FLAGS --dry-run dist/ lpc-preview/" | tee plan.txt
+            local inside="/${ROOT#./}/lpc-preview"; [ "$ROOT" = "." ] && inside="/lpc-preview"
+            local paths outside
+            paths=$(grep -E '^(mkdir|rm|chmod)' plan.txt | grep -c 'sftp://' || true)
+            outside=$(grep -E '^(mkdir|rm|chmod)' plan.txt | grep 'sftp://' | grep -v -F "$inside" || true)
+            echo "== Plan: $(grep -c '^Transferring file' plan.txt || true) files to upload, $(grep -c '^rm ' plan.txt || true) to delete"
+            if [ -n "$outside" ]; then
+              echo "!! SAFETY CHECK FAILED: the plan touches paths outside lpc-preview. Nothing was uploaded."
+              exit 1
+            fi
+            echo "== SAFETY CHECK PASSED: all $paths paths in the plan are inside lpc-preview"
+          }
           case "$MODE" in
             dry-run)
               echo "== DRY RUN: listing changes only, nothing will be uploaded"
-              lftp_run "cd \"$ROOT\"; mirror $FLAGS --dry-run dist/ lpc-preview/" ;;
+              plan_check ;;
             one-file-test)
               printf 'Upload test from GitHub\nTime: %s\nCommit: %s\n' "$(date -u '+%Y-%m-%d %H:%M UTC')" "$GITHUB_SHA" > deploy-test.txt
               echo "== ONE-FILE TEST: uploading lpc-preview/deploy-test.txt only"
               lftp_run "cd \"$ROOT\"; cd lpc-preview; put deploy-test.txt; cls -l deploy-test.txt" ;;
             full)
-              echo "== FULL: updating the lpc-preview folder"
-              lftp_run "cd \"$ROOT\"; mirror $FLAGS dist/ lpc-preview/" ;;
+              echo "== FULL: checking the plan first (dry run), then updating the lpc-preview folder"
+              plan_check
+              lftp_run "cd \"$ROOT\"; mirror $FLAGS dist/ lpc-preview/"
+              echo "== UPLOAD FINISHED" ;;
             *) echo "Unknown mode: $MODE"; exit 1 ;;
           esac
           echo "== Done"

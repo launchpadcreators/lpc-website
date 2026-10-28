@@ -82,15 +82,28 @@ File: `.github/workflows/preview-123reg.yml`. Manual only: **Actions → Preview
 
 ## 6. How to read a dry-run log
 
+**The simple version:** look for the line **"SAFETY CHECK PASSED: all N paths in the plan are inside lpc-preview"**. The job checks its own plan automatically. If any path points outside `lpc-preview`, it prints **"SAFETY CHECK FAILED"** and stops. In `full` mode, the same check runs first, so a bad plan is never uploaded. Above it, a "Plan:" line says how many files will be uploaded and deleted.
+
+The details, for anyone checking by hand:
+
 - **"Removing old file" / "Transferring file"** lines show names **relative to `lpc-preview`** (for example `favicon.ico`), so they don't contain the word "lpc-preview".
 - **`mkdir` / `rm` / `chmod`** lines show **full paths**. Every one must start with `…/home/***/***/lpc-preview/`. **If any full path points outside `lpc-preview`, stop.**
 - A **replaced** file shows "Removing old file" **and** "Transferring file". A **deleted** file shows "Removing old file" **plus** an `rm` line, with no transfer. A **new** file shows only "Transferring file".
 - Example (28 Oct 2026): Transferring 50 and Removing 51 meant 48 replaced, 2 new and 3 deleted (2 old build files and a leftover zip), leaving exactly 50 files.
 
+### Previewing a branch (before a pull request is approved)
+
+Actions → **Preview to 123reg** → **Run workflow** → under **"Use workflow from"** pick the branch → `dry-run` → check "SAFETY CHECK PASSED" → `full`. There's only one `lpc-preview` folder, so it shows whichever branch was uploaded last.
+
+> ⚠ Until the first `one-file-test` and `full` have succeeded (see section 8), branch previews are **untested**, and the folder may still show an older test build.
+
+**Who can run it:** Tom or Dan, through the LPC team account (and Abdullah while he's still helping), following the rules below. The secrets are only changed from the `launchpadcreators` GitHub account.
+
 ## 7. Critical rules
 
+0. **This file is the source of truth** for the server. CLAUDE.md only summarises it; if they ever differ, this file wins, so fix the summary.
 1. **Never write anywhere except `html/lpc-preview/`** until a launch plan is agreed and written here. The live homepage, WordPress files, `platform/` and DNS are off-limits.
-2. **Always run `dry-run` first, and read the log** (section 6) before `one-file-test` or `full`. Do it in the same session, after any change to the job.
+2. **Always run `dry-run` first, and check it says "SAFETY CHECK PASSED"** (section 6) before `one-file-test` or `full`. Do it in the same session, after any change to the job. (`full` repeats the check by itself and stops if it fails.)
 3. **Check results more than once, from more than one angle:**
    - the job log (success, and every full path inside `lpc-preview`);
    - the preview URL loads (https://launchpadcreators.com/lpc-preview/), with no failed files;

@@ -9,9 +9,12 @@ The update history of the Launchpad Creators website, newest first. **Add a line
 - **Hosting decision:** the new site will go live on the existing 123reg hosting as plain files (no WordPress). Tom agreed to option 1 (123reg).
 - **123reg upload job:** "Preview to 123reg" is set up and its `dry-run` has passed. Next: `one-file-test`, then `full`. Server details and rules: [docs/DEPLOY-123REG.md](docs/DEPLOY-123REG.md).
 - **Waiting on Tom and Dan:** which Growth System version to keep; any copy changes; Dan's reference blue; new glass ceiling quotes and second beat; a new photo of Joseph (ideally on-stage photos of all partners); the "Our story" text; Jo Bird's bio.
-- **To do before launch:** Privacy Policy and Terms pages in the new design (same text as the current ones); SEO basics (share image, sitemap, robots.txt, structured data); the automatic upload to 123reg; making this repo private (after previews move to 123reg).
+- **To do before launch:** Privacy Policy and Terms pages in the new design (same text as the current ones); SEO basics (share image, sitemap, robots.txt, structured data); the automatic upload to 123reg; making this repo private (note: on GitHub's free plan that switches off the GitHub preview, so do it once the 123reg preview is in regular use).
+- **Access:** one shared LPC Claude account (team email) with the `launchpadcreators` GitHub account. Abdullah (`m-abdullahh`) stays a collaborator until the final deployment is done; he'll remove himself after that.
 
 ## 2026-10-28
+- Rules updated for Tom and Dan on Claude Code on the web (shared team account): who does what, two previews explained, confirm before merging, drafts and stats rules, image rules, web-session limits. Tested twice with a fresh Claude that saw only this repo. AGENTS.md now points to CLAUDE.md. Outdated "Hostinger" and "orange" comments fixed (comments only). Asked by Abdullah.
+- "Preview to 123reg" job: automatic safety verdict. The dry run prints SAFETY CHECK PASSED/FAILED, and `full` re-checks the plan and stops before uploading if any path is outside lpc-preview. Tested locally with a clean plan and a bad one.
 - Added [docs/DEPLOY-123REG.md](docs/DEPLOY-123REG.md) (server layout, access, secrets, the job, how to read logs, critical rules, set-up history) and critical server rules in CLAUDE.md. Asked by Abdullah.
 - 123reg server, read-only runs only, nothing changed:
   - `dry-run`: stopped safely, because the SFTP login lands in the home folder, not the website folder. ([run](https://github.com/launchpadcreators/lpc-website/actions/runs/40698492175))

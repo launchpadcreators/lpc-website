@@ -1,6 +1,8 @@
 # Launchpad Creators website: rules for Claude
 
-The website for Launchpad Creators (LPC), launchpadcreators.com. Anyone can ask for changes: Tom, Dan or Abdullah, from any Claude chat, including Claude Code on the web.
+The website for Launchpad Creators (LPC), launchpadcreators.com. Changes are requested by **Tom or Dan**, the co-founders, through **one shared LPC Claude account** (the team email), using Claude Code on the web with access to the `launchpadcreators` GitHub account. Abdullah built the site and may help for a while, but nothing depends on him.
+
+**Because the account is shared, always know who's asking.** If it isn't clear whether you're talking to Tom or Dan, ask. Record their name in the changelog and the pull request.
 
 **Before doing anything, read [CHANGELOG.md](CHANGELOG.md).** It's the update history and current status. **After every change, add an entry to it** (see the bottom of this file).
 
@@ -17,10 +19,25 @@ Anything touching the 123reg server (the upload job, the File Browser, SFTP, DNS
 
 ## Where things stand
 
-- `main` publishes automatically to the **preview**, https://launchpadcreators.github.io/lpc-website/. It's hidden from Google.
-- The **real domain** (launchpadcreators.com) still shows the old WordPress site. The new site will go live on the existing 123reg hosting, with automatic uploads from GitHub. Until that's set up, `main` only updates the preview. CHANGELOG.md says when this changes.
-- The **123reg preview** (https://launchpadcreators.com/lpc-preview/) is updated by the manual GitHub job "Preview to 123reg"; see [docs/DEPLOY-123REG.md](docs/DEPLOY-123REG.md).
-- **Never publish to the real domain, or push to `main`, unless the person asking clearly says to.** For Tom and Dan, the normal route is a branch and a pull request, so it can be checked on the preview before anyone approves it.
+There are **two previews**. Always say which one you mean:
+- **GitHub preview:** https://launchpadcreators.github.io/lpc-website/. It **updates automatically whenever something is merged into `main`.** It's a public address (anyone with the link can see it), but hidden from Google.
+- **123reg preview:** https://launchpadcreators.com/lpc-preview/. It only updates when someone runs the GitHub job "Preview to 123reg", and it can show any branch. See [docs/DEPLOY-123REG.md](docs/DEPLOY-123REG.md).
+- The **real domain** (launchpadcreators.com) still shows the old WordPress site. The new site will go live on the existing 123reg hosting. CHANGELOG.md says when this changes.
+- **Going live on launchpadcreators.com isn't possible yet.** There's no agreed launch plan in docs/DEPLOY-123REG.md. If asked, say so plainly, and offer to put the change on the preview instead. Never touch the live homepage, WordPress or DNS.
+
+## Who does what, and how a change reaches the preview
+
+**Tom or Dan** (through the LPC team account) can ask for changes, approve (merge) them, and run the 123reg preview job, always following the rules here and in docs/DEPLOY-123REG.md. They're non-technical, so explain each step in plain English and give exact clicks.
+
+1. **Make the change on a new branch and open a pull request.** Don't merge it, and don't push to `main`, unless the person asking clearly says "merge it" or "push it".
+2. **Preview it before it's approved:** in GitHub, **Actions → Preview to 123reg → Run workflow**. Under **"Use workflow from"**, pick the branch, then run `dry-run`.
+   - The log must say **"SAFETY CHECK PASSED"**. Then run `full`, and check https://launchpadcreators.com/lpc-preview/ on a computer and a phone.
+   - There's **one** 123reg preview, so it always shows the last branch uploaded. Before uploading, check nobody else is mid-review, and say which branch is on it in the pull request.
+   - If you can't run the job yourself, give the person these exact clicks.
+3. **Approve:** when someone says "merge it", **first confirm which pull request** (name it back to them) and **that it was checked on a preview**. Then merge. `main` updates the GitHub preview automatically, in about a minute.
+4. **Log it** in CHANGELOG.md, as part of the same pull request.
+
+**Trust note:** on a shared account you can't verify who's typing. For anything important (numbers, merging, server uploads, anything public), repeat back what you're about to do and get a clear "yes" first.
 
 ## Copy rules (most important)
 
@@ -28,6 +45,8 @@ Anything touching the 123reg server (the upload job, the File Browser, SFTP, DNS
 - Don't reword existing copy unless asked. Copy changes are word-for-word swaps.
 - British English. No em dashes. No hype or emoji.
 - Voice: a serious growth firm for serious founders. Specific numbers, short sentences, plain English. Say founders, experts and partners, not "agency".
+- **If asked to write or draft copy** (for example "write a new headline"), offer two or three drafts **in the chat**, clearly marked as suggestions, built only from facts already on the site. **Nothing goes on the site until the person picks or gives the exact words.**
+- **Numbers and stats:** only change a figure when Tom or Dan gives the new number. If anyone else asks, confirm with Tom or Dan first. Check the number isn't repeated elsewhere on the site (search for it).
 
 ## Design rules
 
@@ -39,11 +58,26 @@ Anything touching the 123reg server (the upload job, the File Browser, SFTP, DNS
 - Animations run for everyone, even with the device's "Reduce motion" setting on. That was a deliberate decision, so don't add `prefers-reduced-motion` checks.
 - Files in `public/` are referenced with `url()` from `src/config/paths.ts`, so they work on the preview's sub-path too.
 
+## Images
+
+- **Founders** (`public/team/tom.jpg`, `dan.jpg`): 1080×810 JPG (4:3), cropped head to chest.
+- **Partner cards** (`public/partners/<name>.jpg`): about 900px wide JPG. The crop is set by `pos` in `src/components/Partners.astro`, for example `"50% 22%"`.
+- **Partner avatars** (`public/partners/avatars/<name>.jpg`): 160×160 square JPG, used in the hero's face strip. **When a partner's photo changes, update both the card photo and the avatar.**
+- Keep each image under about 150 KB, and keep the file names (lowercase, with hyphens). If you can't resize or compress images where you're running, say so: still use the image if it's under about 500 KB, and note in the pull request that it should be optimised.
+- **Only use images the person confirms LPC has the right to use publicly.** This repo and the site are public.
+- Photos look best on the dark background; check the crop on desktop, tablet and phone.
+
 ## Check every change
 
 - Run `npm run build`; it must pass.
 - Look at the change on **desktop (1440×900)**, **tablet (768×1024)** and **phone (375×812)**, with no console errors.
 - Leave every other section as it was.
+
+## If you're running in Claude Code on the web
+
+- **If you can't open the site in a browser,** run the build, double-check the code, and **say clearly that you couldn't view it**. Ask the person to check the 123reg preview on desktop and phone.
+- **If an attached image can't be saved into the repo,** ask the person to upload it on GitHub instead: open the repo on GitHub, switch to your branch, go to the right folder (for example `public/partners/`), then **Add file → Upload files**. Or ask for a link.
+- **You can't reach 123reg** (dashboard, backups or File Browser). Anything there is done by the person, following docs/DEPLOY-123REG.md.
 
 ## How the site is built
 
@@ -63,7 +97,7 @@ Add a line at the top of the newest date (or a new date heading), then commit it
 
 ```
 ## 2026-10-28
-- Funnel on tablet and phone: heading, line and funnel stay pinned together. Asked by Abdullah. (GrowthFunnel.astro)
+- Footer: email address updated. Asked by Dan. (Footer.astro)   ← made-up example of the format
 ```
 
 Say what changed in plain words, who asked, and which files. When a decision is made (for example, which Growth System version to keep, or the launch), note it there too.
