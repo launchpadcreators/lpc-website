@@ -1,6 +1,7 @@
 # Uploads the site to the hidden /lpc-preview/ folder on the 123reg hosting over SFTP.
 # Manual for now: Actions tab → "Preview to 123reg" → Run workflow, then pick a mode:
 #   find-folder:       read-only; prints which folder under the login's home holds lpc-preview (use it as SFTP_ROOT)
+#   look-around:       read-only; lists the home folder, the server's top folder, and any lpc-preview near the top
 #   dry-run (default): lists what would change, uploads nothing
 #   one-file-test:     uploads only lpc-preview/deploy-test.txt (time + commit), to prove the login works
 #   full:              updates the whole lpc-preview folder
@@ -15,7 +16,7 @@ on:
       mode:
         description: "find-folder = show where lpc-preview is (read-only); dry-run = list changes only; one-file-test = upload deploy-test.txt only; full = update lpc-preview"
         type: choice
-        options: [dry-run, find-folder, one-file-test, full]
+        options: [dry-run, find-folder, look-around, one-file-test, full]
         default: dry-run
 
 permissions:
@@ -69,6 +70,18 @@ jobs:
             echo "== Looking for the lpc-preview folder (read-only, nothing is changed):"
             lftp_run "cls -1 -d lpc-preview; cls -1 -d */lpc-preview; cls -1 -d */*/lpc-preview" || true
             echo "== Done. Set SFTP_ROOT to the part before /lpc-preview (no SFTP_ROOT needed if it's just 'lpc-preview')."
+            exit 0
+          fi
+
+          # Read-only: list names only (home folder, server top, and lpc-preview near the top), then stop
+          if [ "$MODE" = "look-around" ]; then
+            echo "== Home folder (including hidden items):"
+            lftp_run "cls -1 -a -F ." || true
+            echo "== Top of the server (/):"
+            lftp_run "cls -1 -F /" || true
+            echo "== Any lpc-preview one or two levels below the top:"
+            lftp_run "cls -1 -d /*/lpc-preview; cls -1 -d /*/*/lpc-preview" || true
+            echo "== Done (nothing was changed)."
             exit 0
           fi
 
