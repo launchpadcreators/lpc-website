@@ -101,6 +101,9 @@ const partners: Partner[] = [
   },
 ];
 
+// Google Drive video links: the file id gives its still image and its full-screen viewer (used on phones)
+const driveId = (link: string) => link.match(/\/d\/([^/]+)/)?.[1] ?? "";
+
 const team = [
   { label: "Paid media", text: "media buying, testing and scaling across Meta and LinkedIn" },
   { label: "Creative and design", text: "ad concepts, statics, video editing and landing pages" },
@@ -200,7 +203,13 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
               <div class="rs-tile rs-words" data-native-cursor>
                 <h3 class="rs-h3">In {p.pronoun} words</h3>
                 <div class="rs-video">
-                  <iframe src={p.video} title={`${p.name} testimonial`} allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+                  <iframe src={p.video} title={`${p.name} testimonial`} loading="lazy" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+                  <!-- Phones: Drive's embedded player doesn't fit a small frame (its controls spill out), so show a still
+                       with a play button that opens the video in Drive's own full-screen player -->
+                  <a class="rs-vposter" href={`https://drive.google.com/file/d/${driveId(p.video)}/view`} target="_blank" rel="noopener" aria-label={`Play ${p.name}'s video (opens Google Drive)`}>
+                    <img src={`https://drive.google.com/thumbnail?id=${driveId(p.video)}&sz=w800`} alt="" loading="lazy" decoding="async" />
+                    <span class="rs-vplay" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" /></svg></span>
+                  </a>
                 </div>
               </div>
             )}
@@ -331,6 +340,15 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
   .rs-words { grid-column: 1 / -1; }
   .rs-video { margin-top: 16px; aspect-ratio: 16 / 9; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); background: var(--raised); }
   .rs-video iframe { width: 100%; height: 100%; border: 0; }
+  .rs-vposter { display: none; position: relative; width: 100%; height: 100%; }
+  .rs-vposter img { width: 100%; height: 100%; object-fit: cover; }
+  .rs-vplay {
+    position: absolute; left: 14px; bottom: 14px; width: 54px; height: 54px; border-radius: 50%; /* corner, so it doesn't cover his face */
+    display: grid; place-items: center; background: var(--accent-grad); box-shadow: 0 10px 30px -8px rgb(var(--accent-rgb) / .7);
+    transition: transform .2s var(--ease-out-soft);
+  }
+  .rs-vplay svg { width: 22px; height: 22px; margin-left: 3px; fill: var(--accent-ink); }
+  .rs-vposter:active .rs-vplay { transform: scale(.94); }
 
   /* Team + founders */
   .rs-section { padding: clamp(64px, 10vh, 120px) 0 0; }
@@ -374,8 +392,10 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
     .rs-words { padding: 8px 0 0; background: none; border: 0; }
     .rs-words::after { display: none; }
     .rs-words .rs-h3 { padding: 0 6px; }
-    /* Google Drive's phone player crops its preview to fill the frame; at 16:9 it cut off the play button, at 4:3 it shows him and the button in full */
-    .rs-video { aspect-ratio: 4 / 3; }
+    /* Phones get the still + play button instead of Drive's embedded player (the hidden lazy iframe never loads) */
+    .rs-video { aspect-ratio: 1000 / 516; }
+    .rs-video iframe { display: none; }
+    .rs-vposter { display: block; }
   }
 </style>
 
