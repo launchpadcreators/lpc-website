@@ -16,6 +16,7 @@ Anything touching the 123reg server (the upload job, the File Browser, SFTP, DNS
 5. **Backup first** (123reg Backups tab). **One small, verified step at a time.**
 6. **Never** put passwords, logins or the SFTP address in the repo, chat or logs.
 7. **Log every server action in CHANGELOG.md:** mode, run link, what changed, what was checked.
+8. **After every upload, flush the cache** (123reg dashboard → Flush Cache; a person must do this), then check the plain preview address with nothing added after it. The site sits behind a CDN that otherwise keeps showing old pages.
 
 ## Where things stand
 
