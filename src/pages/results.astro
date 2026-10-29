@@ -10,6 +10,7 @@ import Navbar from "../components/Navbar.astro";
 import Close from "../components/Close.astro";
 import Footer from "../components/Footer.astro";
 import { url } from "../config/paths";
+import { applyUrl } from "../data/growth-stages";
 
 const intro =
   "Launchpad Creators is a growth partner for creator-led businesses. We take ownership of the marketing, sales and product engine behind an expert's audience, and scale it alongside them.";
@@ -206,6 +207,14 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
           </article>
           </Fragment>
         ))}
+
+        <!-- Closing line after the partners (Tom, Loom 29 Oct, 4:20) -->
+        <div class="rs-sep" aria-hidden="true"><span></span></div>
+        <div class="rs-more" data-reveal>
+          <p class="rs-lead">These are just a few recent results from some of our partners.</p>
+          <p class="rs-sub">To learn more and find out how you can work with us, contact us now.</p>
+          <a class="rs-btn" href={applyUrl} target="_blank" rel="noopener">Apply to work with us <span aria-hidden="true">→</span></a>
+        </div>
       </div>
     </section>
 
@@ -269,6 +278,16 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
   .rs-sep { position: relative; height: 1px; margin: clamp(56px, 9vh, 96px) auto; max-width: 720px; background: linear-gradient(90deg, transparent, var(--line) 25%, color-mix(in srgb, var(--accent) 45%, var(--line)) 50%, var(--line) 75%, transparent); }
   .rs-sep span { position: absolute; left: 50%; top: 50%; width: 7px; height: 7px; translate: -50% -50%; rotate: 45deg; border-radius: 2px; background: var(--accent); box-shadow: 0 0 14px 2px rgb(var(--accent-rgb) / .55); }
   .rs-sep + .rs-case { margin-top: 0; }
+  .rs-more { text-align: center; }
+  .rs-more .rs-sub { margin-top: 10px; }
+  .rs-btn {
+    display: inline-flex; align-items: center; gap: 8px; margin-top: 26px; height: 48px; padding: 0 22px; border-radius: 10px;
+    font-size: 15px; font-weight: 600; color: var(--accent-ink); background: var(--accent-grad);
+    transition: filter .2s, transform .2s var(--ease-out-soft);
+  }
+  .rs-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+  .rs-btn span { transition: transform .2s var(--ease-out-soft); }
+  .rs-btn:hover span { transform: translateX(3px); }
   .rs-bento {
     padding: 20px; border-radius: 18px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px;
     background: color-mix(in srgb, var(--surface) 55%, var(--bg)); border: 1px solid var(--line);
