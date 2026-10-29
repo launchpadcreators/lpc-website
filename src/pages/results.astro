@@ -206,15 +206,6 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
               </div>
             )}
           </article>
-          <!-- Phones: the video sits in its own card under the partner card, with minimal padding so it's as big as
-               possible (the tile above is hidden on phones; only one of the two is ever shown) -->
-          {p.video && (
-            <div class="rs-vcard">
-              <h3 class="rs-h3">In {p.pronoun} words</h3>
-              <video class="rs-video" controls controlslist="nodownload" oncontextmenu="return false" playsinline preload="none" title={`${p.name} testimonial`}
-                poster={url(p.video.replace(/\.mp4$/, ".jpg"))} src={url(p.video)}></video>
-            </div>
-          )}
           </Fragment>
         ))}
 
@@ -340,7 +331,6 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
 
   .rs-words { grid-column: 1 / -1; }
   /* the recording has black bars baked in at the sides; the picture inside them is 16:9, so filling a 16:9 frame trims them */
-  .rs-vcard { display: none; }
   .rs-video { display: block; width: 100%; margin-top: 16px; aspect-ratio: 16 / 9; border-radius: 10px; border: 1px solid var(--line); background: #000; object-fit: cover; }
 
   /* Team + founders */
@@ -381,11 +371,10 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
     .rs-photo { padding: 0; }
     .rs-founder { padding: 22px; }
     .rs-fphoto { margin: -22px -22px 20px; }
-    /* Video: its own card under the partner card, with minimal padding so the player is as big as possible */
-    .rs-words { display: none; }
-    .rs-vcard { display: block; margin-top: 12px; padding: 5px; border-radius: 16px; background: color-mix(in srgb, var(--surface) 55%, var(--bg)); border: 1px solid var(--line); }
-    .rs-vcard .rs-h3 { padding: 12px 11px 10px; font-size: 18px; }
-    .rs-vcard .rs-video { margin-top: 0; border: 0; border-radius: 11px; }
+    /* Video: no inner tile frame on phones, so it uses the card's full width */
+    .rs-words { padding: 8px 0 0; background: none; border: 0; }
+    .rs-words::after { display: none; }
+    .rs-words .rs-h3 { padding: 0 6px; }
   }
 </style>
 
