@@ -12,6 +12,11 @@ The update history of the Launchpad Creators website, newest first. **Add a line
 - **To do before launch:** Privacy Policy and Terms pages in the new design (same text as the current ones); SEO basics (share image, sitemap, robots.txt, structured data); the automatic upload to 123reg; making this repo private (note: on GitHub's free plan that switches off the GitHub preview, so do it once the 123reg preview is in regular use).
 - **Access:** one shared LPC Claude account (team email) with the `launchpadcreators` GitHub account. Abdullah (`m-abdullahh`) stays a collaborator until the final deployment is done; he'll remove himself after that.
 
+## 2026-10-29
+- New **Results & Proof page at `/results`**: intro and stats, then Chris, Nicolas, Joseph and Jo (photo, who they are, the product, what we did, results; Chris's testimonial video embedded), then the team and founders, plus the closing card. Copy word for word from Tom's "Results & Proof" doc. Doc placeholders (testimonials, the empty 4th stat, Jo's "In her words") are hidden until the content exists. Hidden from Google, and not linked from the homepage. Asked by Tom (Loom, 29 Oct). (src/pages/results.astro)
+- Menu and footer section links now work from other pages (they go back to the homepage's sections). (Navbar.astro, Footer.astro)
+- Copy questions for Tom: "$805M+" (the homepage says $80M+); the empty 4th stat; "30%%" shown as "30%"; Tom's two travel company figures (£500K to £7M vs £0 to £7M); em dashes in Joseph's result line.
+
 ## 2026-10-28
 - Rules updated for Tom and Dan on Claude Code on the web (shared team account): who does what, two previews explained, confirm before merging, drafts and stats rules, image rules, web-session limits. Tested twice with a fresh Claude that saw only this repo. AGENTS.md now points to CLAUDE.md. Outdated "Hostinger" and "orange" comments fixed (comments only). Asked by Abdullah.
 - "Preview to 123reg" job: automatic safety verdict. The dry run prints SAFETY CHECK PASSED/FAILED, and `full` re-checks the plan and stops before uploading if any path is outside lpc-preview. Tested locally with a clean plan and a bad one.

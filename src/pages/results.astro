@@ -1,0 +1,380 @@
+---
+// Results & Proof (/results): one straight scroll through the partners and what we did for them, then the team and
+// founders (Tom, Loom 29 Oct 2026: "same design as the home page", "not too many interactive elements").
+// Copy is word for word from Tom's "Launchpad Creators — Results & Proof" doc (19 Oct 2026). Placeholders in the doc
+// ("[Testimonial … to be added]", the empty 4th stat, Jo's empty "In her words") aren't shown until the content exists.
+// Hidden page: noindex and not linked from the homepage (proof page in the brief).
+import Base from "../layouts/Base.astro";
+import Starfield from "../components/Starfield.astro";
+import Navbar from "../components/Navbar.astro";
+import Close from "../components/Close.astro";
+import Footer from "../components/Footer.astro";
+import { url } from "../config/paths";
+
+const intro =
+  "Launchpad Creators is a growth partner for creator-led businesses. We take ownership of the marketing, sales and product engine behind an expert's audience, and scale it alongside them.";
+
+// Top stats: number split so it can count up; label = the rest of the copy line
+const stats = [
+  { prefix: "$", value: 805, decimals: 0, suffix: "M+", label: "revenue generated for partners" }, // [CONFIRM: homepage says $80M+]
+  { prefix: "", value: 6.8, decimals: 1, suffix: "x", label: "average return on ad spend" },
+  { prefix: "", value: 3250, decimals: 0, suffix: "+", label: "ad creatives produced" },
+];
+
+// Each result line is split into its big figure + the rest of the same sentence (words unchanged)
+type Partner = {
+  id: string; name: string; product: string; img: string; pos: string; headline: string;
+  pronoun: "his" | "her"; whoLabel: string; who: string; productText: string;
+  did: { label: string; text: string }[]; results: { big: string; text: string }[];
+  video?: string;
+};
+const partners: Partner[] = [
+  {
+    id: "chris-donnelly", name: "Chris Donnelly", product: "The Creator Accelerator", img: "partners/chris-donnelly.jpg", pos: "50% 50%",
+    headline: "6.5x return on ad spend. Full ownership of marketing, sales and product.",
+    pronoun: "his", whoLabel: "Who he is.",
+    who: "Serial founder with an audience of millions across LinkedIn, Instagram and YouTube. He built and sold Verb Brands, co-founded Lottie (raised $40M), and grew Searchable from $0 to an $85M valuation in 5 months.",
+    productText: "We manage Chris's online education products generating $10m revenue each year, led by The Creator Accelerator: a cohort programme for founders and executives building personal brands that drive real commercial return.",
+    did: [
+      { label: "Launch 1:", text: "took over paid ads for the cohort launch and drove a 6.5x return on ad spend." },
+      { label: "Launch 2:", text: "took on the full marketing, sales and product function: ads, funnels, webinars, creative, tracking, sales team and offer." },
+    ],
+    results: [
+      { big: "6.5x", text: "return on ad spend on the first cohort launch" },
+      { big: "271%", text: "improvement in webinar conversion rate compared to previous launch" },
+      { big: "30%", text: "increase in revenue and sales versus the previous cohort" }, // doc has "30%%" (typo)
+      { big: "73.9%", text: "close rate on sales calls" },
+    ],
+    video: "https://drive.google.com/file/d/1zaawN6GmnqFrzncUuuu1dMN-KoHx5ilV/preview",
+  },
+  {
+    id: "nicolas-boucher", name: "Nicolas Boucher", product: "AI Finance Club", img: "partners/nicolas-boucher.jpg", pos: "50% 50%",
+    headline: "From $50K a month to $650K a month in around 9 months.",
+    pronoun: "his", whoLabel: "Who he is.",
+    who: "LinkedIn creator with 1.2M+ followers who teaches AI to finance professionals.",
+    productText: "AI Finance Club: his training programme and community generating $7m+ each year, that teaches CFOs, finance directors and finance teams to use AI in their work.",
+    did: [
+      { label: "Scaled paid ads:", text: "built and ran his paid acquisition engine, from creative through to daily optimisation." },
+      { label: "Rebuilt the webinar:", text: "repositioned and rescripted it to lift conversion, live and evergreen." },
+      { label: "Improved the funnel:", text: "landing pages, registration flow and conversion journey." },
+    ],
+    results: [
+      { big: "$50K → $650K", text: "monthly revenue in around 9 months" },
+      { big: "8.36%", text: "average conversion rate from webinar attendee to customer ($1K+ AOV) across 2026 webinars" },
+    ],
+  },
+  {
+    id: "joseph-mcclendon", name: "Joseph McClendon III", product: "Vital AF", img: "partners/joseph-mcclendon.jpg", pos: "50% 22%",
+    headline: "From no product to launch in 2 months, and $100K+ revenue & 16x ROAS in the first month.",
+    pronoun: "his", whoLabel: "Who he is.",
+    who: "Peak performance coach and speaker, and a senior trainer alongside Tony Robbins for decades.",
+    productText: "Vital AF (7-figure business): a 90-day vitality programme and community built on three pillars, mindset, consumption and movement.",
+    did: [
+      { label: "Built the product from scratch:", text: "offer, programme structure and community." },
+      { label: "Launched it in 2 months:", text: "webinar, funnel, paid ads, email and SMS." },
+      { label: "Run it ongoing:", text: "ads, evergreen webinars, community and customer success." },
+    ],
+    results: [
+      { big: "0 → launch", text: "in 2 months" },
+      { big: "$100K+", text: "revenue in the first month" },
+      { big: "$83K", text: "in sales on $5.2K of ad spend — 16x ROAS, 81 customers and a 12.4% webinar conversion rate on launch." },
+    ],
+  },
+  {
+    id: "jo-bird", name: "Jo Bird", product: "Personal Branding Programme", img: "partners/jo-bird.jpg", pos: "50% 50%",
+    headline: "From $0 on her previous launch to $30K on her first launch with us.",
+    pronoun: "her", whoLabel: "Who she is.",
+    who: "Personal branding expert and speaker.",
+    productText: "Her personal branding program: a cohort that helps professionals build a visible, credible personal brand.",
+    did: [
+      { label: "Relaunched the programme:", text: "repositioned the offer for the new cohort." },
+      { label: "Rebuilt the webinar:", text: "structure, scripting and close." },
+      { label: "Rebuilt the funnel:", text: "registration, nurture and conversion journey." },
+      { label: "Sharpened the content:", text: "advised on organic content to warm up the launch." },
+      { label: "Improved sales calls:", text: "scripting and call structure." },
+    ],
+    results: [
+      { big: "$0 → $30K", text: "in sales, previous launch versus first launch with us" },
+      { big: "$0", text: "ad spend" },
+    ],
+  },
+];
+
+const team = [
+  { label: "Paid media", text: "media buying, testing and scaling across Meta and LinkedIn" },
+  { label: "Creative and design", text: "ad concepts, statics, video editing and landing pages" },
+  { label: "Organic content", text: "strategy, scripting and content that converts" },
+  { label: "Funnels, tech and AI", text: "tracking, automation and AI-powered systems" },
+  { label: "Sales", text: "scripting, closing and management of setting and sales teams" },
+  { label: "Customer success and community", text: "onboarding, engagement and retention" },
+  { label: "Operations and people", text: "project management and team support" },
+];
+
+const founders = [
+  {
+    name: "Dan Mian", role: "Co-founder", photo: "team/dan.jpg",
+    line: "Dan started as a performance marketer, including at BT, then built his own coaching business from the ground up.",
+    points: [
+      "Founded Gradvance, a UK graduate career academy, and grew it to $500K in revenue, building the product, marketing and sales, then hiring and delegating",
+      "350+ graduates placed into careers",
+    ],
+  },
+  {
+    name: "Tom Pestridge", role: "Co-founder", photo: "team/tom.jpg",
+    line: "Tom is a marketing leader who started and ran his own marketing agency before co-founding Launchpad.",
+    points: [
+      "Grew a travel company as growth partner from £500K to £7M in yearly revenue", // [CONFIRM: vs £0 to £7M below]
+      "Ran all organic and paid marketing for a travel startup, taking it from £0 to £7M in revenue between 2021 and 2025",
+      "Agency achieved a 9.46x average return on ad spend across 2025",
+    ],
+  },
+];
+const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractionDigits: d, maximumFractionDigits: d });
+---
+<Base
+  title="Results & Proof | Launchpad Creators"
+  description="A sample of recent results for Launchpad Creators' partners."
+  noindex
+>
+  <Starfield />
+  <Navbar />
+  <main class="relative z-10">
+
+    <!-- Intro + stats -->
+    <section id="top" class="rs-hero">
+      <div class="mx-auto w-full max-w-[880px] px-6 text-center">
+        <h1 class="h-in text-[clamp(40px,5.6vw,76px)] font-medium leading-[1.02] tracking-[-0.045em] text-text">Results &amp; <em class="accent">Proof</em></h1>
+        <p class="h-in mx-auto mt-6 max-w-[640px] text-[clamp(16px,1.5vw,19px)] leading-relaxed text-text-2" style="--d:120ms">{intro}</p>
+      </div>
+      <div class="rs-stats mx-auto mt-12 grid max-w-[980px] grid-cols-1 gap-3 px-6 sm:grid-cols-3">
+        {stats.map((s, i) => (
+          <div class="rs-stat" data-reveal style={`--d:${i * 90}ms`}>
+            <p class="rs-num" aria-label={`${s.prefix}${fmt(s.value, s.decimals)}${s.suffix}`}>
+              <span aria-hidden="true">{s.prefix}<span class="count" data-to={s.value} data-dec={s.decimals}>{fmt(s.value, s.decimals)}</span><span class="suf">{s.suffix}</span></span>
+            </p>
+            <p class="rs-lbl">{s.label}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Partners -->
+    <section class="rs-partners" aria-label="Partner results">
+      <div class="mx-auto w-full max-w-[1080px] px-6">
+        <p class="rs-lead" data-reveal>Here is a sample of our recent results.</p>
+        <nav class="rs-index" aria-label="Partners on this page" data-reveal>
+          {partners.map((p) => <a href={`#${p.id}`}>{p.name}</a>)}
+        </nav>
+
+        <!-- One bento per partner (same panel + tiles as What we do on the homepage) -->
+        {partners.map((p, i) => (
+          <Fragment>
+          {i > 0 && <div class="rs-sep" aria-hidden="true"><span></span></div>}
+          <article id={p.id} class="rs-case rs-bento" aria-labelledby={`${p.id}-name`} data-reveal>
+            <!-- photo tile stretches to the height of the two tiles beside it, so short intros never leave a gap -->
+            <div class="rs-tile rs-photo"><img src={url(p.img)} alt={p.name} style={`object-position:${p.pos}`} width="900" height="600" loading="lazy" decoding="async" draggable="false" /></div>
+            <div class="rs-tile rs-title">
+              <h2 id={`${p.id}-name`} class="rs-name">{p.name}</h2>
+              <p class="rs-product">{p.product}</p>
+              <p class="rs-headline">{p.headline}</p>
+            </div>
+            <div class="rs-tile rs-about">
+              <p><strong>{p.whoLabel}</strong> {p.who}</p>
+              <p><strong>The product.</strong> {p.productText}</p>
+            </div>
+
+            <!-- Results: one mini tile per figure, figure on top -->
+            <!-- --tn: columns on tablet (4 results → 2×2, otherwise one row), so no card is left on its own -->
+            <div class="rs-results" style={`--n:${p.results.length};--tn:${p.results.length === 4 ? 2 : p.results.length}`}>
+              {p.results.map((r) => (
+                <div class="rs-tile rs-res"><p class="rs-big">{r.big}</p><p class="rs-text">{r.text}</p></div>
+              ))}
+            </div>
+
+            <div class="rs-tile rs-did">
+              <h3 class="rs-h3">What we did</h3>
+              <ol>
+                {p.did.map((d) => <li><strong>{d.label}</strong> {d.text}</li>)}
+              </ol>
+            </div>
+
+            {p.video && (
+              <div class="rs-tile rs-words">
+                <h3 class="rs-h3">In {p.pronoun} words</h3>
+                <div class="rs-video">
+                  <iframe src={p.video} title={`${p.name} testimonial`} loading="lazy" allow="autoplay; fullscreen" allowfullscreen></iframe>
+                </div>
+              </div>
+            )}
+          </article>
+          </Fragment>
+        ))}
+      </div>
+    </section>
+
+    <!-- Our team -->
+    <section class="rs-section" aria-labelledby="team-h">
+      <div class="mx-auto w-full max-w-[1080px] px-6">
+        <div class="text-center" data-reveal>
+          <h2 id="team-h" class="rs-h2">Our <em class="accent">team</em></h2>
+          <p class="rs-sub">A team of 12 specialists runs every part of the growth engine for our partners, in-house.</p>
+        </div>
+        <ul class="rs-team" data-reveal>
+          {team.map((t) => <li><strong>{t.label}:</strong> <span>{t.text}</span></li>)}
+        </ul>
+      </div>
+    </section>
+
+    <!-- Founders -->
+    <section class="rs-section" aria-labelledby="founders-h">
+      <div class="mx-auto w-full max-w-[1080px] px-6">
+        <div class="text-center" data-reveal>
+          <h2 id="founders-h" class="rs-h2">The <em class="accent">founders</em></h2>
+          <p class="rs-sub">Our founders have built and scaled our own businesses, not just our partners'. Between us we bring 15 years of performance marketing, $80M+ in revenue generated and 400K+ LinkedIn followers.</p>
+        </div>
+        <div class="rs-founders">
+          {founders.map((f) => (
+            <article class="rs-founder" data-reveal>
+              <div class="rs-fphoto"><img src={url(f.photo)} alt={f.name} width="1080" height="810" loading="lazy" decoding="async" draggable="false" /></div>
+              <h3 class="rs-fname">{f.name}</h3>
+              <p class="rs-frole">{f.role}</p>
+              <p class="rs-fline">{f.line}</p>
+              <ul class="rs-points">{f.points.map((pt) => <li>{pt}</li>)}</ul>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <Close />
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  /* Intro: same load-in as the homepage hero */
+  .rs-hero { padding: clamp(150px, 20vh, 210px) 0 clamp(56px, 8vh, 88px); }
+  .h-in { animation: h-in .9s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: var(--d, 60ms); }
+  @keyframes h-in { from { opacity: 0; transform: translateY(18px); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+
+  .rs-stat { text-align: center; padding: 26px 18px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); }
+  .rs-num { font-size: clamp(38px, 4.4vw, 56px); font-weight: 600; letter-spacing: -0.04em; line-height: 1; color: var(--text); font-variant-numeric: tabular-nums; }
+  .rs-num .suf { color: var(--accent); }
+  .rs-lbl { margin-top: 10px; font-size: 15px; color: var(--text-2); }
+
+  /* Partners */
+  .rs-partners { padding: clamp(40px, 6vh, 72px) 0 clamp(40px, 6vh, 64px); }
+  .rs-lead { text-align: center; font-size: clamp(20px, 2vw, 26px); font-weight: 600; letter-spacing: -0.03em; color: var(--text); }
+  .rs-index { margin-top: 14px; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 22px; }
+  .rs-index a { font-size: 15px; color: var(--text-2); transition: color .2s; }
+  .rs-index a:hover { color: var(--text); }
+
+  /* One bento per partner: the homepage What we do panel and tiles (4-column grid) */
+  .rs-case { scroll-margin-top: 96px; margin-top: clamp(40px, 6vh, 64px); }
+  /* Divider between partners: a hairline that fades out at both ends, with a small accent dot in the middle */
+  .rs-sep { position: relative; height: 1px; margin: clamp(56px, 9vh, 96px) auto; max-width: 720px; background: linear-gradient(90deg, transparent, var(--line) 25%, color-mix(in srgb, var(--accent) 45%, var(--line)) 50%, var(--line) 75%, transparent); }
+  .rs-sep span { position: absolute; left: 50%; top: 50%; width: 7px; height: 7px; translate: -50% -50%; rotate: 45deg; border-radius: 2px; background: var(--accent); box-shadow: 0 0 14px 2px rgb(var(--accent-rgb) / .55); }
+  .rs-sep + .rs-case { margin-top: 0; }
+  .rs-bento {
+    padding: 20px; border-radius: 18px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px;
+    background: color-mix(in srgb, var(--surface) 55%, var(--bg)); border: 1px solid var(--line);
+  }
+  .rs-tile {
+    position: relative; overflow: hidden; isolation: isolate; padding: 24px; border-radius: 12px;
+    background: var(--surface); border: 1px solid var(--line); transition: border-color .3s;
+  }
+  .rs-tile::after { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: var(--noise); background-size: 180px; opacity: .1; mix-blend-mode: overlay; }
+  .rs-tile > * { position: relative; z-index: 1; }
+  .rs-tile:hover { border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
+
+  /* photo: left half, as tall as the title + intro tiles beside it */
+  .rs-photo { grid-column: 1 / 3; grid-row: 1 / 3; padding: 0; min-height: 300px; background: var(--raised); }
+  .rs-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .rs-title { grid-column: 3 / 5; background: radial-gradient(90% 90% at 100% 0%, rgb(var(--accent-rgb) / .14), transparent 60%), var(--surface); }
+  .rs-about { grid-column: 3 / 5; }
+  .rs-name { font-size: clamp(30px, 3.2vw, 46px); font-weight: 600; letter-spacing: -0.04em; line-height: 1.04; color: var(--text); }
+  .rs-product { margin-top: 6px; font-family: var(--font-serif); font-style: italic; font-size: clamp(19px, 1.8vw, 24px); color: var(--accent); }
+  .rs-headline { margin-top: 14px; font-size: clamp(17px, 1.5vw, 20px); line-height: 1.4; color: var(--text); letter-spacing: -0.01em; }
+  .rs-about p { font-size: 15.5px; line-height: 1.6; color: var(--text-2); }
+  .rs-about p + p { margin-top: 12px; }
+  .rs-about strong, .rs-did strong { color: var(--text); font-weight: 600; }
+
+  /* results: equal mini tiles across the full width, figure on top */
+  .rs-results { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 16px; }
+  .rs-res { background: radial-gradient(90% 80% at 0% 0%, rgb(var(--accent-rgb) / .16), transparent 65%), var(--surface); }
+  .rs-big { font-size: clamp(28px, 2.8vw, 40px); font-weight: 600; letter-spacing: -0.035em; line-height: 1.05; color: var(--text); }
+  .rs-text { margin-top: 8px; font-size: 15px; line-height: 1.5; color: var(--text-2); }
+
+  /* what we did: one wide tile, steps flow into columns */
+  .rs-did { grid-column: 1 / -1; }
+  .rs-h3 { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; color: var(--text); }
+  .rs-did ol { margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 16px 28px; counter-reset: s; }
+  .rs-did li { position: relative; padding-left: 34px; font-size: 15.5px; line-height: 1.55; color: var(--text-2); counter-increment: s; }
+  .rs-did li::before {
+    content: counter(s); position: absolute; left: 0; top: 0; width: 24px; height: 24px; border-radius: 7px; display: grid; place-items: center;
+    font-size: 12px; font-weight: 600; color: var(--accent); background: rgb(var(--accent-rgb) / .14); border: 1px solid rgb(var(--accent-rgb) / .35);
+  }
+
+  .rs-words { grid-column: 1 / -1; }
+  .rs-video { margin-top: 16px; aspect-ratio: 16 / 9; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); background: var(--raised); }
+  .rs-video iframe { width: 100%; height: 100%; border: 0; }
+
+  /* Team + founders */
+  .rs-section { padding: clamp(64px, 10vh, 120px) 0 0; }
+  .rs-h2 { font-size: clamp(30px, 3.6vw, 52px); font-weight: 600; line-height: 1.05; letter-spacing: -0.04em; color: var(--text); }
+  .rs-sub { margin: 14px auto 0; max-width: 620px; font-size: 17px; line-height: 1.55; color: var(--text-2); }
+  .rs-team { margin-top: 32px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 8px 26px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); column-gap: 40px; }
+  .rs-team li { padding: 16px 0; border-bottom: 1px solid var(--line); font-size: 16px; line-height: 1.5; color: var(--text-2); }
+  .rs-team li:nth-last-child(1) { border-bottom: 0; }
+  .rs-team strong { color: var(--text); font-weight: 600; }
+
+  .rs-founders { margin-top: 32px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .rs-founder { display: flex; flex-direction: column; padding: 26px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); }
+  .rs-fphoto { margin: -26px -26px 22px; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 16px 16px 0 0; background: var(--raised); }
+  .rs-fphoto img { width: 100%; height: 100%; object-fit: cover; }
+  .rs-fname { font-size: clamp(26px, 2.4vw, 32px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; color: var(--text); }
+  .rs-frole { margin-top: 4px; font-size: 15px; color: var(--accent); font-weight: 600; }
+  .rs-fline { margin-top: 12px; font-size: 16px; line-height: 1.55; color: var(--text-2); }
+  .rs-points { margin-top: 14px; display: grid; gap: 10px; }
+  .rs-points li { position: relative; padding-left: 18px; font-size: 15px; line-height: 1.5; color: var(--text-2); }
+  .rs-points li::before { content: ""; position: absolute; left: 0; top: .6em; width: 6px; height: 6px; border-radius: 2px; background: var(--accent); }
+
+  /* Tablet and phones: everything stacks */
+  @media (max-width: 899px) {
+    .rs-bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .rs-photo, .rs-title, .rs-about { grid-column: 1 / -1; grid-row: auto; }
+    .rs-photo { min-height: 0; aspect-ratio: 4 / 3; }
+    .rs-results { grid-template-columns: repeat(var(--tn), minmax(0, 1fr)); }
+    .rs-founders { grid-template-columns: 1fr; }
+    .rs-team { grid-template-columns: 1fr; }
+    .rs-team li:nth-last-child(1) { border-bottom: 0; }
+  }
+  @media (max-width: 559px) {
+    .rs-bento { padding: 12px; gap: 12px; }
+    .rs-results { grid-template-columns: 1fr; gap: 12px; }
+    .rs-tile { padding: 20px 18px; }
+    .rs-photo { padding: 0; }
+    .rs-founder { padding: 22px; }
+    .rs-fphoto { margin: -22px -22px 20px; }
+  }
+</style>
+
+<script>
+  // Stats count up once when they scroll into view (same feel as the homepage numbers)
+  const els = document.querySelectorAll<HTMLElement>(".rs-stats .count");
+  const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractionDigits: d, maximumFractionDigits: d });
+  const io = new IntersectionObserver((entries) => entries.forEach((e) => {
+    if (!e.isIntersecting) return;
+    io.unobserve(e.target);
+    const el = e.target as HTMLElement;
+    const to = parseFloat(el.dataset.to!), dec = parseInt(el.dataset.dec!), from = to * 0.6, t0 = performance.now();
+    const step = (t: number) => {
+      const p = Math.min(1, (t - t0) / 1400), ease = 1 - Math.pow(1 - p, 3);
+      el.textContent = fmt(from + (to - from) * ease, dec);
+      if (p < 1) requestAnimationFrame(step);
+    };
+    el.textContent = fmt(from, dec);
+    requestAnimationFrame(step);
+  }), { threshold: 0.5 });
+  els.forEach((el) => io.observe(el));
+</script>
