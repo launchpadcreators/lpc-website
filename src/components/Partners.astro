@@ -36,8 +36,8 @@ const partners = [
   },
 ];
 // Split a headline into text and number parts so the numbers can count up ("$50K → $650K" → "$", 50, "K → $", 650, "K")
-// Rotating line above the cards (Tom, review 2). Each item carries its own article so "coaching" reads on its own.
-const rotating = ["a community", "a SaaS", "coaching", "a cohort", "a course"];
+// Rotating line above the cards: the list from Tom's homepage copy doc (29 Oct), in his order
+const rotating = ["cohorts", "courses", "communities", "coaching programmes", "memberships", "masterminds", "SaaS products", "live events", "paid newsletters"];
 const parts = (s: string) => s.split(/(\d+(?:\.\d+)?)/).map((t, i) => (i % 2 ? { n: +t, dec: (t.split(".")[1] ?? "").length, t } : { t }));
 ---
 <section id="results" class="pr relative" aria-label="Partners and results">
@@ -45,11 +45,11 @@ const parts = (s: string) => s.split(/(\d+(?:\.\d+)?)/).map((t, i) => (i % 2 ? {
   <div class="mx-auto w-full max-w-[1080px] px-6">
     <div class="pr-head text-center" data-reveal>
       <h2 class="text-[clamp(30px,3.6vw,52px)] font-semibold leading-[1.05] tracking-[-0.04em] text-text">
-        A sample of recent results<br class="hidden md:block" /> for our partners.
+        A few recent results<br class="hidden md:block" /> from our partners.
       </h2>
     </div>
 
-    <p class="intro" data-reveal>We work with a small number of partners at a time: proven founders scaling from 7 to 8 figures, and exceptional experts with an audience to monetise and a clear path to 7 figures.</p>
+    <p class="intro" data-reveal>We work with a small number of partners at a time: founders scaling from 7 to 8 figures, and experts building a product with a clear path to get there.</p>
 
     <p class="ticker" data-reveal>We launch and scale <span class="rot-slot" aria-live="polite">{rotating.map((w, i) => <span class={`rot-word accent${i === 0 ? " on" : ""}`}>{w}</span>)}</span></p>
 
@@ -102,7 +102,7 @@ const parts = (s: string) => s.split(/(\d+(?:\.\d+)?)/).map((t, i) => (i % 2 ? {
   .ticker { margin: 18px auto 0; text-align: center; font-size: clamp(15px, 1.3vw, 18px); color: var(--text-2); }
   .rot-slot { position: relative; display: inline-block; height: 1.6em; vertical-align: -0.42em; overflow: hidden; text-align: left; transition: width .5s var(--ease-out-soft); }
   .rot-word {
-    position: absolute; left: 0; top: 0; white-space: nowrap; color: var(--text); font-size: 1.15em; line-height: 1.35;
+    position: absolute; left: 0; top: 0; white-space: nowrap; color: var(--accent); font-size: 1.15em; line-height: 1.35; /* blue (Tom's Loom, 3:00) */
     opacity: 0; transform: translateY(100%); transition: transform .5s var(--ease-out-soft), opacity .5s;
   }
   .rot-word.on { opacity: 1; transform: none; }
@@ -251,10 +251,10 @@ const parts = (s: string) => s.split(/(\d+(?:\.\d+)?)/).map((t, i) => (i % 2 ? {
   });
   const go = (to: number) => { index = to; place(true); };
 
-  // Autoplay: one card every 3.1s while the row is on screen; pauses on hover, keyboard focus and drag
-  let hover = false, dragging = false, timer = 0;
-  const tick = () => { if (visible && !hover && !dragging && !document.hidden) go(index + 1); };
-  const restart = () => { clearInterval(timer); timer = window.setInterval(tick, EVERY); };
+  // No autoplay (Tom's Loom, 3:00): the row stays put so visitors see the first partners, and moves only when they
+  // use the arrows, dots, keys or a swipe. (restart() used to reset the autoplay timer; it now does nothing.)
+  let hover = false, dragging = false;
+  const restart = () => {};
 
   // Arrows and one dot per partner
   real.forEach((_, k) => {

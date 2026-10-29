@@ -82,8 +82,8 @@ There are **two previews**. Always say which one you mean:
 
 ## How the site is built
 
-- Astro 7 + Tailwind v4, with Lenis smooth scroll. One page: `src/pages/index.astro`. Sections are in `src/components/`, in page order: Hero, Stats, GlassCeiling, GrowthSystem / GrowthEclipse / GrowthFunnel, Partners, WhatWeDo, HowWeWork, WhoWeAre, Close, Footer.
-- **The three Growth System sections are alternative versions.** All three stay until Tom and Dan pick one.
+- Astro 7 + Tailwind v4, with Lenis smooth scroll. Homepage: `src/pages/index.astro`; Results page: `src/pages/results.astro`. Homepage sections are in `src/components/`, in page order: Hero, Stats, GlassCeiling, GrowthSystem, Partners, WhatWeDo, HowWeWork, WhoWeAre, Close, Footer.
+- **Growth System:** Tom picked `GrowthSystem` (29 Oct; Dan not yet confirmed). The other two versions, `GrowthEclipse` and `GrowthFunnel`, are off the page but their files stay in case Dan wants one back.
 - The Typeform "Work with us" link is in `src/data/growth-stages.ts` (`applyUrl`). The mailing list posts to Kit form 10103548, in `src/components/Close.astro`.
 - **New page:** add a file in `src/pages/` (for example `src/pages/proof.astro` gives `/proof/`) that uses the `Base` layout and the existing components.
 - Commands: `npm install`, `npm run dev` (localhost:4321), `npm run build`.

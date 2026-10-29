@@ -4,15 +4,16 @@
 // Each tile = a small working visual of that service (labelled with our service names, no made-up numbers)
 // + a ticked list of every service in the group.
 // Phones: each tile is an accordion that opens by itself as it scrolls into view (tap the toggle to close / reopen).
-//  Row 1: Ads and content (3 cols) + Funnels (1 col)
-//  Row 2: Email and webinars (2 cols) + Sales (2 cols)
-//  Row 3: Product and retention (full width)
+//  Row 1: 01 Attract (3 cols) + 02 Capture (1 col)
+//  Row 2: 03 Nurture (2 cols) + 04 Convert (2 cols)
+//  Row 3: 05 Deliver and scale (full width)
+// Stage names and ticked lists: Tom's homepage copy doc (29 Oct), word for word
 const groups = {
-  ads: ["Paid ads (Meta, LinkedIn, YouTube)", "Creative testing", "Video ads", "Static ads", "Organic social strategy", "Content scripting", "Content production", "Brand and design"],
-  funnels: ["Landing pages", "Funnel builds", "Lead magnets", "Registration pages", "Tracking and attribution"],
-  email: ["Email and SMS sequences", "Webinar scripting and setup", "Live and evergreen webinars", "Masterclasses", "Launch planning"],
-  sales: ["Offer and pricing", "Sales process design", "Sales scripting and testing", "Setter and closer teams", "Conversion rate optimisation (CRO)", "Checkout and payment flows"],
-  product: ["Customer research", "Product development", "Community", "Customer success", "Retention", "Value ladder and ascension", "Reporting and data"],
+  ads: ["Paid ads", "Creative strategy and testing", "Organic social management", "Content strategy", "Content scripting", "Content production", "Brand and design", "Newsletter growth", "Affiliate programmes"],
+  funnels: ["Funnel strategy and mapping", "Funnel builds", "Landing pages", "Lead magnets", "Registration and application pages", "Comment-to-DM automations", "CRM setup", "Tracking and attribution"],
+  email: ["Email and SMS sequences", "Webinar strategy and scripting", "Live and evergreen webinars", "Masterclasses", "Challenges", "Live events", "Launch planning", "Show-up rate optimisation"],
+  sales: ["Offer and pricing", "Sales process design", "Sales scripting and testing", "Setter and closer teams", "DM setting", "Sales team hiring and training", "Sales pages and checkout", "Conversion rate optimisation (CRO)", "Follow-up sequences"],
+  product: ["Customer research", "Product development", "Offer strategy", "Value ladder and ascension", "Onboarding", "Community", "Customer success", "Retention", "Reporting and data"],
 };
 const icons = {
   ads: "M3 10v4h3l6 4V6L6 10H3z M16 9.5a3.5 3.5 0 0 1 0 5 M18.5 7a7 7 0 0 1 0 10",
@@ -26,10 +27,11 @@ const ads = [
   { kind: "Static ad", platform: "Meta", video: false },
   { kind: "Content post", platform: "LinkedIn", video: false },
 ];
-const funnel = ["Landing page", "Lead magnet", "Registration"];
-const sequence = ["Email + SMS", "Webinar", "Masterclass", "Launch"];
+// Mockup labels: Tom's Loom (29 Oct, 4:06–5:43)
+const funnel = ["Landing page", "Lead magnet", "Data capture"];
+const sequence = ["Content", "Registration", "Masterclass", "Sale"]; // the Live badge sits on Masterclass
 const pipeline = ["Setter", "Closer", "Checkout"];
-const ladder = ["Community", "Product", "Customer success", "Retention", "Ascension"];
+const ladder = ["Content", "Product", "Customer success", "Retention", "Ascension"];
 const tick = "M3.5 8.5l3 3 6-7";
 ---
 <section id="what-we-do" class="wd relative" aria-label="What we do">
@@ -40,15 +42,16 @@ const tick = "M3.5 8.5l3 3 6-7";
       </h2>
       <p class="mx-auto mt-5 max-w-[680px] text-[clamp(15px,1.3vw,18px)] leading-[1.55] text-text-2">
         <!-- [DRAFT for Tom to edit] his review: each part speaking to and learning from the others, and that is how you scale -->
-        Most businesses hire five suppliers for this. Our partners get one team that runs it as a single system, with every part speaking to and learning from the others. That is how you scale to 7 and 8 figures.
+        One team running the whole funnel as a single system, with every stage working together and learning from the others.
       </p>
+      <p class="mt-3 text-[clamp(15px,1.3vw,18px)] font-semibold text-text">This is how you scale to 7 and 8 figures.</p>
     </div>
 
     <div class="bento">
-      <!-- Ads and content -->
+      <!-- 01 Attract -->
       <article class="tile s3 t-ads" style="--d:0ms">
         <div class="txt">
-          <div class="head"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={icons.ads} /></svg></span><h3 class="name">Ads and content</h3><button class="acc" type="button" aria-expanded="false" aria-label="Show services"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" /></svg></button></div>
+          <div class="head"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={icons.ads} /></svg></span><h3 class="name"><span class="n">01</span>Attract</h3><button class="acc" type="button" aria-expanded="false" aria-label="Show services"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" /></svg></button></div>
           <ul class="list">{groups.ads.map((v) => <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={tick} /></svg>{v}</li>)}</ul>
         </div>
         <div class="vis vis-ads" aria-hidden="true">
@@ -68,9 +71,9 @@ const tick = "M3.5 8.5l3 3 6-7";
         </div>
       </article>
 
-      <!-- Funnels -->
+      <!-- 02 Capture -->
       <article class="tile s1 t-funnel" style="--d:90ms">
-        <div class="head"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={icons.funnels} /></svg></span><h3 class="name">Funnels</h3><button class="acc" type="button" aria-expanded="false" aria-label="Show services"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" /></svg></button></div>
+        <div class="head"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={icons.funnels} /></svg></span><h3 class="name"><span class="n">02</span>Capture</h3><button class="acc" type="button" aria-expanded="false" aria-label="Show services"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" /></svg></button></div>
         <div class="vis vis-funnel" aria-hidden="true">
           {funnel.map((f, i) => <div class="fstep" style={`--i:${i}`}>{f}</div>)}
           {[0, 1, 2, 3].map((k) => <span class="drop" style={`--k:${k}`}></span>)}
@@ -78,14 +81,14 @@ const tick = "M3.5 8.5l3 3 6-7";
         <ul class="list">{groups.funnels.map((v) => <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={tick} /></svg>{v}</li>)}</ul>
       </article>
 
-      <!-- Email and webinars -->
+      <!-- 03 Nurture -->
       <article class="tile s2 t-email" style="--d:180ms">
-        <div class="head"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={icons.email} /></svg></span><h3 class="name">Email and webinars</h3><button class="acc" type="button" aria-expanded="false" aria-label="Show services"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" /></svg></button></div>
+        <div class="head"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={icons.email} /></svg></span><h3 class="name"><span class="n">03</span>Nurture</h3><button class="acc" type="button" aria-expanded="false" aria-label="Show services"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" /></svg></button></div>
         <div class="vis vis-seq" aria-hidden="true">
           <span class="seq-line"><i></i></span>
           {sequence.map((s, i) => (
             <div class="node" style={`--i:${i}`}>
-              <span class="dot">{s === "Webinar" && <b class="live">Live</b>}</span>
+              <span class="dot">{s === "Masterclass" && <b class="live">Live</b>}</span>
               <span class="nl">{s}</span>
             </div>
           ))}
@@ -93,9 +96,9 @@ const tick = "M3.5 8.5l3 3 6-7";
         <ul class="list two">{groups.email.map((v) => <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={tick} /></svg>{v}</li>)}</ul>
       </article>
 
-      <!-- Sales -->
+      <!-- 04 Convert -->
       <article class="tile s2 t-sales" style="--d:270ms">
-        <div class="head"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={icons.sales} /></svg></span><h3 class="name">Sales</h3><button class="acc" type="button" aria-expanded="false" aria-label="Show services"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" /></svg></button></div>
+        <div class="head"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={icons.sales} /></svg></span><h3 class="name"><span class="n">04</span>Convert</h3><button class="acc" type="button" aria-expanded="false" aria-label="Show services"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" /></svg></button></div>
         <!-- A lead moves through the sales team: the setter books the call, the closer gets the yes, checkout takes payment -->
         <div class="vis vis-deal" aria-hidden="true">
           <div class="cols">
@@ -105,10 +108,15 @@ const tick = "M3.5 8.5l3 3 6-7";
             <div class="deal">
               <span class="av"></span>
               <div class="deal-txt">
-                <b>New lead</b>
+                <!-- the lead's title and status change at each column (Tom's Loom, 5:19) -->
+                <span class="tt">
+                  <b class="s1">New lead</b>
+                  <b class="s2">Hot lead</b>
+                  <b class="s3">New customer</b>
+                </span>
                 <span class="st">
                   <i class="s1">Call booked</i>
-                  <i class="s2">Offer accepted</i>
+                  <i class="s2">Sales call</i>
                   <i class="s3"><svg viewBox="0 0 16 16"><path d={tick} /></svg>Paid</i>
                 </span>
               </div>
@@ -118,10 +126,10 @@ const tick = "M3.5 8.5l3 3 6-7";
         <ul class="list two">{groups.sales.map((v) => <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={tick} /></svg>{v}</li>)}</ul>
       </article>
 
-      <!-- Product and retention -->
+      <!-- 05 Deliver and scale -->
       <article class="tile s4 t-product" style="--d:360ms">
         <div class="txt">
-          <div class="head"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={icons.product} /></svg></span><h3 class="name">Product and retention</h3><button class="acc" type="button" aria-expanded="false" aria-label="Show services"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" /></svg></button></div>
+          <div class="head"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d={icons.product} /></svg></span><h3 class="name"><span class="n">05</span>Deliver and scale</h3><button class="acc" type="button" aria-expanded="false" aria-label="Show services"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" /></svg></button></div>
           <ul class="list two">{groups.product.map((v) => <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={tick} /></svg>{v}</li>)}</ul>
         </div>
         <div class="vis vis-ladder" aria-hidden="true">
@@ -166,6 +174,7 @@ const tick = "M3.5 8.5l3 3 6-7";
   .icon svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
   .tile:hover .icon { background: var(--accent-fill); border-color: var(--accent-fill); color: var(--accent-ink); }
   .name { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; color: var(--text); }
+  .name .n { margin-right: 8px; color: var(--accent); font-variant-numeric: tabular-nums; } /* stage number, as in the Growth System */
 
   /* Ticked service list */
   /* Ticked lists flow into as many columns as fit, then wrap (2 on phones, more in wider tiles) */
@@ -256,7 +265,11 @@ const tick = "M3.5 8.5l3 3 6-7";
   .deal { display: flex; align-items: center; gap: 9px; height: 58px; }
   .av { width: 26px; height: 26px; flex-shrink: 0; margin-left: 4px; border-radius: 99px; background: linear-gradient(135deg, var(--accent-light), var(--accent)); }
   .deal-txt { display: grid; gap: 3px; min-width: 0; }
-  .deal-txt b { font-size: 12px; font-weight: 600; color: var(--text); }
+  .tt { position: relative; height: 15px; }
+  .tt b { position: absolute; left: 0; top: 0; white-space: nowrap; font-size: 12px; font-weight: 600; color: var(--text); opacity: 0; }
+  .tt .s1 { animation: st1 7.5s linear infinite; }
+  .tt .s2 { animation: st2 7.5s linear infinite; }
+  .tt .s3 { animation: st3 7.5s linear infinite; }
   .st { position: relative; height: 15px; }
   .st i { position: absolute; left: 0; top: 0; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; font-style: normal; font-size: 11px; font-weight: 600; opacity: 0; }
   .st .s1 { color: var(--accent); animation: st1 7.5s linear infinite; }
@@ -286,8 +299,8 @@ const tick = "M3.5 8.5l3 3 6-7";
 
   /* looping motion only runs while the grid is on screen (paused before it first appears and whenever it's scrolled away) */
   /* (Sales parts share one clock: they all start together when the grid comes into view) */
-  .bento :is(.ad, .drop, .seq-line i, .live, .deal, .col-h, .st i) { animation-play-state: paused; }
-  .bento.in.inview :is(.ad, .drop, .seq-line i, .live, .deal, .col-h, .st i) { animation-play-state: running; }
+  .bento :is(.ad, .drop, .seq-line i, .live, .deal, .col-h, .st i, .tt b) { animation-play-state: paused; }
+  .bento.in.inview :is(.ad, .drop, .seq-line i, .live, .deal, .col-h, .st i, .tt b) { animation-play-state: running; }
 
   @media (max-width: 1023px) {
     .bento { grid-template-columns: 1fr 1fr; }
@@ -307,6 +320,9 @@ const tick = "M3.5 8.5l3 3 6-7";
     .list svg { width: 13px; height: 13px; }
     .ad { width: 104px; left: calc(50% - 52px + (var(--i) - 1) * 50px); }
     .ad-media { height: 72px; }
+    /* "Registration" and "Masterclass" side by side need the room */
+    .vis-seq { padding-left: 0; padding-right: 0; }
+    .nl { font-size: 10px; letter-spacing: -0.01em; }
 
     /* Accordions (Tom's review): each tile shows just its header until tapped, so the page stays short.
        The toggle's hit area stretches over the whole header row. */

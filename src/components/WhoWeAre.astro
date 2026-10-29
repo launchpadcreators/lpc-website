@@ -1,41 +1,40 @@
 ---
 // Who we are — headline, then a grid: the "Our story" card (tall, left), the two co-founder cards with their own
-// photos, and the 12-strong team card underneath them (Tom, review 2). Copy: brief/04-copy-deck.md, section 7.
-// Founder facts are still marked [CONFIRM] in the copy deck.
+// photos, and the team card underneath them (Tom, review 2). Copy: Tom's homepage copy doc (29 Oct).
 import { url } from "../config/paths";
 // Same order as the founders photo: Tom (left), Dan (right).
 // LinkedIn URLs are the ones linked from launchpadcreators.com ("DM us directly", per Tom's review).
 const liIcon = "M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z";
+// Founder lines, story and team: Tom's homepage copy doc (29 Oct), word for word. No figures on the cards (Tom's Loom, 6:03).
 const founders = [
   {
     name: "Tom Pestridge", area: "f-a", photo: "team/tom.jpg", linkedin: "https://www.linkedin.com/in/tom-pestridge/",
-    line: "Marketing leader and agency founder. Took a travel company to £7M a year as its growth partner.", // [CONFIRM: "£500K to £7M" or "£0 to £7M"]
-    stats: [{ v: "£7M", l: "A year, as growth partner" }, { v: "~200K", l: "LinkedIn followers" }],
+    line: "Started out in agency, leading growth for travel and SaaS brands. Has since taken multiple businesses from zero to $10M+ a year as their full growth partner, and built an audience of 200K+ on LinkedIn.",
   },
   {
     name: "Dan Mian", area: "f-b", photo: "team/dan.jpg", linkedin: "https://www.linkedin.com/in/danmian/",
-    line: "Performance marketer (Forbes, BT). Founded Gradvance and grew it to $500K.", // [CONFIRM]
-    stats: [{ v: "200K+", l: "LinkedIn followers" }, { v: "$500K", l: "Grew Gradvance to" }],
+    line: "Started out as a performance marketer in corporate, working with $20bn brands. Grew his own career coaching business to $500K+ while working full time, and built an audience of 200K+ on LinkedIn.",
   },
 ];
-const specialisms = ["Paid media", "Creative", "Content", "Funnels and AI", "Sales", "Customer success"];
+const specialisms = ["Paid media", "Creative and design", "Content", "Video editing", "Copywriting", "Funnels and automation", "AI and systems", "Sales", "Customer success"];
+const tick = "M3.5 8.5l3 3 6-7";
 ---
 <section id="about" class="wa relative" aria-label="Who we are">
   <div class="mx-auto w-full max-w-[1080px] px-6">
     <div class="text-center" data-reveal>
       <h2 class="text-[clamp(30px,3.6vw,52px)] font-semibold leading-[1.05] tracking-[-0.04em] text-text">
-        Full-fledged <em class="accent">growth partners.</em>
+        The people behind <em class="accent">the system.</em>
       </h2>
     </div>
 
     <div class="grid3">
-      <!-- Our story. [PLACEHOLDER until Tom sends the story: how we started the company and what we believe in.
-           For now: the origin story from copy deck 7 plus the 12-strong team line from the video brief.] -->
+      <!-- Our story (Tom's homepage copy doc, 29 Oct) -->
       <article class="card story" style="--d:0ms">
         <p class="kicker">Our story</p>
         <div class="story-txt">
-          <p>We've built and scaled our own businesses, and run growth for others. Doing both, we kept learning the same thing: you can't fix growth with one channel. Ads alone, sales alone or organic alone all hit the same ceiling.</p>
-          <p>It takes the whole funnel working as one system. So we built the Launchpad Growth System, then started Launchpad to run it for our partners, with a 12-strong team behind it.</p>
+          <p>We've scaled our own businesses, grown audiences of over 200,000 each and helped partners generate millions in revenue.</p>
+          <p>Over the past 15 years we kept coming back to the same thing: you can't fix growth with one channel. Ads alone, sales alone or organic alone all hit the same ceiling.</p>
+          <p>So we built the Launchpad Growth System, and a 12-strong team to run it for our partners.</p>
         </div>
         <p class="story-end">We run their growth like it's our own.</p>
       </article>
@@ -46,9 +45,6 @@ const specialisms = ["Paid media", "Creative", "Content", "Funnels and AI", "Sal
           <p class="kicker">Co-founder</p>
           <h3 class="fname">{f.name}</h3>
           <p class="desc">{f.line}</p>
-          <div class="stats">
-            {f.stats.map((s) => <div><p class="sv">{s.v}</p><p class="sl">{s.l}</p></div>)}
-          </div>
           <a class="li" href={f.linkedin} target="_blank" rel="noopener" aria-label={`Message ${f.name} on LinkedIn`}>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d={liIcon} /></svg>
             Message on LinkedIn <span aria-hidden="true">→</span>
@@ -57,15 +53,13 @@ const specialisms = ["Paid media", "Creative", "Content", "Funnels and AI", "Sal
       ))}
 
       <!-- The team -->
+      <!-- No big "12" (Tom's Loom, 6:18): the team line, then the specialisms as ticks like the What we do lists -->
       <article class="card team" style="--d:330ms">
         <div class="team-num">
           <p class="kicker">The team</p>
-          <p class="big"><span class="count" data-n="12">12</span></p>
+          <p class="desc">Specialists across every stage of the funnel, working together on every partner.</p>
         </div>
-        <div class="team-txt">
-          <p class="desc">A 12-strong team of specialists across paid media, creative, content, funnels and AI, sales and customer success.</p>
-          <ul class="spec">{specialisms.map((s) => <li>{s}</li>)}</ul>
-        </div>
+        <ul class="spec">{specialisms.map((s) => <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={tick} /></svg>{s}</li>)}</ul>
       </article>
     </div>
   </div>
@@ -93,10 +87,8 @@ const specialisms = ["Paid media", "Creative", "Content", "Funnels and AI", "Sal
   :global(.reveal-ready) .grid3.in .card { opacity: 1; translate: 0 0; }
   .card:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
   .card::after { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: var(--noise); background-size: 180px; opacity: .1; mix-blend-mode: overlay; }
-  .team { background: radial-gradient(90% 70% at 0% 100%, rgb(var(--accent-rgb) / .2), transparent 65%), var(--surface); flex-direction: row; align-items: flex-start; gap: 28px; }
-  .team-num { flex-shrink: 0; }
-  .team-txt .desc { margin-top: 0; }
-  .team .spec { padding-top: 16px; }
+  .team { background: radial-gradient(90% 70% at 0% 100%, rgb(var(--accent-rgb) / .2), transparent 65%), var(--surface); }
+  .team .desc { margin-top: 10px; }
 
   /* Our story: text card with a warm glow from the top corner; the closing line sits at the bottom */
   .story { padding: clamp(28px, 3vw, 36px); background: radial-gradient(90% 60% at 0% 0%, rgb(var(--accent-rgb) / .16), transparent 62%), var(--surface); }
@@ -108,21 +100,16 @@ const specialisms = ["Paid media", "Creative", "Content", "Funnels and AI", "Sal
   .fphoto img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
 
   .kicker { font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
-  .big { margin-top: 14px; font-size: clamp(56px, 6vw, 80px); font-weight: 800; letter-spacing: -0.05em; line-height: .9; color: var(--text); font-variant-numeric: tabular-nums; }
   .fname { margin-top: 14px; font-size: clamp(26px, 2.4vw, 32px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; color: var(--text); }
   .desc { margin-top: 14px; font-size: 15px; line-height: 1.55; color: var(--text-2); }
 
-  .spec { margin-top: auto; padding-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; font-size: 13px; color: var(--text); }
+  /* Specialisms as ticks, same as the What we do lists */
+  .spec { margin-top: 20px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px 18px; font-size: 14px; color: var(--text-2); }
   .spec li { display: flex; align-items: center; gap: 8px; }
-  .spec li::before { content: ""; width: 6px; height: 6px; border-radius: 2px; background: var(--accent); flex-shrink: 0; }
+  .spec svg { width: 16px; height: 16px; flex-shrink: 0; fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-  .stats { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--line); display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .card .stats { margin-top: 24px; }
-  .sv { font-size: 26px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; color: var(--accent); }
-  .sl { margin-top: 6px; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
-
-  /* LinkedIn link under the stats */
-  .li { margin-top: 20px; display: inline-flex; align-items: center; gap: 9px; align-self: flex-start; font-size: 14px; font-weight: 600; color: var(--text); transition: color .2s; }
+  /* LinkedIn link at the bottom of the founder card */
+  .li { margin-top: auto; padding-top: 20px; display: inline-flex; align-items: center; gap: 9px; align-self: flex-start; font-size: 14px; font-weight: 600; color: var(--text); transition: color .2s; }
   .li svg { width: 16px; height: 16px; fill: currentColor; color: var(--text-2); transition: color .2s; }
   .li span { transition: transform .2s var(--ease-out-soft); }
   .li:hover, .li:hover svg { color: var(--accent); }
@@ -133,7 +120,7 @@ const specialisms = ["Paid media", "Creative", "Content", "Funnels and AI", "Sal
   }
   @media (max-width: 767px) {
     .grid3 { grid-template-columns: 1fr; grid-template-areas: "story" "fa" "fb" "team"; }
-    .team { flex-direction: column; gap: 16px; }
+    .spec { grid-template-columns: 1fr 1fr; }
   }
 </style>
 
@@ -144,10 +131,5 @@ const specialisms = ["Paid media", "Creative", "Content", "Funnels and AI", "Sal
     if (!en.isIntersecting) return;
     o.disconnect();
     grid.classList.add("in");
-    // count the team size up from 0
-    const el = sec.querySelector<HTMLElement>(".count")!;
-    const to = Number(el.dataset.n), t0 = performance.now();
-    const tick = (t: number) => { const k = Math.min(1, (t - t0) / 1200); el.textContent = String(Math.round(to * (1 - Math.pow(1 - k, 3)))); if (k < 1) requestAnimationFrame(tick); };
-    requestAnimationFrame(tick);
   }, { threshold: 0.2 }).observe(grid);
 </script>
