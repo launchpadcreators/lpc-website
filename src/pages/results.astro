@@ -205,8 +205,8 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
                 <div class="rs-video">
                   <iframe src={p.video} title={`${p.name} testimonial`} loading="lazy" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen></iframe>
                   <!-- Phones: Drive's embedded player doesn't fit a small frame (its controls spill out), so show a still
-                       with a play button that opens the video in Drive's own full-screen player -->
-                  <a class="rs-vposter" href={`https://drive.google.com/file/d/${driveId(p.video)}/view`} target="_blank" rel="noopener" aria-label={`Play ${p.name}'s video (opens Google Drive)`}>
+                       with a play button that plays the video full screen over the page (link = fallback without JS) -->
+                  <a class="rs-vposter" href={`https://drive.google.com/file/d/${driveId(p.video)}/view`} data-embed={p.video} aria-label={`Play ${p.name}'s video`}>
                     <img src={`https://drive.google.com/thumbnail?id=${driveId(p.video)}&sz=w800`} alt="" loading="lazy" decoding="async" />
                     <span class="rs-vplay" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" /></svg></span>
                   </a>
@@ -263,6 +263,12 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
 
     <Close />
   </main>
+
+  <!-- Phones: full-screen video layer (opened from the still's play button) -->
+  <dialog id="rs-vlayer" class="rs-vlayer" aria-label="Video">
+    <button type="button" class="rs-vclose" aria-label="Close video"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg></button>
+    <iframe title="Video" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+  </dialog>
   <Footer />
 </Base>
 
@@ -349,6 +355,15 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
   }
   .rs-vplay svg { width: 22px; height: 22px; margin-left: 3px; fill: var(--accent-ink); }
   .rs-vposter:active .rs-vplay { transform: scale(.94); }
+  /* full-screen video layer: the whole phone screen, so Drive's player has room for its controls */
+  .rs-vlayer { position: fixed; inset: 0; width: 100%; max-width: none; height: 100dvh; max-height: none; margin: 0; padding: 56px 0 0; border: 0; background: #000; }
+  .rs-vlayer::backdrop { background: #000; }
+  .rs-vlayer iframe { display: block; width: 100%; height: 100%; border: 0; }
+  .rs-vclose {
+    position: absolute; top: 8px; right: 10px; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
+    background: rgb(255 255 255 / .12); color: #fff;
+  }
+  .rs-vclose svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
 
   /* Team + founders */
   .rs-section { padding: clamp(64px, 10vh, 120px) 0 0; }
@@ -417,4 +432,27 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
     requestAnimationFrame(step);
   }), { threshold: 0.5 });
   els.forEach((el) => io.observe(el));
+
+  // Phones: the video still opens a full-screen layer with Drive's player; closing it stops the video
+  const layer = document.getElementById("rs-vlayer") as HTMLDialogElement;
+  const frame = layer.querySelector("iframe")!;
+  const lenis = () => (window as any).lenis; // smooth scroll pauses while the video is open
+  // All clean-up happens here, not in the dialog's own "close" event (some browsers fire that late)
+  const close = (fromBack = false) => {
+    if (!layer.open) return;
+    layer.close();
+    frame.src = "about:blank"; // stops the video
+    lenis()?.start();
+    if (!fromBack && history.state?.vlayer) history.back(); // drop the history step added on open
+  };
+  addEventListener("popstate", () => close(true)); // phone back button closes the video instead of leaving the page
+  layer.addEventListener("cancel", (e) => { e.preventDefault(); close(); }); // Esc key
+  layer.querySelector(".rs-vclose")!.addEventListener("click", () => close());
+  document.querySelectorAll<HTMLAnchorElement>(".rs-vposter").forEach((a) => a.addEventListener("click", (e) => {
+    e.preventDefault();
+    frame.src = a.dataset.embed!;
+    lenis()?.stop();
+    layer.showModal();
+    history.pushState({ vlayer: true }, "");
+  }));
 </script>
