@@ -16,7 +16,7 @@ const intro =
 
 // Top stats: number split so it can count up; label = the rest of the copy line
 const stats = [
-  { prefix: "$", value: 805, decimals: 0, suffix: "M+", label: "revenue generated for partners" }, // [CONFIRM: homepage says $80M+]
+  { prefix: "$", value: 80, decimals: 0, suffix: "M+", label: "revenue generated for partners" },
   { prefix: "", value: 6.8, decimals: 1, suffix: "x", label: "average return on ad spend" },
   { prefix: "", value: 3250, decimals: 0, suffix: "+", label: "ad creatives produced" },
 ];
@@ -49,7 +49,7 @@ const partners: Partner[] = [
   },
   {
     id: "nicolas-boucher", name: "Nicolas Boucher", product: "AI Finance Club", img: "partners/nicolas-boucher.jpg", pos: "50% 50%",
-    headline: "From $50K a month to $650K a month in around 9 months.",
+    headline: "From $50K a month to $650K a month in 9 months.",
     pronoun: "his", whoLabel: "Who he is.",
     who: "LinkedIn creator with 1.2M+ followers who teaches AI to finance professionals.",
     productText: "AI Finance Club: his training programme and community generating $7m+ each year, that teaches CFOs, finance directors and finance teams to use AI in their work.",
@@ -59,7 +59,7 @@ const partners: Partner[] = [
       { label: "Improved the funnel:", text: "landing pages, registration flow and conversion journey." },
     ],
     results: [
-      { big: "$50K → $650K", text: "monthly revenue in around 9 months" },
+      { big: "$50K → $650K", text: "monthly revenue in 9 months" },
       { big: "8.36%", text: "average conversion rate from webinar attendee to customer ($1K+ AOV) across 2026 webinars" },
     ],
   },
@@ -84,7 +84,7 @@ const partners: Partner[] = [
     id: "jo-bird", name: "Jo Bird", product: "Personal Branding Programme", img: "partners/jo-bird.jpg", pos: "50% 50%",
     headline: "From $0 on her previous launch to $30K on her first launch with us.",
     pronoun: "her", whoLabel: "Who she is.",
-    who: "Personal branding expert and speaker.",
+    who: "An award-winning speaker and former Gymshark creative who helps ambitious organisations turn a founder's mission into a brand and culture people genuinely believe in.",
     productText: "Her personal branding program: a cohort that helps professionals build a visible, credible personal brand.",
     did: [
       { label: "Relaunched the programme:", text: "repositioned the offer for the new cohort." },
@@ -162,9 +162,6 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
     <section class="rs-partners" aria-label="Partner results">
       <div class="mx-auto w-full max-w-[1080px] px-6">
         <p class="rs-lead" data-reveal>Here is a sample of our recent results.</p>
-        <nav class="rs-index" aria-label="Partners on this page" data-reveal>
-          {partners.map((p) => <a href={`#${p.id}`}>{p.name}</a>)}
-        </nav>
 
         <!-- One bento per partner (same panel + tiles as What we do on the homepage) -->
         {partners.map((p, i) => (
@@ -265,9 +262,6 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
   /* Partners */
   .rs-partners { padding: clamp(40px, 6vh, 72px) 0 clamp(40px, 6vh, 64px); }
   .rs-lead { text-align: center; font-size: clamp(20px, 2vw, 26px); font-weight: 600; letter-spacing: -0.03em; color: var(--text); }
-  .rs-index { margin-top: 14px; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 22px; }
-  .rs-index a { font-size: 15px; color: var(--text-2); transition: color .2s; }
-  .rs-index a:hover { color: var(--text); }
 
   /* One bento per partner: the homepage What we do panel and tiles (4-column grid) */
   .rs-case { scroll-margin-top: 96px; margin-top: clamp(40px, 6vh, 64px); }
