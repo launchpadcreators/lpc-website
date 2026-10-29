@@ -27,7 +27,7 @@ type Partner = {
   id: string; name: string; product: string; img: string; pos: string; headline: string;
   pronoun: "his" | "her"; whoLabel: string; who: string; productText: string;
   did: { label: string; text: string }[]; results: { big: string; text: string }[];
-  video?: string;
+  video?: string; // MP4 in public/videos/, with a poster still of the same name (.jpg) beside it
 };
 const partners: Partner[] = [
   {
@@ -46,7 +46,7 @@ const partners: Partner[] = [
       { big: "30%", text: "increase in revenue and sales versus the previous cohort" }, // doc has "30%%" (typo)
       { big: "73.9%", text: "close rate on sales calls" },
     ],
-    video: "https://drive.google.com/file/d/1zaawN6GmnqFrzncUuuu1dMN-KoHx5ilV/preview",
+    video: "videos/chris-donnelly.mp4",
   },
   {
     id: "nicolas-boucher", name: "Nicolas Boucher", product: "AI Finance Club", img: "partners/nicolas-boucher.jpg", pos: "50% 50%",
@@ -100,9 +100,6 @@ const partners: Partner[] = [
     ],
   },
 ];
-
-// Google Drive video links: the file id gives its still image and its full-screen viewer (used on phones)
-const driveId = (link: string) => link.match(/\/d\/([^/]+)/)?.[1] ?? "";
 
 const team = [
   { label: "Paid media", text: "media buying, testing and scaling across Meta and LinkedIn" },
@@ -200,17 +197,12 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
             </div>
 
             {p.video && (
-              <div class="rs-tile rs-words" data-native-cursor>
+              <div class="rs-tile rs-words">
                 <h3 class="rs-h3">In {p.pronoun} words</h3>
-                <div class="rs-video">
-                  <iframe src={p.video} title={`${p.name} testimonial`} loading="lazy" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen></iframe>
-                  <!-- Phones: Drive's embedded player doesn't fit a small frame (its controls spill out), so show a still
-                       with a play button that plays the video full screen over the page (link = fallback without JS) -->
-                  <a class="rs-vposter" href={`https://drive.google.com/file/d/${driveId(p.video)}/view`} data-embed={p.video} aria-label={`Play ${p.name}'s video`}>
-                    <img src={`https://drive.google.com/thumbnail?id=${driveId(p.video)}&sz=w800`} alt="" loading="lazy" decoding="async" />
-                    <span class="rs-vplay" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" /></svg></span>
-                  </a>
-                </div>
+                <!-- Our own file in the browser's own player (Google Drive's player was cramped on phones, and Drive
+                     won't let other sites play its files directly). Nothing downloads until play is pressed. -->
+                <video class="rs-video" controls playsinline preload="none" title={`${p.name} testimonial`}
+                  poster={url(p.video.replace(/\.mp4$/, ".jpg"))} src={url(p.video)}></video>
               </div>
             )}
           </article>
@@ -263,12 +255,6 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
 
     <Close />
   </main>
-
-  <!-- Phones: full-screen video layer (opened from the still's play button) -->
-  <dialog id="rs-vlayer" class="rs-vlayer" aria-label="Video">
-    <button type="button" class="rs-vclose" aria-label="Close video"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg></button>
-    <iframe title="Video" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen></iframe>
-  </dialog>
   <Footer />
 </Base>
 
@@ -344,26 +330,8 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
   }
 
   .rs-words { grid-column: 1 / -1; }
-  .rs-video { margin-top: 16px; aspect-ratio: 16 / 9; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); background: var(--raised); }
-  .rs-video iframe { width: 100%; height: 100%; border: 0; }
-  .rs-vposter { display: none; position: relative; width: 100%; height: 100%; }
-  .rs-vposter img { width: 100%; height: 100%; object-fit: cover; }
-  .rs-vplay {
-    position: absolute; left: 14px; bottom: 14px; width: 54px; height: 54px; border-radius: 50%; /* corner, so it doesn't cover his face */
-    display: grid; place-items: center; background: var(--accent-grad); box-shadow: 0 10px 30px -8px rgb(var(--accent-rgb) / .7);
-    transition: transform .2s var(--ease-out-soft);
-  }
-  .rs-vplay svg { width: 22px; height: 22px; margin-left: 3px; fill: var(--accent-ink); }
-  .rs-vposter:active .rs-vplay { transform: scale(.94); }
-  /* full-screen video layer: the whole phone screen, so Drive's player has room for its controls */
-  .rs-vlayer { position: fixed; inset: 0; width: 100%; max-width: none; height: 100dvh; max-height: none; margin: 0; padding: 56px 0 0; border: 0; background: #000; }
-  .rs-vlayer::backdrop { background: #000; }
-  .rs-vlayer iframe { display: block; width: 100%; height: 100%; border: 0; }
-  .rs-vclose {
-    position: absolute; top: 8px; right: 10px; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
-    background: rgb(255 255 255 / .12); color: #fff;
-  }
-  .rs-vclose svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  /* the recording has black bars baked in at the sides; the picture inside them is 16:9, so filling a 16:9 frame trims them */
+  .rs-video { display: block; width: 100%; margin-top: 16px; aspect-ratio: 16 / 9; border-radius: 10px; border: 1px solid var(--line); background: #000; object-fit: cover; }
 
   /* Team + founders */
   .rs-section { padding: clamp(64px, 10vh, 120px) 0 0; }
@@ -407,10 +375,6 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
     .rs-words { padding: 8px 0 0; background: none; border: 0; }
     .rs-words::after { display: none; }
     .rs-words .rs-h3 { padding: 0 6px; }
-    /* Phones get the still + play button instead of Drive's embedded player (the hidden lazy iframe never loads) */
-    .rs-video { aspect-ratio: 1000 / 516; }
-    .rs-video iframe { display: none; }
-    .rs-vposter { display: block; }
   }
 </style>
 
@@ -432,27 +396,4 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
     requestAnimationFrame(step);
   }), { threshold: 0.5 });
   els.forEach((el) => io.observe(el));
-
-  // Phones: the video still opens a full-screen layer with Drive's player; closing it stops the video
-  const layer = document.getElementById("rs-vlayer") as HTMLDialogElement;
-  const frame = layer.querySelector("iframe")!;
-  const lenis = () => (window as any).lenis; // smooth scroll pauses while the video is open
-  // All clean-up happens here, not in the dialog's own "close" event (some browsers fire that late)
-  const close = (fromBack = false) => {
-    if (!layer.open) return;
-    layer.close();
-    frame.src = "about:blank"; // stops the video
-    lenis()?.start();
-    if (!fromBack && history.state?.vlayer) history.back(); // drop the history step added on open
-  };
-  addEventListener("popstate", () => close(true)); // phone back button closes the video instead of leaving the page
-  layer.addEventListener("cancel", (e) => { e.preventDefault(); close(); }); // Esc key
-  layer.querySelector(".rs-vclose")!.addEventListener("click", () => close());
-  document.querySelectorAll<HTMLAnchorElement>(".rs-vposter").forEach((a) => a.addEventListener("click", (e) => {
-    e.preventDefault();
-    frame.src = a.dataset.embed!;
-    lenis()?.stop();
-    layer.showModal();
-    history.pushState({ vlayer: true }, "");
-  }));
 </script>
