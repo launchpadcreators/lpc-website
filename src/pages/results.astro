@@ -370,11 +370,12 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
     .rs-photo { padding: 0; }
     .rs-founder { padding: 22px; }
     .rs-fphoto { margin: -22px -22px 20px; }
-    /* Video: no tile frame on phones, and the player runs edge to edge so it's big enough to watch and tap */
-    .rs-words { padding: 8px 0 0; background: none; border: 0; overflow: visible; }
+    /* Video: no inner tile frame on phones, so it uses the card's full width */
+    .rs-words { padding: 8px 0 0; background: none; border: 0; }
     .rs-words::after { display: none; }
     .rs-words .rs-h3 { padding: 0 6px; }
-    .rs-video { width: 100vw; margin-left: calc(50% - 50vw); margin-bottom: -13px; border-radius: 0; border-width: 1px 0; }
+    /* Google Drive's phone player crops its preview to fill the frame; at 16:9 it cut off the play button, at 4:3 it shows him and the button in full */
+    .rs-video { aspect-ratio: 4 / 3; }
   }
 </style>
 
