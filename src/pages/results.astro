@@ -370,6 +370,11 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
     .rs-photo { padding: 0; }
     .rs-founder { padding: 22px; }
     .rs-fphoto { margin: -22px -22px 20px; }
+    /* Video: no tile frame on phones, and the player runs edge to edge so it's big enough to watch and tap */
+    .rs-words { padding: 8px 0 0; background: none; border: 0; overflow: visible; }
+    .rs-words::after { display: none; }
+    .rs-words .rs-h3 { padding: 0 6px; }
+    .rs-video { width: 100vw; margin-left: calc(50% - 50vw); margin-bottom: -13px; border-radius: 0; border-width: 1px 0; }
   }
 </style>
 
