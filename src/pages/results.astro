@@ -199,7 +199,7 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
             </div>
 
             {p.video && (
-              <div class="rs-tile rs-words">
+              <div class="rs-tile rs-words" data-native-cursor>
                 <h3 class="rs-h3">In {p.pronoun} words</h3>
                 <div class="rs-video">
                   <iframe src={p.video} title={`${p.name} testimonial`} loading="lazy" allow="autoplay; fullscreen" allowfullscreen></iframe>

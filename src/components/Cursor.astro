@@ -1,7 +1,9 @@
 ---
 // Custom cursor: the Launchpad logo mark (inline SVG), tilted to the left like the Windows arrow. Its tip is the
 // hotspot and it sits exactly on the mouse, like the normal cursor (no trailing, no turning). Grows slightly over links and buttons, shrinks a touch
-// on press; hands back to the native text cursor over text fields. Mouse/trackpad only.
+// on press; hands back to the native text cursor over text fields, and to the native cursor over embeds (iframes such as
+// the Results page video), where the page stops getting mouse moves and the mark would freeze at the edge. Put
+// data-native-cursor on the box around an embed so the hand-off happens before the mouse reaches it. Mouse/trackpad only.
 ---
 <div id="cursor" aria-hidden="true">
   <svg viewBox="0 0 372 324" shape-rendering="geometricPrecision"><path d="M168.26 10.0056C175.957 -3.33512 195.211 -3.33512 202.908 10.0056L368.812 297.573C377.101 311.941 362.012 328.46 346.955 321.5L203.626 255.25C192.18 249.959 178.988 249.959 167.543 255.25L24.2135 321.5C9.15635 328.46 -5.93323 311.941 2.35608 297.573L168.26 10.0056ZM191.854 106.978C189.069 102.15 182.101 102.15 179.315 106.978L119.273 211.051C116.273 216.25 121.734 222.228 127.183 219.71L179.054 195.733C183.197 193.819 187.971 193.819 192.113 195.733L243.985 219.71C249.434 222.228 254.895 216.25 251.895 211.051L191.854 106.978Z" /></svg>
@@ -22,10 +24,11 @@
   #cursor.on { opacity: 1; }
   #cursor.hover svg { transform: scale(1.3); }
   #cursor.down svg { transform: scale(.88); }
-  #cursor.text { opacity: 0; }
+  #cursor.text, #cursor.frame { opacity: 0; }
 
   html.has-cursor, html.has-cursor * { cursor: none !important; }
   html.has-cursor input, html.has-cursor textarea { cursor: text !important; }
+  html.has-cursor [data-native-cursor], html.has-cursor [data-native-cursor] * { cursor: auto !important; }
 </style>
 
 <script>
@@ -50,7 +53,13 @@
         const t = e.target;
         el.classList.toggle("hover", !!t.closest("a, button, [role='tab'], label, summary, select"));
         el.classList.toggle("text", !!t.closest("input:not([type='submit']):not([type='button']), textarea"));
+        el.classList.toggle("frame", !!t.closest("iframe, [data-native-cursor]"));
       }
+    }, { passive: true });
+    // An embed's own page takes over the mouse, often without telling ours it was entered. So the native cursor
+    // already takes over on the box around it ([data-native-cursor]), where we still get mouse moves.
+    addEventListener("pointerover", (e: PointerEvent) => {
+      if (e.target instanceof HTMLIFrameElement) el.classList.add("frame");
     }, { passive: true });
     addEventListener("pointerdown", () => el.classList.add("down"));
     addEventListener("pointerup", () => el.classList.remove("down"));
