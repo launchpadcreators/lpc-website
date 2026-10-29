@@ -8,11 +8,11 @@
 // each push cracks the glass a little more with a thud, then it shatters and the accent-coloured line goes through.
 const steps: { t: string; s: string; long?: boolean; hint?: string; pills?: string[] }[] = [
   // Tom's homepage copy doc (29 Oct): headline and sub-line per beat, word for word
-  { t: "You've already done <em class='accent'>the hard part.</em>", s: "You built an audience, a product people buy and a name people trust. Plenty of founders never get past that." },
-  { t: "Then you start to feel <em class='accent'>the ceiling.</em>", s: "Growth slows down, and the reasons are almost always the same:", hint: "Keep scrolling to break through" },
+  { t: "You've already <em class='accent'>achieved a lot.</em>", s: "You built an audience, a product people buy and a name people trust. Plenty of founders never get past that." },
+  { t: "Then you hit <em class='accent'>the glass ceiling.</em>", s: "Growth slows down, and the reasons are almost always the same:", hint: "Keep scrolling to break through" },
   // Tom's Loom (1:47): the three outcomes as blue pills under the sub-line
-  { t: "Breaking through takes <em class='accent'>a system.</em>", s: "We build the system that turns your expertise into predictable revenue, so you can scale without everything depending on you.",
-    pills: ["Predictable revenue.", "Growth you can scale.", "A business that can run without you"] },
+  { t: "To build a 7 & 8 figure business you need <em class='accent'>a system.</em>", s: "A system that turns your expertise into predictable revenue, so you can scale without everything depending on you.",
+    pills: ["Predictable revenue.", "Products & funnels you can scale.", "A business that can run without you"] },
 ];
 // Glass breaks where the accent-coloured breakout crosses the ceiling (authored 1200x420 grid)
 const IMPACT = { x: 700, y: 186 };
@@ -31,15 +31,16 @@ const shards = [
   { d: "M674 178 L682 174 L684 182 Z", x: -100, y: -60, r: 80 },
   { d: "M730 178 L738 174 L742 184 Z", x: 110, y: -70, r: -60 },
 ];
-// Things people say at this stage, in the order of Tom's copy doc (most prominent first: 4 above the line, 2 below).
+// Things people say at this stage, in the order of Tom's copy doc (most prominent first: 4 above the line, 3 below).
 // x/y = % of the content-width chart layer.
 const blockers = [
   { q: "I know there's a much bigger business in here.", x: 30, y: 13 },
-  { q: "We have good months, but nothing feels consistent.", x: 66, y: 13 },
-  { q: "Everything still depends on me.", x: 46, y: 29 },
+  { q: "I never had predictability in my revenue.", x: 66, y: 13 },
+  { q: "Everything still runs through me.", x: 46, y: 29 },
   { q: "My organic reach isn't what it used to be.", x: 82, y: 29 },
-  { q: "I don't really know my numbers.", x: 40, y: 60 },
-  { q: "I've got an audience, but I've never turned it into paid growth.", x: 74, y: 60 },
+  { q: "I don't really know my numbers.", x: 30, y: 60 },
+  { q: "I want to scale without managing a big team.", x: 66, y: 60 },
+  { q: "I've got an audience, but I've never turned it into paid growth.", x: 48, y: 76 },
 ];
 ---
 <section id="glass-ceiling" class="gc relative" aria-label="The glass ceiling">
@@ -217,25 +218,26 @@ const blockers = [
   .blocker.on { opacity: 1; transform: translate(-50%, 0) scale(1); }
   .blocker.gone { opacity: 0; transform: translate(-50%, -8px) scale(.96); }
 
+  /* tablets: the first two quotes would touch at 30% / 66% (phones override this below) */
+  @media (max-width: 1023px) {
+    .blocker[data-b="0"] { left: 27% !important; }
+    .blocker[data-b="1"] { left: 71% !important; }
+  }
   @media (max-width: 767px) {
     .gc { height: 540vh; }
     .gc-inner { padding-top: 96px; }
     /* touch scrolling has no resistance, and the hint would sit on the quotes caption */
     .push-hint { display: none; }
-    .blocker { white-space: normal; width: 168px; text-align: center; font-size: 12px; padding: 8px 12px; }
-    /* quotes zig-zag and leave the ceiling line (~45%) clear */
-    .blocker[data-b="0"] { left: 30% !important; top: 0% !important; }
-    .blocker[data-b="1"] { left: 70% !important; top: 11% !important; } /* 3 lines on phones: sits higher to clear the next quote */
-    .blocker[data-b="2"] { left: 30% !important; top: 27% !important; }
-    .blocker[data-b="3"] { left: 70% !important; top: 51% !important; }
-    .blocker[data-b="4"] { left: 30% !important; top: 67% !important; }
-    .blocker[data-b="5"] { left: 70% !important; top: 81% !important; }
-  }
-  /* very small phones: quotes take exactly half the width each side, so neighbours can't overlap */
-  @media (max-width: 359px) {
-    .blocker { width: calc(50% - 14px); padding: 7px 10px; font-size: 11.5px; }
-    .blocker:is([data-b="0"], [data-b="2"], [data-b="4"]) { left: 25% !important; }
+    /* two half-width columns, so a left and a right quote can never overlap; 4 above the ceiling line (~44%), 3 below */
+    .blocker { white-space: normal; width: calc(50% - 14px); text-align: center; font-size: 12px; padding: 8px 12px; }
+    .blocker:is([data-b="0"], [data-b="2"], [data-b="4"], [data-b="6"]) { left: 25% !important; }
     .blocker:is([data-b="1"], [data-b="3"], [data-b="5"]) { left: 75% !important; }
+    /* heights are set by placePhoneQuotes() in the script, stacked from the ceiling line */
+    .ceil-label { transform: translateY(50%); } /* under the line, clear of the quotes above it */
+  }
+  /* very small phones: slightly smaller quotes */
+  @media (max-width: 359px) {
+    .blocker { padding: 7px 10px; font-size: 11.5px; }
   }
 </style>
 
@@ -284,6 +286,27 @@ const blockers = [
       el.setAttribute("d", el.dataset.d!.replace(/-?\d+(\.\d+)?/g, (n) => ((i++ % 2 ? (+n * ch) / 420 + headroom : (+n * w) / 1200).toFixed(1))));
     });
     orangeLen = orange.getTotalLength();
+    placePhoneQuotes();
+  }
+
+  // Phones: two columns of quotes, stacked from the ceiling line by their real heights (they wrap to 2-3 lines,
+  // so fixed percentages overlap on short screens). 0-3 above the line, 4-6 below; the right column sits a little lower.
+  const bLayer = sec.querySelector<HTMLElement>(".b-layer")!;
+  const phone = matchMedia("(max-width: 767px)");
+  blockers.forEach((b) => (b.dataset.top = b.style.top));
+  function placePhoneQuotes() {
+    if (!phone.matches) { blockers.forEach((b) => (b.style.top = b.dataset.top!)); return; }
+    const line = (bLayer.clientHeight * 186) / 420, band = 16, gap = 8;
+    const h = (i: number) => blockers[i].offsetHeight;
+    const set = (i: number, top: number) => (blockers[i].style.top = `${top}px`);
+    // short screens: drop the zig-zag before the top quote rises more than 16px above the chart (into the sub-line)
+    const top0 = line - band - h(2) - gap - h(0);
+    const stagger = Math.max(0, Math.min(18, top0 + 16));
+    const t3 = line - band - h(3), t2 = line - band - stagger - h(2);
+    set(3, t3); set(1, t3 - gap - h(1));
+    set(2, t2); set(0, t2 - gap - h(0));
+    // below the line the "Glass ceiling" label sits on the left, so the left column starts lower
+    set(5, line + band); set(4, line + band + 20); set(6, line + band + 20 + h(4) + gap);
   }
 
   function render() {
@@ -300,7 +323,7 @@ const blockers = [
     ceilLabel.style.opacity = ceilOn ? "1" : "0";
     // Blockers arrive one at a time with room to read each, then all stay until the ceiling breaks
     blockers.forEach((b, i) => {
-      const show = p > 0.31 + i * 0.03;
+      const show = p > 0.31 + i * 0.026; // 7 quotes, the last one in before the ceiling turns heavy (.50)
       b.classList.toggle("on", show && p < 0.66);
       b.classList.toggle("gone", p >= 0.66);
     });
