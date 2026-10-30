@@ -9,7 +9,7 @@ import Starfield from "../components/Starfield.astro";
 import Navbar from "../components/Navbar.astro";
 import Close from "../components/Close.astro";
 import Footer from "../components/Footer.astro";
-import { url } from "../config/paths";
+import { asset } from "../config/paths";
 import { applyUrl } from "../data/growth-stages";
 // Founder cards match the homepage's (Tom, 30 Oct)
 import { founders, liIcon } from "../data/founders";
@@ -31,7 +31,7 @@ type Partner = {
   id: string; name: string; product: string; img: string; pos: string; headline: string;
   pronoun: "his" | "her"; whoLabel: string; who: string; productText: string;
   did: { label: string; text: string }[]; results: { big: string; text: string }[];
-  video?: string; // MP4 in public/videos/, with a poster still of the same name (.jpg) beside it
+  video?: string; // MP4 in public/lpc-site/videos/, with a poster still of the same name (.jpg) beside it
   videoIntro?: string; // the line above the video
 };
 const partners: Partner[] = [
@@ -155,7 +155,7 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
           {i > 0 && <div class="rs-sep" aria-hidden="true"><span></span></div>}
           <article id={p.id} class="rs-case rs-bento" aria-labelledby={`${p.id}-name`} data-reveal>
             <!-- photo tile stretches to the height of the two tiles beside it, so short intros never leave a gap -->
-            <div class="rs-tile rs-photo"><img src={url(p.img)} alt={p.name} style={`object-position:${p.pos}`} width="900" height="600" loading="lazy" decoding="async" draggable="false" /></div>
+            <div class="rs-tile rs-photo"><img src={asset(p.img)} alt={p.name} style={`object-position:${p.pos}`} width="900" height="600" loading="lazy" decoding="async" draggable="false" /></div>
             <div class="rs-tile rs-title">
               <h2 id={`${p.id}-name`} class="rs-name">{p.name}</h2>
               <p class="rs-product">{p.product}</p>
@@ -188,7 +188,7 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
                      won't let other sites play its files directly). Nothing downloads until it scrolls into view.
                      Plays by itself (muted: browsers only allow sound after a tap) when scrolled to (Tom, 30 Oct). -->
                 <video class="rs-video" controls controlslist="nodownload" oncontextmenu="return false" playsinline muted preload="none" title={`${p.name} testimonial`}
-                  poster={url(p.video.replace(/\.mp4$/, ".jpg"))} src={url(p.video)}></video>
+                  poster={asset(p.video.replace(/\.mp4$/, ".jpg"))} src={asset(p.video)}></video>
               </div>
             )}
           </article>
@@ -229,7 +229,7 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
         <div class="rs-founders">
           {founders.map((f) => (
             <article class="rs-founder" data-reveal>
-              <div class="rs-fphoto"><img src={url(f.photo)} alt={f.name} width="540" height="405" loading="lazy" decoding="async" draggable="false" /></div>
+              <div class="rs-fphoto"><img src={asset(f.photo)} alt={f.name} width="540" height="405" loading="lazy" decoding="async" draggable="false" /></div>
               <p class="rs-kicker">Co-founder</p>
               <h3 class="rs-fname">{f.name}</h3>
               <p class="rs-fline">{f.line}</p>

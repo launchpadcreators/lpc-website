@@ -57,13 +57,13 @@ There are **two previews**. Always say which one you mean:
 - **Avoid:** small eyebrow labels above headlines, pill or chip lists, "SaaS-looking" template cards, text-heavy layouts, uneven card sizes, content spilling out of its container, tiny uppercase "AI look" labels.
 - **Like:** smooth, eased motion and small, useful animated mockups.
 - Animations run for everyone, even with the device's "Reduce motion" setting on. That was a deliberate decision, so don't add `prefers-reduced-motion` checks.
-- Files in `public/` are referenced with `url()` from `src/config/paths.ts`, so they work on the preview's sub-path too.
+- Files live in `public/lpc-site/` and are referenced with `asset()` from `src/config/paths.ts` (pages with `url()`), so they work on the preview's sub-path and keep the live main folder tidy.
 
 ## Images
 
-- **Founders** (`public/team/tom.jpg`, `dan.jpg`): 1080×810 JPG (4:3), cropped head to chest.
-- **Partner cards** (`public/partners/<name>.jpg`): about 900px wide JPG. The crop is set by `pos` in `src/components/Partners.astro`, for example `"50% 22%"`.
-- **Partner avatars** (`public/partners/avatars/<name>.jpg`): 160×160 square JPG, used in the hero's face strip. **When a partner's photo changes, update both the card photo and the avatar.**
+- **Founders** (`public/lpc-site/team/tom.jpg`, `dan.jpg`): 1080×810 JPG (4:3), cropped head to chest.
+- **Partner cards** (`public/lpc-site/partners/<name>.jpg`): about 900px wide JPG. The crop is set by `pos` in `src/components/Partners.astro`, for example `"50% 22%"`.
+- **Partner avatars** (`public/lpc-site/partners/avatars/<name>.jpg`): 160×160 square JPG, used in the hero's face strip. **When a partner's photo changes, update both the card photo and the avatar.**
 - Keep each image under about 150 KB, and keep the file names (lowercase, with hyphens). If you can't resize or compress images where you're running, say so: still use the image if it's under about 500 KB, and note in the pull request that it should be optimised.
 - **Only use images the person confirms LPC has the right to use publicly.** This repo and the site are public.
 - Photos look best on the dark background; check the crop on desktop, tablet and phone.

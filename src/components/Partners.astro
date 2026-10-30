@@ -6,8 +6,8 @@
 // Cards sit in an infinite carousel that moves on one card every 1.5s; you can also swipe / drag / use the arrows.
 // Motion: cards fade up one after another and the stat numbers count up (photos stay still).
 // Pager under the row: ‹ one dot per partner ›.
-import { url } from "../config/paths";
-// Partner photos live in public/partners/ (white-background shots are cut out onto the dark warm backdrop).
+import { asset } from "../config/paths";
+// Partner photos live in public/lpc-site/partners/ (white-background shots are cut out onto the dark warm backdrop).
 // Order per Tom (review 2): Chris first, then Joseph, then Nicolas, so Chris always shows first, especially on phones.
 const partners = [
   {
@@ -60,7 +60,7 @@ const parts = (s: string) => s.split(/(\d+(?:\.\d+)?)/).map((t, i) => (i % 2 ? {
     {partners.map((p, i) => (
       <li class="card" style={`--d:${i * 110}ms`}>
         <div class="media">
-          <img class="photo" src={url(p.img)} alt={p.name} loading="lazy" decoding="async" draggable="false" style={`object-position:${p.pos}`} />
+          <img class="photo" src={asset(p.img)} alt={p.name} loading="lazy" decoding="async" draggable="false" style={`object-position:${p.pos}`} />
         </div>
         <div class="body">
           <h3 class="who">{p.name}</h3>

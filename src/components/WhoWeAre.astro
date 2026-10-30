@@ -1,7 +1,7 @@
 ---
 // Who we are — headline, then a grid: the "Our story" card (tall, left), the two co-founder cards with their own
 // photos, and the team card underneath them (Tom, review 2). Copy: Tom's homepage copy doc (29 Oct).
-import { url } from "../config/paths";
+import { asset } from "../config/paths";
 // Founder cards (shared with the Results page); story and team: Tom's homepage copy doc (29 Oct), word for word.
 import { founders, liIcon } from "../data/founders";
 const areas = ["f-a", "f-b"];
@@ -30,7 +30,7 @@ const tick = "M3.5 8.5l3 3 6-7";
 
       {founders.map((f, i) => (
         <article class={`card founder ${areas[i]}`} style={`--d:${(i + 1) * 110}ms`}>
-          <div class="fphoto"><img src={url(f.photo)} alt={f.name} width="540" height="405" loading="lazy" decoding="async" draggable="false" /></div>
+          <div class="fphoto"><img src={asset(f.photo)} alt={f.name} width="540" height="405" loading="lazy" decoding="async" draggable="false" /></div>
           <p class="kicker">Co-founder</p>
           <h3 class="fname">{f.name}</h3>
           <p class="desc">{f.line}</p>

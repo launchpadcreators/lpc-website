@@ -4,7 +4,14 @@
 #   one-file-test:     uploads only lpc-preview/deploy-test.txt (time + commit), to prove the login works
 #   full:              runs the same plan check first, then updates the lpc-preview folder (stops if the check fails)
 #   look-around / find-folder: read-only diagnostics (list folders); used to find the website folder
-# It only ever works inside the lpc-preview folder (which must already exist), never WordPress or the live homepage.
+#   index-test:        puts a test folder with both index.php and index.html in lpc-preview, prints which one the
+#                      server shows, then deletes it (tells us whether our index.html can sit beside WordPress's index.php)
+#   launch-dry-run:    LIVE SITE, read-only: builds for launchpadcreators.com and lists what launch would change in html/
+#   launch:            LIVE SITE: puts the new site in html/ beside WordPress (see docs/DEPLOY-123REG.md, section 9)
+#   launch-undo:       LIVE SITE: deletes only html/index.html, so WordPress's homepage shows again
+# The preview modes only ever work inside the lpc-preview folder (which must already exist).
+# The launch modes only write the site's own names in html/ (index.html, lpc-site/, results/, privacy-policy/,
+# terms-of-use/), delete only inside those folders, and stop if any WordPress name is involved.
 # Needs the repo secrets SFTP_HOST, SFTP_USER, SFTP_PASSWORD and SFTP_ROOT (= html, the website folder under the
 # login's home). Full details: docs/DEPLOY-123REG.md.
 name: Preview to 123reg
@@ -13,9 +20,9 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "find-folder = show where lpc-preview is (read-only); dry-run = list changes only; one-file-test = upload deploy-test.txt only; full = update lpc-preview"
+        description: "Preview: dry-run = list changes only; full = update lpc-preview. LIVE SITE: launch-dry-run first, then launch; launch-undo brings WordPress's homepage back. Others: diagnostics."
         type: choice
-        options: [dry-run, find-folder, look-around, one-file-test, full]
+        options: [dry-run, find-folder, look-around, one-file-test, full, index-test, launch-dry-run, launch, launch-undo]
         default: dry-run
 
 permissions:
@@ -29,8 +36,10 @@ jobs:
   upload:
     runs-on: ubuntu-latest
     env:
-      BASE_PATH: /lpc-preview
-      PUBLIC_NOINDEX: "true"
+      # preview modes build for /lpc-preview/ (hidden from Google); launch modes build for the domain itself (visible)
+      BASE_PATH: ${{ startsWith(inputs.mode, 'launch') && '/' || '/lpc-preview' }}
+      PUBLIC_NOINDEX: ${{ startsWith(inputs.mode, 'launch') && 'false' || 'true' }}
+      SITE_URL: ${{ startsWith(inputs.mode, 'launch') && 'https://launchpadcreators.com' || '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -43,7 +52,7 @@ jobs:
       - name: Install lftp
         run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
 
-      - name: Upload to /lpc-preview/
+      - name: Upload
         env:
           SFTP_HOST: ${{ secrets.SFTP_HOST }}
           SFTP_USER: ${{ secrets.SFTP_USER }}
@@ -92,6 +101,62 @@ jobs:
             exit 1
           fi
           echo "== lpc-preview folder found"
+
+          # Which file does the server show for a folder holding both index.php and index.html? Only touches
+          # lpc-preview/index-test/, which is deleted again at the end.
+          if [ "$MODE" = "index-test" ]; then
+            mkdir -p idx
+            printf '<?php echo "SERVED: index.php (WordPress-style file wins)";\n' > idx/index.php
+            printf 'SERVED: index.html (our file wins)\n' > idx/index.html
+            lftp_run "cd \"$ROOT\"; cd lpc-preview; mirror --reverse --verbose idx/ index-test/"
+            sleep 5
+            echo "== The server answers /lpc-preview/index-test/ with:"
+            curl -s "https://launchpadcreators.com/lpc-preview/index-test/?nc=$RANDOM$RANDOM" || true
+            echo
+            lftp_run "cd \"$ROOT\"; cd lpc-preview; rm -r index-test"
+            echo "== Test folder deleted"
+            exit 0
+          fi
+
+          # LIVE SITE: the new site goes into the website folder itself, beside WordPress. Only our own names are
+          # written; deletions happen only inside our own folders; any WordPress/123reg name stops the job.
+          case "$MODE" in launch-dry-run|launch|launch-undo)
+            lftp_run "cd \"$ROOT\"; cls -1 -a" > top.txt
+            grep -qx 'wp-config.php' top.txt || { echo "Stopping: '$ROOT' isn't the website folder (no wp-config.php). Nothing was changed."; exit 1; }
+            if [ "$MODE" = "launch-undo" ]; then
+              echo "== LAUNCH UNDO: deleting html/index.html only, so WordPress's homepage shows again"
+              lftp_run "cd \"$ROOT\"; rm index.html" || echo "(index.html wasn't there)"
+              echo "== Done. Flush the cache in 123reg next."
+              exit 0
+            fi
+            OURS=$(cd dist && ls -A)
+            for n in $OURS; do
+              case "$n" in
+                index.php|wp-*|xmlrpc.php|platform|.wp-cli|.htaccess|license.txt|readme.html|plat-cron.php|lpc-preview|.wp-config*)
+                  echo "!! SAFETY CHECK FAILED: the build contains '$n', a WordPress/123reg name. Nothing was uploaded."; exit 1 ;;
+              esac
+            done
+            echo "== Our names in the website folder: $(echo $OURS)"
+            echo "== Already there: $(for n in $OURS; do grep -qx "$n/\?" top.txt && printf '%s ' "$n"; done; echo)"
+            DIRS=$(cd dist && find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n')
+            FILES=$(cd dist && find . -mindepth 1 -maxdepth 1 -type f -printf '%f\n')
+            [ "$FILES" = "index.html" ] || { echo "!! SAFETY CHECK FAILED: expected index.html as the only top-level file, got: $FILES"; exit 1; }
+            # plan: each of our folders is mirrored on its own (--delete only reaches inside that folder)
+            : > plan.txt
+            for d in $DIRS; do lftp_run "cd \"$ROOT\"; mirror --reverse --delete --verbose --dry-run dist/$d/ $d/" | tee -a plan.txt; done
+            inside="/${ROOT#./}/"
+            bad=$(grep -E '^(mkdir|rm|chmod)' plan.txt | grep 'sftp://' | while read -r l; do ok=0; for d in $DIRS; do case "$l" in *"$inside$d"|*"$inside$d/"*) ok=1 ;; esac; done; [ $ok = 1 ] || echo "$l"; done || true)
+            echo "== Plan: index.html + $(grep -c '^Transferring file' plan.txt || true) files in our folders, $(grep -c '^rm ' plan.txt || true) to delete (inside our folders)"
+            if [ -n "$bad" ]; then echo "!! SAFETY CHECK FAILED: the plan touches paths outside our folders:"; echo "$bad"; exit 1; fi
+            echo "== SAFETY CHECK PASSED: everything in the plan is index.html or inside: $(echo $DIRS)"
+            if [ "$MODE" = "launch" ]; then
+              for d in $DIRS; do lftp_run "cd \"$ROOT\"; mirror --reverse --delete --verbose --parallel=4 dist/$d/ $d/"; done
+              # index.html last, so the homepage only switches once everything it needs is in place
+              lftp_run "cd \"$ROOT\"; put dist/index.html -o index.html; cls -l index.html"
+              echo "== LAUNCH UPLOAD FINISHED. Flush the cache in 123reg next."
+            fi
+            exit 0 ;;
+          esac
 
           # mirror only inside lpc-preview/ (--delete removes old files there and nowhere else)
           FLAGS="--reverse --delete --verbose --parallel=4"

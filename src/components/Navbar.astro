@@ -3,7 +3,7 @@
 // the floating island on the right holds the 3 links and the orange button.
 // The island is clear at the top of the page and becomes frosted glass once it overlaps content.
 // Mobile: the island is just the burger; the menu drops down as its own glass panel.
-import { url } from "../config/paths";
+import { url, asset } from "../config/paths";
 import NewsletterDialog from "./NewsletterDialog.astro";
 // Section links scroll on the homepage; from other pages (e.g. /results) they go to the homepage section
 const onHome = Astro.url.pathname.replace(/\/$/, "") === url("/").replace(/\/$/, "");
@@ -21,7 +21,7 @@ const applyUrl = "https://form.typeform.com/to/yWBgS4vK";
 <header class="site-head fixed inset-x-0 top-0 z-50 px-3 pt-3 md:pt-4">
   <div class="mx-auto flex max-w-[1240px] items-center justify-between gap-4 md:px-2">
     <a href={url("/")} class="logo" aria-label="Launchpad Creators home">
-      <img src={url("logo-full.png")} alt="Launchpad Creators" width="907" height="190" />
+      <img src={asset("logo-full.png")} alt="Launchpad Creators" width="907" height="190" />
     </a>
 
     <div id="nav" class="island rounded-2xl border border-transparent">

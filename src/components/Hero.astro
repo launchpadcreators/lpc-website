@@ -1,9 +1,9 @@
 ---
 // Hero: centred headline with one serif accent word, sub-copy, two CTAs,
 // then social proof (Tom's review): overlapping partner faces + "Partnering with the world's best creators and entrepreneurs."
-import { url } from "../config/paths";
+import { asset } from "../config/paths";
 const applyUrl = "https://form.typeform.com/to/yWBgS4vK";
-// Square face crops live in public/partners/avatars/. The right-most face is the only one shown in full in the overlap,
+// Square face crops live in public/lpc-site/partners/avatars/. The right-most face is the only one shown in full in the overlap,
 // so the most important partners sit on the right (Tom, review 2): Chris right-most.
 const strip = [
   { name: "Tobi Oluwole", img: "partners/avatars/tobi-oluwole.jpg" },
@@ -39,7 +39,7 @@ const strip = [
     <div class="proof h-in" style="--d:360ms">
       <ul class="faces">
         {strip.map((p, i) => (
-          <li style={`--i:${i}`}><img src={url(p.img)} alt={p.name} title={p.name} width="160" height="160" decoding="async" draggable="false" /></li>
+          <li style={`--i:${i}`}><img src={asset(p.img)} alt={p.name} title={p.name} width="160" height="160" decoding="async" draggable="false" /></li>
         ))}
       </ul>
       <p class="proof-line">Partnering with the world's best creators and entrepreneurs.</p>

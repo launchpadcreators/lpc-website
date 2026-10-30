@@ -2,7 +2,7 @@
 // Footer — copy: brief/04-copy-deck.md, section 9. Also holds our rocket mark, which lifts off as you scroll to the closing card.
 // TODO: company number [CONFIRM].
 import { applyUrl } from "../data/growth-stages";
-import { url } from "../config/paths";
+import { url, asset } from "../config/paths";
 // Section links scroll on the homepage; from other pages (e.g. /results) they go to the homepage section
 const onHome = Astro.url.pathname.replace(/\/$/, "") === url("/").replace(/\/$/, "");
 const to = (hash: string) => (onHome ? hash : `${url("/")}${hash}`);
@@ -18,7 +18,7 @@ const mark = "M168.26 10.0056C175.957 -3.33512 195.211 -3.33512 202.908 10.0056L
   <div class="mx-auto w-full max-w-[1080px] px-6">
     <div class="top">
       <a href="#top" class="brand" aria-label="Launchpad Creators, back to top">
-        <img src={url("logo-full.png")} alt="Launchpad Creators" width="907" height="190" />
+        <img src={asset("logo-full.png")} alt="Launchpad Creators" width="907" height="190" />
       </a>
       <nav class="links" aria-label="Footer">
         {nav.map((n) => <a href={n.href}>{n.label}</a>)}

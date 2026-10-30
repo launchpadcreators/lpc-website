@@ -10,6 +10,8 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: process.env.SITE_URL,
   base: process.env.BASE_PATH || '/',
+  // build files (CSS/JS) go in the same single folder as the images (public/lpc-site/), see src/config/paths.ts
+  build: { assets: 'lpc-site/_astro' },
   integrations: [react()],
 
   vite: {

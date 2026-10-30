@@ -2,7 +2,7 @@
 import "../styles/global.css";
 import { THEME, THEMES, ACCENT, ACCENTS } from "../config/theme";
 import Cursor from "../components/Cursor.astro";
-import { url } from "../config/paths";
+import { asset } from "../config/paths";
 
 interface Props {
   title: string;
@@ -29,7 +29,8 @@ const hidden = noindex || import.meta.env.PUBLIC_NOINDEX === "true";
     <title>{title}</title>
     <meta name="description" content={description} />
     {hidden && <meta name="robots" content="noindex, nofollow" />}
-    <link rel="icon" type="image/svg+xml" href={url("favicon.svg")} />
+    <link rel="icon" href={asset("favicon.ico")} sizes="any" />
+    <link rel="icon" type="image/svg+xml" href={asset("favicon.svg")} />
     <meta name="theme-color" content={THEME === "blue" ? "#0D0C15" : "#0E0E10"} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
