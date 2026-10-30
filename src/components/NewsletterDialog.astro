@@ -5,7 +5,8 @@
 // The form posts straight to Kit (form 10103548) with our own markup, so Kit's script and styles aren't loaded.
 const kitAction = "https://app.kit.com/forms/10103548/subscriptions";
 ---
-<dialog id="join-newsletter" class="nl-dialog" aria-labelledby="nl-title">
+<!-- data-native-cursor: the pop-up sits in the browser's top layer, above the custom cursor dot, so the normal cursor takes over -->
+<dialog id="join-newsletter" class="nl-dialog" aria-labelledby="nl-title" data-native-cursor>
   <div class="mini">
     <button type="button" class="x" aria-label="Close">
       <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg>
