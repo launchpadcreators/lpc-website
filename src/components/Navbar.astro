@@ -44,7 +44,7 @@ const applyUrl = "https://form.typeform.com/to/yWBgS4vK";
     <div class="px-5 pb-5 pt-2">
       <ul class="flex flex-col">
         {links.map((l) => (
-          <li><a href={l.href} class="block py-3.5 text-lg font-semibold text-text">{l.label}</a></li>
+          <li><a href={l.href} class="block py-3.5 text-lg font-semibold text-text transition-colors hover:text-accent">{l.label}</a></li>
         ))}
       </ul>
       <a href={applyUrl} target="_blank" rel="noopener" class="btn mt-3 flex w-full justify-center">Work with us</a>

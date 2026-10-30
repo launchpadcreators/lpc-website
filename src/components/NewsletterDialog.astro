@@ -73,6 +73,8 @@ const kitAction = "https://app.kit.com/forms/10103548/subscriptions";
     if (dlg.open) return;
     dlg.showModal();
     lenis()?.stop(); // page stays put behind the pop-up
+    // with a mouse and keyboard, start typing straight away (phones would pop the keyboard up unasked)
+    if (matchMedia("(hover: hover) and (pointer: fine)").matches) dlg.querySelector<HTMLInputElement>("input")?.focus();
   };
   const close = () => {
     if (dlg.open) dlg.close();

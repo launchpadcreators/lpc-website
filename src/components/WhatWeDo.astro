@@ -306,6 +306,8 @@ const tick = "M3.5 8.5l3 3 6-7";
     .bento { grid-template-columns: 1fr 1fr; }
     .s1, .s2 { grid-column: span 1; }
     .s3, .s4 { grid-column: span 2; }
+    /* 5 tiles in 2 columns: Convert takes the full row, or it would sit alone beside an empty gap */
+    .t-sales { grid-column: span 2; }
   }
   @media (max-width: 767px) {
     .bento { grid-template-columns: 1fr; padding: 12px; gap: 12px; }
