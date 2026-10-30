@@ -1,7 +1,6 @@
 ---
 // Footer — copy: brief/04-copy-deck.md, section 9. Also holds our rocket mark, which lifts off as you scroll to the closing card.
-// TODO: company number [CONFIRM], Privacy / Terms pages (Terms currently pointed at Privacy on the old site),
-// and Dan's / Tom's LinkedIn URLs once shared.
+// TODO: company number [CONFIRM].
 import { applyUrl } from "../data/growth-stages";
 import { url } from "../config/paths";
 // Section links scroll on the homepage; from other pages (e.g. /results) they go to the homepage section
@@ -30,9 +29,9 @@ const mark = "M168.26 10.0056C175.957 -3.33512 195.211 -3.33512 202.908 10.0056L
     <div class="bottom">
       <p>© 2026 Launchpad Creators Limited · 3rd Floor, 86-90 Paul Street, London EC2A 4NE</p>
       <div class="legal">
-        <!-- Privacy Policy lives on the current launchpadcreators.com. There is no Terms of Use page yet
-             (the old site pointed it at the privacy policy), so that link comes back once the page exists. -->
-        <a href="https://launchpadcreators.com/privacy-policy/" target="_blank" rel="noopener">Privacy Policy</a>
+        <!-- Our own copies of the old WordPress pages, at the same addresses (/privacy-policy/, /terms-of-use/) -->
+        <a href={url("privacy-policy/")}>Privacy Policy</a>
+        <a href={url("terms-of-use/")}>Terms of Use</a>
         <a href="mailto:hello@launchpadcreators.com">hello@launchpadcreators.com</a>
       </div>
     </div>
@@ -97,13 +96,14 @@ const mark = "M168.26 10.0056C175.957 -3.33512 195.211 -3.33512 202.908 10.0056L
   // last moment) by the time the card is in view. Reduced motion: no rocket.
   const ft = document.querySelector<HTMLElement>(".ft")!;
   const rocket = ft.querySelector<HTMLElement>(".rocket")!;
-  const card = document.querySelector<HTMLElement>("#newsletter .card")!;
+  // pages without the closing card (Privacy Policy, Terms of Use) have no rocket
+  const card = document.querySelector<HTMLElement>("#newsletter .card");
   const flame = rocket.querySelector<HTMLElement>(".flame")!;
   const trail = rocket.querySelector<HTMLElement>(".trail")!;
   const clamp = (v: number) => Math.max(0, Math.min(1, v));
 
   const render = () => {
-    const r = card.getBoundingClientRect();
+    const r = card!.getBoundingClientRect();
     const end = Math.max(innerHeight - 24 - r.height, innerHeight * 0.12); // card fully in view (or its top near the top, if taller than the screen)
     const climb = innerHeight + rocket.offsetHeight; // from just below the screen to just above it
     const start = end + climb / 2; // 2x the scroll speed
@@ -125,6 +125,8 @@ const mark = "M168.26 10.0056C175.957 -3.33512 195.211 -3.33512 202.908 10.0056L
     trail.style.transform = `scaleY(${0.55 + p * 0.45})`;
     trail.style.opacity = "0.8";
   };
-  render();
-  onScrollInView(card, render, "200% 0px");
+  if (card) {
+    render();
+    onScrollInView(card, render, "200% 0px");
+  }
 </script>

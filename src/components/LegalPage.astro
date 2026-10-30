@@ -1,0 +1,37 @@
+---
+// Plain text page for the Privacy Policy and Terms of Use: the old WordPress pages' wording, in the new site's look.
+// The text lives in src/data/legal/*.html (copied word for word from the WordPress pages).
+import Base from "../layouts/Base.astro";
+import Starfield from "./Starfield.astro";
+import Navbar from "./Navbar.astro";
+import Footer from "./Footer.astro";
+
+interface Props { title: string; html: string }
+const { title, html } = Astro.props;
+---
+<Base title={`${title} | Launchpad Creators`} description={`${title} for Launchpad Creators.`}>
+  <Starfield />
+  <Navbar />
+  <main id="top" class="relative z-10">
+    <article class="lg-page mx-auto w-full max-w-[760px] px-6">
+      <h1 class="text-center text-[clamp(36px,4.6vw,60px)] font-medium leading-[1.04] tracking-[-0.045em] text-text">{title}</h1>
+      <div class="prose" set:html={html} />
+    </article>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .lg-page { padding: clamp(140px, 18vh, 190px) 24px clamp(72px, 10vh, 120px); }
+  .prose { margin-top: 32px; font-size: 16px; line-height: 1.7; color: var(--text-2); overflow-wrap: anywhere; }
+  .prose :global(h2) { margin-top: 44px; font-size: clamp(22px, 2.2vw, 28px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.2; color: var(--text); }
+  .prose :global(h3) { margin-top: 32px; font-size: 19px; font-weight: 600; letter-spacing: -0.02em; color: var(--text); }
+  .prose :global(h4) { margin-top: 24px; font-size: 16px; font-weight: 600; color: var(--text); }
+  .prose :global(p) { margin-top: 14px; }
+  .prose :global(ul) { margin-top: 14px; display: grid; gap: 10px; }
+  .prose :global(li) { position: relative; padding-left: 18px; }
+  .prose :global(li)::before { content: ""; position: absolute; left: 0; top: .72em; width: 6px; height: 6px; border-radius: 2px; background: var(--accent); }
+  .prose :global(strong) { color: var(--text); font-weight: 600; }
+  .prose :global(a) { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+  .prose > :global(:first-child) { margin-top: 0; }
+</style>
