@@ -12,6 +12,14 @@ The update history of the Launchpad Creators website, newest first. **Add a line
 - **To do before launch:** Privacy Policy and Terms pages in the new design (same text as the current ones); SEO basics (share image, sitemap, robots.txt, structured data); the automatic upload to 123reg; making this repo private (note: on GitHub's free plan that switches off the GitHub preview, so do it once the 123reg preview is in regular use).
 - **Access:** one shared LPC Claude account (team email) with the `launchpadcreators` GitHub account. Abdullah (`m-abdullahh`) stays a collaborator until the final deployment is done; he'll remove himself after that.
 
+## 2026-10-30
+- **Tom's Slack changes (30 Oct)**, word for word. Asked by Tom (via Abdullah).
+  - Numbers, homepage and Results page: "$80M+" → "$34m+"; "6.8x average return on ad spend" → "3.2x average revenue increase within 12 months"; homepage "10M+ followers" → "243k+ total webinar registrations", also added to the Results page stats (now 4: 2×2 on phones). (Stats.astro, results.astro)
+  - Not changed, worth confirming with Tom: "$80m of revenue" in the Consultancy Partner text (How we work) and "$80M+ in revenue generated" in the Results page founders intro.
+  - Results page: title "Partner Results" (was "Results & Proof"); "Here is a sample of our recent results." removed; the line above Chris's video is now "Here's what Chris had to say about us (unprompted) to his Academy of entrepreneurs."; Chris's video plays by itself (muted, as browsers require) when scrolled to and pauses when scrolled away; Jo's "$0 ad spend" → "100% organic acquisition"; Tom and Dan's cards now match the homepage (photo, Co-founder, name, line, LinkedIn), from a shared data file. (results.astro, data/founders.ts, WhoWeAre.astro)
+  - Nav: "Home" first on the Results page; "Join Newsletter" between About and Work with us, opening the mailing-list form in a pop-up (the hero's "Join our mailing list" opens it too). Tablets now use the menu button below 1024px wide, since the links no longer fit. (Navbar.astro, NewsletterDialog.astro, Hero.astro)
+  - Closing card: the mailing-list panel removed; "Ready to scale?" sits centred on the blue. (Close.astro)
+
 ## 2026-10-29
 - **123reg preview updated** to `main` at `8e0ff14` (Tom's suggested copy edits, Dan's line, $75K range): [dry-run](https://github.com/launchpadcreators/lpc-website/actions/runs/40926216491) (SAFETY CHECK PASSED, 62/62 inside lpc-preview; 53 to upload, 2 to delete: the old glass ceiling script and stylesheet), [full](https://github.com/launchpadcreators/lpc-website/actions/runs/40926440976) (passed again, finished). Server checked: new copy present; live homepage, privacy, terms and login unchanged. Asked by Abdullah.
 - **Tom's suggested edits on the homepage copy doc**, word for word. Asked by Tom (via Abdullah).

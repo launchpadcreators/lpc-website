@@ -1,10 +1,11 @@
 ---
 // Numbers strip: big numeral with the suffix in the accent colour and the copy label underneath, divider lines between stats.
 // 4 in one row on tablet/desktop, 2x2 on mobile. Subtle count-up when it scrolls into view.
+// $34m+, 3.2x and 243k+: Tom (30 Oct), also on the Results page
 const stats = [
-  { label: "Revenue generated", prefix: "$", value: 80, decimals: 0, suffix: "M+", desc: "Revenue generated for our partners." },
-  { label: "Return on ad spend", prefix: "", value: 6.8, decimals: 1, suffix: "x", desc: "Average return on ad spend." },
-  { label: "Partner audience", prefix: "", value: 10, decimals: 0, suffix: "M+", desc: "Followers across our partners' audiences." },
+  { label: "Revenue generated", prefix: "$", value: 34, decimals: 0, suffix: "m+", desc: "Revenue generated for our partners." },
+  { label: "Revenue increase", prefix: "", value: 3.2, decimals: 1, suffix: "x", desc: "Average revenue increase within 12 months." },
+  { label: "Webinar registrations", prefix: "", value: 243, decimals: 0, suffix: "k+", desc: "Total webinar registrations." },
   { label: "Creatives produced", prefix: "", value: 3250, decimals: 0, suffix: "+", desc: "Ad creatives produced in-house." },
 ];
 const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractionDigits: d, maximumFractionDigits: d });

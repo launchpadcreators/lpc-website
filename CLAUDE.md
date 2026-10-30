@@ -84,7 +84,7 @@ There are **two previews**. Always say which one you mean:
 
 - Astro 7 + Tailwind v4, with Lenis smooth scroll. Homepage: `src/pages/index.astro`; Results page: `src/pages/results.astro`. Homepage sections are in `src/components/`, in page order: Hero, Stats, GlassCeiling, GrowthSystem, Partners, WhatWeDo, HowWeWork, WhoWeAre, Close, Footer.
 - **Growth System:** Tom picked `GrowthSystem` (29 Oct; Dan not yet confirmed). The other two versions, `GrowthEclipse` and `GrowthFunnel`, are off the page but their files stay in case Dan wants one back.
-- The Typeform "Work with us" link is in `src/data/growth-stages.ts` (`applyUrl`). The mailing list posts to Kit form 10103548, in `src/components/Close.astro`.
+- The Typeform "Work with us" link is in `src/data/growth-stages.ts` (`applyUrl`). The mailing list posts to Kit form 10103548, in the "Join Newsletter" pop-up `src/components/NewsletterDialog.astro` (opened by any link to `#join-newsletter`: the nav and the hero button). Tom and Dan's co-founder cards come from `src/data/founders.ts`, shared by both pages.
 - **New page:** add a file in `src/pages/` (for example `src/pages/proof.astro` gives `/proof/`) that uses the `Base` layout and the existing components.
 - Commands: `npm install`, `npm run dev` (localhost:4321), `npm run build`.
 

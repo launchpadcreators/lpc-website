@@ -1,0 +1,120 @@
+---
+// "Join Newsletter" pop-up (Tom, 30 Oct): the mailing-list card that used to sit inside the closing card, opened from the
+// nav's "Join Newsletter" link and the hero's "Join our mailing list" button (any link to #join-newsletter).
+// Copy unchanged from the old card (brief/04-copy-deck.md, section 8).
+// The form posts straight to Kit (form 10103548) with our own markup, so Kit's script and styles aren't loaded.
+const kitAction = "https://app.kit.com/forms/10103548/subscriptions";
+---
+<dialog id="join-newsletter" class="nl-dialog" aria-labelledby="nl-title">
+  <div class="mini">
+    <button type="button" class="x" aria-label="Close">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg>
+    </button>
+    <h2 id="nl-title" class="mini-title">Learn how to scale.</h2>
+    <p class="mini-body">Weekly tips, frameworks and behind-the-scenes breakdowns from the businesses we grow.</p>
+    <!-- action/method let it still work (on Kit's own page) if the script below never runs -->
+    <form class="form" action={kitAction} method="post" novalidate>
+      <label class="field"><span class="sr-only">First name</span><input name="fields[first_name]" type="text" placeholder="First name" autocomplete="given-name" required /></label>
+      <label class="field"><span class="sr-only">Email</span><input name="email_address" type="email" placeholder="Email" autocomplete="email" required /></label>
+      <button class="btn-accent" type="submit">Join the list</button>
+      <p class="note" role="status" aria-live="polite"></p>
+    </form>
+    <p class="fine">Unsubscribe any time. We'll never spam you or sell your data.</p>
+  </div>
+</dialog>
+
+<style>
+  .nl-dialog {
+    margin: auto; padding: 0; width: min(420px, calc(100% - 32px)); max-height: calc(100% - 32px);
+    border: 0; background: none; color: inherit; overflow: visible;
+  }
+  .nl-dialog::backdrop { background: rgb(0 0 0 / .6); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+  .nl-dialog[open] { animation: nl-in .45s var(--ease-out-soft) both; }
+  @keyframes nl-in { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
+
+  /* same look as the founder cards: dark surface, hairline border */
+  .mini {
+    position: relative; display: flex; flex-direction: column; padding: 28px; border-radius: 16px;
+    background: var(--surface); border: 1px solid var(--line);
+    box-shadow: 0 24px 60px -24px rgb(0 0 0 / .7);
+  }
+  .x {
+    position: absolute; top: 12px; right: 12px; width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center;
+    color: var(--text-2); cursor: pointer; transition: color .2s, background-color .2s;
+  }
+  .x:hover { color: var(--text); background: var(--raised); }
+  .x svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+  .mini-title { padding-right: 36px; font-size: 22px; font-weight: 600; letter-spacing: -0.03em; color: var(--text); }
+  .mini-body { margin-top: 6px; font-size: 14px; line-height: 1.5; color: var(--text-2); }
+  .form { margin-top: 18px; display: grid; gap: 8px; }
+  .field input {
+    width: 100%; height: 46px; padding: 0 14px; border-radius: 10px; font: inherit; font-size: 15px; color: var(--text);
+    background: var(--bg); border: 1px solid var(--line); outline: none; transition: border-color .2s, box-shadow .2s;
+  }
+  .field input::placeholder { color: var(--muted); }
+  .field input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgb(var(--accent-rgb) / .18); }
+  .btn-accent {
+    height: 48px; border-radius: 10px; font-size: 15px; font-weight: 600; color: var(--accent-ink); background: var(--accent-grad);
+    box-shadow: inset 0 -2px 0 rgb(0 0 0 / .12); cursor: pointer; transition: filter .2s, transform .2s var(--ease-out-soft);
+  }
+  .btn-accent:hover { filter: brightness(1.06); transform: translateY(-1px); }
+  .note { font-size: 13px; color: var(--text-2); }
+  .note:empty { display: none; }
+  .fine { margin-top: 12px; font-size: 12px; color: var(--muted); }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  @media (max-width: 767px) { .mini { padding: 22px; } }
+</style>
+
+<script>
+  const dlg = document.getElementById("join-newsletter") as HTMLDialogElement;
+  const lenis = () => (window as any).lenis;
+  const open = () => {
+    if (dlg.open) return;
+    dlg.showModal();
+    lenis()?.stop(); // page stays put behind the pop-up
+  };
+  const close = () => {
+    if (dlg.open) dlg.close();
+    lenis()?.start();
+  };
+  // any link to #join-newsletter opens it (nav, mobile menu, hero)
+  document.addEventListener("click", (e) => {
+    const a = (e.target as Element).closest?.('a[href$="#join-newsletter"]');
+    if (!a) return;
+    e.preventDefault();
+    open();
+  });
+  dlg.querySelector(".x")!.addEventListener("click", close);
+  // click on the dimmed backdrop (outside the card) closes it
+  dlg.addEventListener("click", (e) => { if (e.target === dlg) close(); });
+  // Esc closes natively; keep smooth scroll in step
+  dlg.addEventListener("close", () => lenis()?.start());
+
+  // Mailing list: validate, then post to Kit in the background and show the result in the note
+  const form = dlg.querySelector<HTMLFormElement>(".form")!;
+  const note = form.querySelector<HTMLElement>(".note")!;
+  const button = form.querySelector<HTMLButtonElement>("button")!;
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = form.elements.namedItem("email_address") as HTMLInputElement;
+    const name = form.elements.namedItem("fields[first_name]") as HTMLInputElement;
+    if (!name.value.trim() || !email.validity.valid || !email.value) {
+      note.textContent = "Please add your first name and a valid email.";
+      return;
+    }
+    button.disabled = true;
+    note.textContent = "";
+    try {
+      const res = await fetch(form.action, { method: "POST", body: new FormData(form), headers: { Accept: "application/json" } });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.status !== "success") throw new Error(data.errors?.messages?.[0] || "");
+      // Kit's own success message for this form
+      note.textContent = "Success! Now check your email to confirm your subscription.";
+      form.reset();
+    } catch (err) {
+      note.textContent = (err as Error).message || "Something went wrong. Please try again.";
+    } finally {
+      button.disabled = false;
+    }
+  });
+</script>

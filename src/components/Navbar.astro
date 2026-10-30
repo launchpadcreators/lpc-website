@@ -4,13 +4,17 @@
 // The island is clear at the top of the page and becomes frosted glass once it overlaps content.
 // Mobile: the island is just the burger; the menu drops down as its own glass panel.
 import { url } from "../config/paths";
+import NewsletterDialog from "./NewsletterDialog.astro";
 // Section links scroll on the homepage; from other pages (e.g. /results) they go to the homepage section
 const onHome = Astro.url.pathname.replace(/\/$/, "") === url("/").replace(/\/$/, "");
 const to = (hash: string) => (onHome ? hash : `${url("/")}${hash}`);
+// Other pages get a Home link first; "Join Newsletter" opens the mailing-list pop-up (Tom, 30 Oct)
 const links = [
+  ...(onHome ? [] : [{ label: "Home", href: url("/") }]),
   { label: "Growth System", href: to("#growth-system") },
   { label: "Results", href: to("#results") },
   { label: "About", href: to("#about") },
+  { label: "Join Newsletter", href: "#join-newsletter" },
 ];
 const applyUrl = "https://form.typeform.com/to/yWBgS4vK";
 ---
@@ -21,14 +25,14 @@ const applyUrl = "https://form.typeform.com/to/yWBgS4vK";
     </a>
 
     <div id="nav" class="island rounded-2xl border border-transparent">
-      <nav class="flex h-14 items-center gap-2 pl-2 pr-2 md:h-16 md:gap-8 md:pl-7" aria-label="Main">
-        <ul class="hidden items-center gap-9 md:flex">
+      <nav class="flex h-14 items-center gap-2 pl-2 pr-2 md:h-16 lg:gap-8 lg:pl-7" aria-label="Main">
+        <ul class="hidden items-center gap-9 whitespace-nowrap lg:flex">
           {links.map((l) => (
             <li><a href={l.href} class="text-[15px] font-medium text-text-2 transition-colors hover:text-text">{l.label}</a></li>
           ))}
         </ul>
         <a href={applyUrl} target="_blank" rel="noopener" class="btn hidden sm:inline-flex">Work with us</a>
-        <button id="nav-toggle" class="burger md:hidden" aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu">
+        <button id="nav-toggle" class="burger lg:hidden" aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu">
           <span class="l1"></span><span class="l2"></span><span class="l3"></span>
         </button>
       </nav>
@@ -36,7 +40,7 @@ const applyUrl = "https://form.typeform.com/to/yWBgS4vK";
   </div>
 
   <!-- Mobile menu: its own glass panel, revealed by animating height (like the Conversion template) -->
-  <div id="nav-menu" class="menu md:hidden" inert>
+  <div id="nav-menu" class="menu lg:hidden" inert>
     <div class="px-5 pb-5 pt-2">
       <ul class="flex flex-col">
         {links.map((l) => (
@@ -47,6 +51,7 @@ const applyUrl = "https://form.typeform.com/to/yWBgS4vK";
     </div>
   </div>
 </header>
+<NewsletterDialog />
 
 <style>
   /* Wordmark on its own, no background; a soft shadow keeps it readable over busy sections */

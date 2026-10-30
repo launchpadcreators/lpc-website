@@ -11,14 +11,18 @@ import Close from "../components/Close.astro";
 import Footer from "../components/Footer.astro";
 import { url } from "../config/paths";
 import { applyUrl } from "../data/growth-stages";
+// Founder cards match the homepage's (Tom, 30 Oct)
+import { founders, liIcon } from "../data/founders";
 
 const intro =
   "Launchpad Creators is a growth partner for creator-led businesses. We take ownership of the marketing, sales and product engine behind an expert's audience, and scale it alongside them.";
 
 // Top stats: number split so it can count up; label = the rest of the copy line
+// $34m+, 3.2x and 243k+: Tom (30 Oct), same figures as the homepage numbers strip
 const stats = [
-  { prefix: "$", value: 80, decimals: 0, suffix: "M+", label: "revenue generated for partners" },
-  { prefix: "", value: 6.8, decimals: 1, suffix: "x", label: "average return on ad spend" },
+  { prefix: "$", value: 34, decimals: 0, suffix: "m+", label: "revenue generated for partners" },
+  { prefix: "", value: 3.2, decimals: 1, suffix: "x", label: "average revenue increase within 12 months" },
+  { prefix: "", value: 243, decimals: 0, suffix: "k+", label: "total webinar registrations" },
   { prefix: "", value: 3250, decimals: 0, suffix: "+", label: "ad creatives produced" },
 ];
 
@@ -28,6 +32,7 @@ type Partner = {
   pronoun: "his" | "her"; whoLabel: string; who: string; productText: string;
   did: { label: string; text: string }[]; results: { big: string; text: string }[];
   video?: string; // MP4 in public/videos/, with a poster still of the same name (.jpg) beside it
+  videoIntro?: string; // the line above the video
 };
 const partners: Partner[] = [
   {
@@ -47,6 +52,7 @@ const partners: Partner[] = [
       { big: "73.9%", text: "close rate on sales calls" },
     ],
     video: "videos/chris-donnelly.mp4",
+    videoIntro: "Here's what Chris had to say about us (unprompted) to his Academy of entrepreneurs.", // Tom, 30 Oct
   },
   {
     id: "nicolas-boucher", name: "Nicolas Boucher", product: "AI Finance Club", img: "partners/nicolas-boucher.jpg", pos: "50% 50%",
@@ -96,7 +102,7 @@ const partners: Partner[] = [
     ],
     results: [
       { big: "$0 → $30K", text: "in sales, previous launch versus first launch with us" },
-      { big: "$0", text: "ad spend" },
+      { big: "100%", text: "organic acquisition" }, // Tom, 30 Oct (was "$0 ad spend")
     ],
   },
 ];
@@ -111,29 +117,10 @@ const team = [
   { label: "Operations and people", text: "project management and team support" },
 ];
 
-const founders = [
-  {
-    name: "Dan Mian", role: "Co-founder", photo: "team/dan.jpg",
-    line: "Dan started as a performance marketer, including at BT, then built his own coaching business from the ground up.",
-    points: [
-      "Founded Gradvance, a UK graduate career academy, and grew it to $500K in revenue, building the product, marketing and sales, then hiring and delegating",
-      "350+ graduates placed into careers",
-    ],
-  },
-  {
-    name: "Tom Pestridge", role: "Co-founder", photo: "team/tom.jpg",
-    line: "Tom is a marketing leader who started and ran his own marketing agency before co-founding Launchpad.",
-    points: [
-      "Grew a travel company as growth partner from £500K to £7M in yearly revenue", // [CONFIRM: vs £0 to £7M below]
-      "Ran all organic and paid marketing for a travel startup, taking it from £0 to £7M in revenue between 2021 and 2025",
-      "Agency achieved a 9.46x average return on ad spend across 2025",
-    ],
-  },
-];
 const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractionDigits: d, maximumFractionDigits: d });
 ---
 <Base
-  title="Results & Proof | Launchpad Creators"
+  title="Partner Results | Launchpad Creators"
   description="A sample of recent results for Launchpad Creators' partners."
   noindex
 >
@@ -144,10 +131,10 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
     <!-- Intro + stats -->
     <section id="top" class="rs-hero">
       <div class="mx-auto w-full max-w-[880px] px-6 text-center">
-        <h1 class="h-in text-[clamp(40px,5.6vw,76px)] font-medium leading-[1.02] tracking-[-0.045em] text-text">Results &amp; <em class="accent">Proof</em></h1>
+        <h1 class="h-in text-[clamp(40px,5.6vw,76px)] font-medium leading-[1.02] tracking-[-0.045em] text-text">Partner <em class="accent">Results</em></h1>
         <p class="h-in mx-auto mt-6 max-w-[640px] text-[clamp(16px,1.5vw,19px)] leading-relaxed text-text-2" style="--d:120ms">{intro}</p>
       </div>
-      <div class="rs-stats mx-auto mt-12 grid max-w-[980px] grid-cols-1 gap-3 px-6 sm:grid-cols-3">
+      <div class="rs-stats mx-auto mt-12 grid max-w-[1080px] grid-cols-2 gap-3 px-6 lg:grid-cols-4">
         {stats.map((s, i) => (
           <div class="rs-stat" data-reveal style={`--d:${i * 90}ms`}>
             <p class="rs-num" aria-label={`${s.prefix}${fmt(s.value, s.decimals)}${s.suffix}`}>
@@ -162,8 +149,6 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
     <!-- Partners -->
     <section class="rs-partners" aria-label="Partner results">
       <div class="mx-auto w-full max-w-[1080px] px-6">
-        <p class="rs-lead" data-reveal>Here is a sample of our recent results.</p>
-
         <!-- One bento per partner (same panel + tiles as What we do on the homepage) -->
         {partners.map((p, i) => (
           <Fragment>
@@ -198,10 +183,11 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
 
             {p.video && (
               <div class="rs-tile rs-words">
-                <h3 class="rs-h3">In {p.pronoun} words</h3>
+                <h3 class="rs-h3">{p.videoIntro ?? `In ${p.pronoun} words`}</h3>
                 <!-- Our own file in the browser's own player (Google Drive's player was cramped on phones, and Drive
-                     won't let other sites play its files directly). Nothing downloads until play is pressed. -->
-                <video class="rs-video" controls controlslist="nodownload" oncontextmenu="return false" playsinline preload="none" title={`${p.name} testimonial`}
+                     won't let other sites play its files directly). Nothing downloads until it scrolls into view.
+                     Plays by itself (muted: browsers only allow sound after a tap) when scrolled to (Tom, 30 Oct). -->
+                <video class="rs-video" controls controlslist="nodownload" oncontextmenu="return false" playsinline muted preload="none" title={`${p.name} testimonial`}
                   poster={url(p.video.replace(/\.mp4$/, ".jpg"))} src={url(p.video)}></video>
               </div>
             )}
@@ -239,14 +225,18 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
           <h2 id="founders-h" class="rs-h2">The <em class="accent">founders</em></h2>
           <p class="rs-sub">Our founders have built and scaled our own businesses, not just our partners'. Between us we bring 15 years of performance marketing, $80M+ in revenue generated and 400K+ LinkedIn followers.</p>
         </div>
+        <!-- Same cards as the homepage's Who we are (Tom, 30 Oct) -->
         <div class="rs-founders">
           {founders.map((f) => (
             <article class="rs-founder" data-reveal>
-              <div class="rs-fphoto"><img src={url(f.photo)} alt={f.name} width="1080" height="810" loading="lazy" decoding="async" draggable="false" /></div>
+              <div class="rs-fphoto"><img src={url(f.photo)} alt={f.name} width="540" height="405" loading="lazy" decoding="async" draggable="false" /></div>
+              <p class="rs-kicker">Co-founder</p>
               <h3 class="rs-fname">{f.name}</h3>
-              <p class="rs-frole">{f.role}</p>
               <p class="rs-fline">{f.line}</p>
-              <ul class="rs-points">{f.points.map((pt) => <li>{pt}</li>)}</ul>
+              <a class="rs-li" href={f.linkedin} target="_blank" rel="noopener" aria-label={`Message ${f.name} on LinkedIn`}>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d={liIcon} /></svg>
+                Message on LinkedIn <span aria-hidden="true">→</span>
+              </a>
             </article>
           ))}
         </div>
@@ -344,15 +334,23 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
   .rs-team strong { color: var(--text); font-weight: 600; }
 
   .rs-founders { margin-top: 32px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-  .rs-founder { display: flex; flex-direction: column; padding: 26px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); }
-  .rs-fphoto { margin: -26px -26px 22px; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 16px 16px 0 0; background: var(--raised); }
-  .rs-fphoto img { width: 100%; height: 100%; object-fit: cover; }
-  .rs-fname { font-size: clamp(26px, 2.4vw, 32px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; color: var(--text); }
-  .rs-frole { margin-top: 4px; font-size: 15px; color: var(--accent); font-weight: 600; }
-  .rs-fline { margin-top: 12px; font-size: 16px; line-height: 1.55; color: var(--text-2); }
-  .rs-points { margin-top: 14px; display: grid; gap: 10px; }
-  .rs-points li { position: relative; padding-left: 18px; font-size: 15px; line-height: 1.5; color: var(--text-2); }
-  .rs-points li::before { content: ""; position: absolute; left: 0; top: .6em; width: 6px; height: 6px; border-radius: 2px; background: var(--accent); }
+  /* founder cards: same as the homepage's Who we are cards (WhoWeAre.astro) */
+  .rs-founder {
+    position: relative; overflow: hidden; isolation: isolate; display: flex; flex-direction: column; padding: 28px; border-radius: 16px;
+    background: var(--surface); border: 1px solid var(--line); transition: border-color .3s, transform .4s var(--ease-out-soft);
+  }
+  .rs-founder:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
+  .rs-founder::after { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: var(--noise); background-size: 180px; opacity: .1; mix-blend-mode: overlay; }
+  .rs-fphoto { margin: -28px -28px 22px; aspect-ratio: 4 / 3; overflow: hidden; background: var(--raised); }
+  .rs-fphoto img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+  .rs-kicker { font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+  .rs-fname { margin-top: 14px; font-size: clamp(26px, 2.4vw, 32px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; color: var(--text); }
+  .rs-fline { margin-top: 14px; font-size: 15px; line-height: 1.55; color: var(--text-2); }
+  .rs-li { margin-top: auto; padding-top: 20px; display: inline-flex; align-items: center; gap: 9px; align-self: flex-start; font-size: 14px; font-weight: 600; color: var(--text); transition: color .2s; }
+  .rs-li svg { width: 16px; height: 16px; fill: currentColor; color: var(--text-2); transition: color .2s; }
+  .rs-li span { transition: transform .2s var(--ease-out-soft); }
+  .rs-li:hover, .rs-li:hover svg { color: var(--accent); }
+  .rs-li:hover span { transform: translateX(3px); }
 
   /* Tablet and phones: everything stacks */
   @media (max-width: 899px) {
@@ -360,17 +358,16 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
     .rs-photo, .rs-title, .rs-about { grid-column: 1 / -1; grid-row: auto; }
     .rs-photo { min-height: 0; aspect-ratio: 4 / 3; }
     .rs-results { grid-template-columns: repeat(var(--tn), minmax(0, 1fr)); }
-    .rs-founders { grid-template-columns: 1fr; }
     .rs-team li { flex-basis: 100%; }
     .rs-team li:nth-last-child(1) { border-bottom: 0; }
   }
+  /* founders side by side until phones, like the homepage */
+  @media (max-width: 767px) { .rs-founders { grid-template-columns: 1fr; } }
   @media (max-width: 559px) {
     .rs-bento { padding: 12px; gap: 12px; }
     .rs-results { grid-template-columns: 1fr; gap: 12px; }
     .rs-tile { padding: 20px 18px; }
     .rs-photo { padding: 0; }
-    .rs-founder { padding: 22px; }
-    .rs-fphoto { margin: -22px -22px 20px; }
     /* Video: no inner tile frame on phones, so it uses the card's full width */
     .rs-words { padding: 8px 0 0; background: none; border: 0; }
     .rs-words::after { display: none; }
@@ -396,4 +393,22 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
     requestAnimationFrame(step);
   }), { threshold: 0.5 });
   els.forEach((el) => io.observe(el));
+
+  // Testimonial video plays by itself (muted) once it's mostly on screen, and pauses when scrolled away.
+  // If the viewer pauses it themselves, it stays paused.
+  document.querySelectorAll<HTMLVideoElement>(".rs-video").forEach((v) => {
+    let ours = false; // a pause we caused by scrolling away
+    let userPaused = false;
+    // (the browser also pauses muted videos while the tab is hidden: that isn't the viewer pausing)
+    v.addEventListener("pause", () => { if (!ours && !v.ended && !document.hidden) userPaused = true; ours = false; });
+    v.addEventListener("play", () => { userPaused = false; });
+    new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) {
+        if (!userPaused && v.paused && !v.ended) v.play().catch(() => {});
+      } else if (!v.paused) {
+        ours = true;
+        v.pause();
+      }
+    }, { threshold: 0.6 }).observe(v);
+  });
 </script>

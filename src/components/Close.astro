@@ -1,12 +1,10 @@
 ---
-// Close — one wide orange card (apply, Typeform) with a mini mailing-list card (Kit) sitting inside it on the right,
-// inside a framed panel (frame drops away on mobile). Stacks on mobile.
-// Copy: brief/04-copy-deck.md, section 8.
-// The mailing list posts straight to Kit (form 10103548) with our own markup, so Kit's script and styles aren't loaded.
+// Close — one wide accent card with the apply call-to-action, centred, inside a framed panel (frame drops away on mobile).
+// The mailing-list card that sat inside it moved to the nav's "Join Newsletter" pop-up (Tom, 30 Oct; NewsletterDialog.astro).
+// Copy: brief/04-copy-deck.md, section 8. The section keeps id="newsletter": the footer rocket times its lift-off to this card.
 import { applyUrl } from "../data/growth-stages";
-const kitAction = "https://app.kit.com/forms/10103548/subscriptions";
 ---
-<section id="newsletter" class="cl relative" aria-label="Apply or join the mailing list">
+<section id="newsletter" class="cl relative" aria-label="Apply to work with us">
   <div class="mx-auto w-full max-w-[1080px] px-6">
     <div class="frame" data-reveal>
       <div class="card">
@@ -17,22 +15,6 @@ const kitAction = "https://app.kit.com/forms/10103548/subscriptions";
           <!-- Tom's homepage copy doc (29 Oct) -->
           <p class="body">We take on a small number of partners at a time. Tell us where your business is now, and we'll let you know if we're the right fit.</p>
           <a class="btn-dark" href={applyUrl} target="_blank" rel="noopener">Apply to work with us <span aria-hidden="true">→</span></a>
-        </div>
-
-        <!-- Learn how to scale (mini card) -->
-        <div class="mini-wrap">
-          <div class="mini">
-            <h3 class="mini-title">Learn how to scale.</h3>
-            <p class="mini-body">Weekly tips, frameworks and behind-the-scenes breakdowns from the businesses we grow.</p>
-            <!-- action/method let it still work (on Kit's own page) if the script below never runs -->
-            <form class="form" action={kitAction} method="post" novalidate>
-              <label class="field"><span class="sr-only">First name</span><input name="fields[first_name]" type="text" placeholder="First name" autocomplete="given-name" required /></label>
-              <label class="field"><span class="sr-only">Email</span><input name="email_address" type="email" placeholder="Email" autocomplete="email" required /></label>
-              <button class="btn-accent" type="submit">Join the list</button>
-              <p class="note" role="status" aria-live="polite"></p>
-            </form>
-            <p class="fine">Unsubscribe any time. We'll never spam you or sell your data.</p>
-          </div>
         </div>
       </div>
     </div>
@@ -47,17 +29,18 @@ const kitAction = "https://app.kit.com/forms/10103548/subscriptions";
 
   .card {
     position: relative; overflow: hidden; isolation: isolate; border-radius: 16px;
-    display: grid; grid-template-columns: 1.15fr 1fr; align-items: center; gap: 40px;
-    padding: clamp(36px, 5vw, 64px);
+    display: flex; justify-content: center; text-align: center;
+    padding: clamp(48px, 7vw, 88px) clamp(24px, 5vw, 64px);
     /* the brand accent, light-to-deep, with grain (no rings) */
     background: var(--accent-card);
   }
   .card::after { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: var(--noise); background-size: 180px; opacity: .3; mix-blend-mode: overlay; }
   .card > * { position: relative; z-index: 1; }
+  .apply { display: flex; flex-direction: column; align-items: center; }
 
   .title { font-size: clamp(36px, 4.4vw, 60px); font-weight: 600; letter-spacing: -0.045em; line-height: 1.02; color: #fff; }
   .title .accent { color: #fff; }
-  .body { margin-top: 16px; max-width: 420px; font-size: 16px; line-height: 1.55; color: rgb(255 255 255 / .88); }
+  .body { margin-top: 16px; max-width: 480px; font-size: 16px; line-height: 1.55; color: rgb(255 255 255 / .88); }
   .btn-dark {
     margin-top: 28px; display: inline-flex; align-items: center; gap: 8px; height: 52px; padding: 0 24px; border-radius: 12px;
     font-size: 16px; font-weight: 600; color: #fff; background: #0E0E10; box-shadow: 0 12px 30px -12px rgb(0 0 0 / .55);
@@ -67,72 +50,9 @@ const kitAction = "https://app.kit.com/forms/10103548/subscriptions";
   .btn-dark span { transition: transform .2s var(--ease-out-soft); }
   .btn-dark:hover span { transform: translateX(3px); }
 
-  /* Mini card: light, like a small app card resting on the orange */
-  .mini-wrap { position: relative; justify-self: end; width: 100%; max-width: 420px; }
-  /* same look as the founder cards: dark surface, hairline border */
-  .mini {
-    display: flex; flex-direction: column; padding: 26px; border-radius: 16px;
-    background: var(--surface); border: 1px solid var(--line);
-    box-shadow: 0 24px 60px -24px rgb(0 0 0 / .7);
-  }
-  .mini-title { font-size: 22px; font-weight: 600; letter-spacing: -0.03em; color: var(--text); }
-  .mini-body { margin-top: 6px; font-size: 14px; line-height: 1.5; color: var(--text-2); }
-  .form { margin-top: 18px; display: grid; gap: 8px; }
-  .field input {
-    width: 100%; height: 46px; padding: 0 14px; border-radius: 10px; font: inherit; font-size: 15px; color: var(--text);
-    background: var(--bg); border: 1px solid var(--line); outline: none; transition: border-color .2s, box-shadow .2s;
-  }
-  .field input::placeholder { color: var(--muted); }
-  .field input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgb(var(--accent-rgb) / .18); }
-  .btn-accent {
-    height: 48px; border-radius: 10px; font-size: 15px; font-weight: 600; color: var(--accent-ink); background: var(--accent-grad);
-    box-shadow: inset 0 -2px 0 rgb(0 0 0 / .12); cursor: pointer; transition: filter .2s, transform .2s var(--ease-out-soft);
-  }
-  .btn-accent:hover { filter: brightness(1.06); transform: translateY(-1px); }
-  .note { font-size: 13px; color: var(--text-2); }
-  .note:empty { display: none; }
-  .fine { margin-top: 12px; font-size: 12px; color: var(--muted); }
-
-  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-
-  @media (max-width: 899px) {
-    .card { grid-template-columns: 1fr; gap: 28px; }
-    .mini-wrap { justify-self: stretch; max-width: none; }
-  }
   /* mobile: no outer frame, tighter card so it uses the full width */
   @media (max-width: 767px) {
     .frame { padding: 0; border: 0; background: none; }
-    .card { padding: 28px 20px 20px; }
-    .mini { padding: 20px; }
+    .card { padding: 44px 20px; }
   }
 </style>
-
-<script>
-  // Mailing list: validate, then post to Kit in the background and show the result in the note
-  const form = document.querySelector<HTMLFormElement>("#newsletter .form")!;
-  const note = form.querySelector<HTMLElement>(".note")!;
-  const button = form.querySelector<HTMLButtonElement>("button")!;
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const email = form.elements.namedItem("email_address") as HTMLInputElement;
-    const name = form.elements.namedItem("fields[first_name]") as HTMLInputElement;
-    if (!name.value.trim() || !email.validity.valid || !email.value) {
-      note.textContent = "Please add your first name and a valid email.";
-      return;
-    }
-    button.disabled = true;
-    note.textContent = "";
-    try {
-      const res = await fetch(form.action, { method: "POST", body: new FormData(form), headers: { Accept: "application/json" } });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || data.status !== "success") throw new Error(data.errors?.messages?.[0] || "");
-      // Kit's own success message for this form
-      note.textContent = "Success! Now check your email to confirm your subscription.";
-      form.reset();
-    } catch (err) {
-      note.textContent = (err as Error).message || "Something went wrong. Please try again.";
-    } finally {
-      button.disabled = false;
-    }
-  });
-</script>
