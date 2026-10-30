@@ -275,7 +275,8 @@ const tick = "M3.5 8.5l3 3 6-7";
   .st .s1 { color: var(--accent); animation: st1 7.5s linear infinite; }
   .st .s2 { color: var(--accent); animation: st2 7.5s linear infinite; }
   .st .s3 { color: #34D399; animation: st3 7.5s linear infinite; }
-  .s3 svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  /* only the "Paid" tick in the Convert mockup (a bare ".s3 svg" also caught the Attract tile, which is .s3 for its width) */
+  .st .s3 svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
   /* one column step = the card's own width + the 8px gap, so translateX(100% + 8px) moves exactly one column */
   @keyframes deal {
     0% { opacity: 0; transform: translate(0, 6px); } 5% { opacity: 1; transform: translate(0, 0); }
