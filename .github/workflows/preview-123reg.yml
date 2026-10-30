@@ -8,8 +8,8 @@
 #                      server shows, then deletes it (tells us whether our index.html can sit beside WordPress's index.php)
 #   launch-dry-run:    LIVE SITE, read-only: builds for launchpadcreators.com and lists what launch would change in html/
 #   launch:            LIVE SITE: puts the new site in html/ beside WordPress (see docs/DEPLOY-123REG.md, section 9)
-#   launch-switch:     LIVE SITE: renames WordPress's index.php to index-wp-off.php, so our index.html is the homepage
-#   launch-undo:       LIVE SITE: renames index-wp-off.php back to index.php, so WordPress's homepage shows again
+#   launch-switch:     LIVE SITE: uploads wp-content/mu-plugins/lpc-homepage.php, which shows our index.html at /
+#   launch-undo:       LIVE SITE: deletes that one plugin file, so WordPress's homepage shows again
 # The preview modes only ever work inside the lpc-preview folder (which must already exist).
 # The launch modes only write the site's own names in html/ (index.html, lpc-site/, results/, privacy-policy/,
 # terms-of-use/), delete only inside those folders, and stop if any WordPress name is involved.
@@ -124,29 +124,33 @@ jobs:
           case "$MODE" in launch-dry-run|launch|launch-switch|launch-undo)
             lftp_run "cd \"$ROOT\"; cls -1 -a" > top.txt
             grep -qx 'wp-config.php' top.txt || { echo "Stopping: '$ROOT' isn't the website folder (no wp-config.php). Nothing was changed."; exit 1; }
-            # The server shows index.php before index.html (index-test, 30 Oct), so the homepage only switches once
-            # WordPress's index.php is renamed out of the way. Renamed, never deleted: undo renames it back.
+            # The server shows index.php before index.html (index-test, 30 Oct) and 123reg locks WordPress's index.php
+            # (rename refused, 30 Oct). So the homepage switches with one must-use plugin, server/lpc-homepage.php,
+            # which shows our index.html at "/" only. It's the ONLY file the job writes inside WordPress's folders.
+            PLUGIN_DIR="wp-content/mu-plugins"; PLUGIN="lpc-homepage.php"
+            if [ "$MODE" = "launch-dry-run" ] || [ "$MODE" = "launch-switch" ] || [ "$MODE" = "launch-undo" ]; then
+              echo "== $PLUGIN_DIR/ on the server (read-only listing):"
+              lftp_run "cd \"$ROOT\"; cls -1 -a $PLUGIN_DIR/" | tee mu.txt || { echo "Stopping: can't list $PLUGIN_DIR/. Nothing was changed."; exit 1; }
+            fi
             if [ "$MODE" = "launch-switch" ]; then
               grep -qx 'index.html' top.txt || { echo "Stopping: no index.html in '$ROOT' yet. Run launch first. Nothing was changed."; exit 1; }
-              grep -qx 'index.php' top.txt || { echo "Stopping: no index.php to rename (already switched?). Nothing was changed."; exit 1; }
-              grep -qx 'index-wp-off.php' top.txt && { echo "Stopping: index-wp-off.php already exists. Nothing was changed."; exit 1; }
-              echo "== LAUNCH SWITCH: renaming index.php to index-wp-off.php, so the new homepage (index.html) shows"
-              lftp_run "cd \"$ROOT\"; mv index.php index-wp-off.php; cls -1 index-wp-off.php index.html"
+              php -l "server/$PLUGIN" || { echo "Stopping: the plugin file has a PHP error. Nothing was changed."; exit 1; }
+              echo "== LAUNCH SWITCH: uploading $PLUGIN_DIR/$PLUGIN (shows our index.html at / only)"
+              lftp_run "cd \"$ROOT\"; cd $PLUGIN_DIR; put server/$PLUGIN -o $PLUGIN; cls -l $PLUGIN"
               echo "== Done. Flush the cache in 123reg next."
               exit 0
             fi
             if [ "$MODE" = "launch-undo" ]; then
-              grep -qx 'index-wp-off.php' top.txt || { echo "Stopping: no index-wp-off.php to rename back. Nothing was changed."; exit 1; }
-              grep -qx 'index.php' top.txt && { echo "Stopping: index.php already exists (WordPress may have put it back). Nothing was changed."; exit 1; }
-              echo "== LAUNCH UNDO: renaming index-wp-off.php back to index.php, so WordPress's homepage shows again"
-              lftp_run "cd \"$ROOT\"; mv index-wp-off.php index.php; cls -1 index.php"
+              grep -q "$PLUGIN" mu.txt || { echo "Stopping: $PLUGIN isn't there. Nothing was changed."; exit 1; }
+              echo "== LAUNCH UNDO: deleting $PLUGIN_DIR/$PLUGIN only, so WordPress's homepage shows again"
+              lftp_run "cd \"$ROOT\"; cd $PLUGIN_DIR; rm $PLUGIN; cls -1 -a ."
               echo "== Done. Flush the cache in 123reg next."
               exit 0
             fi
             OURS=$(cd dist && ls -A)
             for n in $OURS; do
               case "$n" in
-                index.php|index-wp-off.php|wp-*|xmlrpc.php|platform|.wp-cli|.htaccess|license.txt|readme.html|plat-cron.php|lpc-preview|.wp-config*)
+                index.php|wp-*|xmlrpc.php|platform|.wp-cli|.htaccess|license.txt|readme.html|plat-cron.php|lpc-preview|.wp-config*)
                   echo "!! SAFETY CHECK FAILED: the build contains '$n', a WordPress/123reg name. Nothing was uploaded."; exit 1 ;;
               esac
             done
