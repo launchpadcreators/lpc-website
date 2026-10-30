@@ -9,7 +9,7 @@ The website for Launchpad Creators (LPC), launchpadcreators.com. Changes are req
 ## ⚠ Critical rules (the server)
 
 Anything touching the 123reg server (the upload job, the File Browser, SFTP, DNS) follows **[docs/DEPLOY-123REG.md](docs/DEPLOY-123REG.md)**. Read it first. In short:
-1. **Only ever write to `html/lpc-preview/`** until a launch plan is agreed and written there. Never touch WordPress files, `platform/`, the live homepage or DNS.
+1. **Only write where docs/DEPLOY-123REG.md says:** previews go to `html/lpc-preview/` (`dry-run`, `full`); the live site is updated only with the `launch-dry-run` → `launch` modes (section 9). Never touch WordPress's own files, `.htaccess`, `platform/` or DNS.
 2. **Always `dry-run` first and read the log** before any upload. Every full path must be inside `lpc-preview`.
 3. **Check results more than once:** the job log, the preview URL, **and** that the live site (homepage, privacy, terms, login) is unchanged.
 4. **Sanity-check your own checks** before reporting them.
@@ -23,8 +23,7 @@ Anything touching the 123reg server (the upload job, the File Browser, SFTP, DNS
 There are **two previews**. Always say which one you mean:
 - **GitHub preview:** https://launchpadcreators.github.io/lpc-website/. It **updates automatically whenever something is merged into `main`.** It's a public address (anyone with the link can see it), but hidden from Google.
 - **123reg preview:** https://launchpadcreators.com/lpc-preview/. It only updates when someone runs the GitHub job "Preview to 123reg", and it can show any branch. See [docs/DEPLOY-123REG.md](docs/DEPLOY-123REG.md).
-- The **real domain** (launchpadcreators.com) still shows the old WordPress site. The new site will go live on the existing 123reg hosting. CHANGELOG.md says when this changes.
-- **Going live on launchpadcreators.com isn't possible yet.** There's no agreed launch plan in docs/DEPLOY-123REG.md. If asked, say so plainly, and offer to put the change on the preview instead. Never touch the live homepage, WordPress or DNS.
+- **The live site** (launchpadcreators.com) has shown the new site since 30 Oct 2026, beside WordPress, which stays installed underneath (see docs/DEPLOY-123REG.md, section 9). **Changes go to a preview first**; the live site is only updated when Tom or Dan clearly asks, with `launch-dry-run` → `launch`, then Flush Cache.
 
 ## Who does what, and how a change reaches the preview
 

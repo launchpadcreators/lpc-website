@@ -102,12 +102,12 @@ Actions → **Preview to 123reg** → **Run workflow** → under **"Use workflow
 ## 7. Critical rules
 
 0. **This file is the source of truth** for the server. CLAUDE.md only summarises it; if they ever differ, this file wins, so fix the summary.
-1. **Never write anywhere except `html/lpc-preview/`** until a launch plan is agreed and written here. The live homepage, WordPress files, `platform/` and DNS are off-limits.
+1. **Only write where this file says.** Preview: `html/lpc-preview/` (`dry-run`, `full`). Live site (since 30 Oct 2026): only our own names in `html/` and the one mu-plugin, through the `launch-*` modes (section 9). WordPress's own files, `platform/`, `.htaccess` and DNS are off-limits.
 2. **Always run `dry-run` first, and check it says "SAFETY CHECK PASSED"** (section 6) before `one-file-test` or `full`. Do it in the same session, after any change to the job. (`full` repeats the check by itself and stops if it fails.)
 3. **Check results more than once, from more than one angle:**
    - the job log (success, and every full path inside `lpc-preview`);
    - the preview URL loads (https://launchpadcreators.com/lpc-preview/), with no failed files;
-   - **the live site is unchanged:** the homepage (still WordPress), `/privacy-policy/`, `/terms-of-use/` and `/wp-login.php` all respond as before.
+   - **the live site is unchanged** after a preview upload (`/`, `/results/`, `/privacy-policy/`, `/terms-of-use/` and `/wp-login.php` all respond as before), or, after a `launch`, shows the new version and `/wp-login.php` still works.
 4. **Sanity-check your own checks.** If a check reports something surprising (everything failed, or nothing matched), the check may be wrong; verify it another way before reporting.
 5. **Take a backup** (123reg Backups tab) before the first change of the day to the server, and always before launch.
 6. **One small, verified step at a time.** Say what each step can and can't affect before running it.
@@ -127,4 +127,24 @@ Actions → **Preview to 123reg** → **Run workflow** → under **"Use workflow
 - **29 Oct 2026 (cache test):** tried a `.htaccess` in `lpc-preview` (no-cache for pages and photos, via `mod_headers`) from a test branch. [dry-run](https://github.com/launchpadcreators/lpc-website/actions/runs/40856385237) PASSED (only new path `lpc-preview/.htaccess`), [full](https://github.com/launchpadcreators/lpc-website/actions/runs/40856648906) finished. Result: **ignored.** Pages and photos still came back with the 31-day header and were cached on the second request. Then put back to `main`: [dry-run](https://github.com/launchpadcreators/lpc-website/actions/runs/40856887758) (1 deletion, `.htaccess`), [full](https://github.com/launchpadcreators/lpc-website/actions/runs/40857023249) (log confirms it was removed). Note: any `/.ht…` address answers 403, even one that never existed, so a 403 doesn't prove the file is there or gone; check the job log. Live site unchanged throughout. The test branch was deleted.
 - **29 Oct 2026 (later uploads):** `main` at `967e46f` (Results page changes), then `main` at `3aa3523` (homepage copy, Jo's bio, Chris's video as an MP4): [dry-run](https://github.com/launchpadcreators/lpc-website/actions/runs/40902203697) PASSED (62/62, 6 deletions, all old build files), [full](https://github.com/launchpadcreators/lpc-website/actions/runs/40902517161) finished. Live site unchanged. Then `main` at `8e0ff14` (Tom's suggested copy edits): [dry-run](https://github.com/launchpadcreators/lpc-website/actions/runs/40926216491) PASSED (62/62, 2 deletions, both old build files), [full](https://github.com/launchpadcreators/lpc-website/actions/runs/40926440976) finished. Live site unchanged.
 - **30 Oct 2026:** fresh backup, then `main` at `7196d70` (adds the Privacy Policy and Terms of Use pages): [dry-run](https://github.com/launchpadcreators/lpc-website/actions/runs/41107538255) PASSED (69/69, 3 deletions, all old build files), [full](https://github.com/launchpadcreators/lpc-website/actions/runs/41107742287) finished. Live site unchanged.
-- **Next:** previews of branches go through the same steps (section 5). Going live needs a launch plan written here first, **including how the CDN cache is cleared at launch**.
+- **30 Oct 2026 (launch prep):** all of the site's files moved into one folder, `lpc-site/`, so the live main folder only gains `index.html` + 4 folders. `index-test` ([run](https://github.com/launchpadcreators/lpc-website/actions/runs/41109867392)): in a folder holding both, **the server shows `index.php` before `index.html`**, so an `index.html` beside WordPress doesn't change the homepage on its own.
+- **30 Oct 2026 (launch), asked by Abdullah after a fresh backup; Tom and Dan had signed off the content:** [launch-dry-run](https://github.com/launchpadcreators/lpc-website/actions/runs/41111954875) (SAFETY CHECK PASSED: `index.html` + 41 files, all inside our 4 folders, 0 deletions, none of our names existed yet), [launch](https://github.com/launchpadcreators/lpc-website/actions/runs/41112773071) (finished; /results/, /privacy-policy/ and /terms-of-use/ became the new pages, homepage still WordPress, login and admin fine). First switch attempt, renaming `index.php` ([run](https://github.com/launchpadcreators/lpc-website/actions/runs/41113133438)): **refused by 123reg** ("Access failed"), nothing changed. **WordPress's core files are locked on this plan.** Then the must-use plugin: listing ([run](https://github.com/launchpadcreators/lpc-website/actions/runs/41113738992)) showed `wp-content/mu-plugins/` holds only 123reg's `gd-system-plugin` and `object-cache-pro`; [launch-switch](https://github.com/launchpadcreators/lpc-website/actions/runs/41113970028) uploaded `lpc-homepage.php` (PHP syntax checked first). Checked: `/` and `/?v=6` show the new homepage (header `x-lpc-homepage: static`), all 4 pages' linked files load, login and admin work, old WordPress pages like `/about/` still answer from WordPress, email MX record unchanged (Microsoft 365). The plugin's no-cache header is overridden by 123reg's 31-day one, so rule 10 (flush) still applies.
+
+## 9. The live site (since 30 Oct 2026)
+
+launchpadcreators.com now serves the new site **beside** WordPress, which stays installed underneath (login, admin and its other pages still work).
+
+**What's ours in `html/`:** `index.html`, `lpc-site/` (all images, video, CSS, JS, fonts, favicons), `results/`, `privacy-policy/`, `terms-of-use/`, plus **one file inside WordPress's folders**: `wp-content/mu-plugins/lpc-homepage.php` (source: `server/lpc-homepage.php`). It's needed because the server shows `index.php` before `index.html` and 123reg locks `index.php`. It shows our `index.html` at `/` only; every other address is WordPress as before. WordPress updates don't touch mu-plugins.
+
+**Updating the live site** (Actions → Preview to 123reg → Run workflow):
+1. Backup first if it's the first server change of the day.
+2. `launch-dry-run`: read the log. It must say **"SAFETY CHECK PASSED"**. It writes only our 5 names and deletes only inside our 4 folders; any WordPress name stops it.
+3. `launch`: uploads (our folders first, `index.html` last).
+4. **Flush Cache** in 123reg, then check the plain addresses (`/`, `/results/`, `/privacy-policy/`, `/terms-of-use/`) and that `/wp-login.php` still works.
+5. Log it in CHANGELOG.md.
+
+Try changes on the preview first (`dry-run` / `full` → `/lpc-preview/`), as before.
+
+**Undo (bring back the WordPress homepage):** `launch-undo` deletes only `lpc-homepage.php`; then Flush Cache. Our pages at /results/, /privacy-policy/ and /terms-of-use/ stay unless removed by hand in the File Browser (deleting `results/`, `privacy-policy/` and `terms-of-use/` brings back WordPress's versions of the last two).
+
+**Never:** rename or edit WordPress's own files (they're locked anyway), touch `.htaccess`, `platform/` or DNS.
