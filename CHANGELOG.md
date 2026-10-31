@@ -7,10 +7,13 @@ The update history of the Launchpad Creators website, newest first. **Add a line
 - **Preview:** https://launchpadcreators.github.io/lpc-website/, updated automatically from `main` and hidden from Google.
 - **Live site:** launchpadcreators.com shows the new site since 30 Oct 2026 (beside WordPress, which stays installed; homepage via one mu-plugin). How to update or undo: docs/DEPLOY-123REG.md, section 9.
 - **Hosting:** 123reg (Tom agreed to option 1). Every live or preview update needs a Flush Cache in the 123reg dashboard.
-- **123reg preview:** https://launchpadcreators.com/lpc-preview/ (hidden from Google), updated by the "Preview to 123reg" job. Last upload: `main` at `7196d70` on 30 Oct (preview); live site at `bdeda6d` on 31 Oct. Server details and rules: [docs/DEPLOY-123REG.md](docs/DEPLOY-123REG.md).
+- **123reg preview:** https://launchpadcreators.com/lpc-preview/ (hidden from Google), updated by the "Preview to 123reg" job. Last upload: `main` at `7196d70` on 30 Oct (preview); live site at `3ff8d4f` on 1 Nov. Server details and rules: [docs/DEPLOY-123REG.md](docs/DEPLOY-123REG.md).
 - **Waiting on Tom and Dan:** Dan's OK on Tom's homepage copy and the Growth System pick; whether Jo's homepage card needs a shorter bio (it uses her Results page line for now); Dan's reference blue; a new photo of Joseph (ideally on-stage photos of all partners).
 - **To do before launch:** SEO basics (share image, sitemap, robots.txt, structured data); the automatic upload to 123reg; making this repo private (note: on GitHub's free plan that switches off the GitHub preview, so do it once the 123reg preview is in regular use).
 - **Access:** one shared LPC Claude account (team email) with the `launchpadcreators` GitHub account. Abdullah (`m-abdullahh`) stays a collaborator until the final deployment is done; he'll remove himself after that.
+
+## 2026-11-01
+- **Live site updated** (after a fresh 123reg backup by Abdullah): [launch](https://github.com/launchpadcreators/lpc-website/actions/runs/41232447092) at `0a2a99b` (Tom and Dan's 31 Oct feedback; dry-run [41232171251](https://github.com/launchpadcreators/lpc-website/actions/runs/41232171251), 6 deletions: old build files, logo-full.png, partners/avatars), then [launch](https://github.com/launchpadcreators/lpc-website/actions/runs/41233603724) at `3ff8d4f` (glass ceiling headline and line; dry-run [41233124753](https://github.com/launchpadcreators/lpc-website/actions/runs/41233124753), 3 deletions: old build files). SAFETY CHECK PASSED each time. Server checked: new pages, all pages and login 200. Asked by Abdullah.
 
 ## 2026-10-31
 - **Tom and Dan's feedback (31 Oct).**
