@@ -11,7 +11,9 @@ const steps: { t: string; s: string; long?: boolean; hint?: string; pills?: stri
   { t: "You've already<br /> <em class='accent'>achieved a lot.</em>", s: "You built an audience, a product people buy and a name people trust. Plenty of founders never get past that." },
   { t: "Then you hit<br /> <em class='accent'>the glass ceiling.</em>", s: "Growth slows down, and the reasons are almost always the same:", hint: "Keep scrolling to break through" },
   // Tom's Loom (1:47): the three outcomes as blue pills under the sub-line
-  { t: "To build a 7 & 8 figure business you need<br /> <em class='accent'>a system.</em>", s: "A system that turns your expertise into predictable revenue, so you can scale without everything depending on you.",
+  // long: a smaller size so "To build a 7 & 8 figure business" fits on one line on desktop. Italic line (Abdullah, 1 Nov):
+  // "you need a system." from tablet up, just "a system." on phones
+  { long: true, t: "To build a 7 & 8 figure business<br class='hidden md:inline' /> <span class='md:hidden'>you need</span><br class='md:hidden' /> <em class='accent'><span class='hidden md:inline'>you need </span>a system.</em>", s: "A system that turns your expertise into predictable revenue, so you can scale without everything depending on you.",
     pills: ["Predictable revenue.", "Products & funnels you can scale.", "A business that can run without you"] },
 ];
 // Glass breaks where the accent-coloured breakout crosses the ceiling (authored 1200x420 grid)
@@ -50,7 +52,7 @@ const blockers = [
       <div class="gc-copy" aria-live="polite">
         {steps.map((st, i) => (
           <div class="step" data-i={i}>
-            <h2 class={`${st.long ? "mx-auto max-w-[980px] text-[clamp(28px,3.9vw,56px)] leading-[1.06]" : "text-[clamp(34px,5.2vw,76px)] leading-[1.02]"} font-semibold tracking-[-0.04em] text-text`} set:html={st.t} />
+            <h2 class={`${st.long ? "mx-auto text-[clamp(28px,4.6vw,66px)] leading-[1.04]" : "text-[clamp(34px,5.2vw,76px)] leading-[1.02]"} font-semibold tracking-[-0.04em] text-text`} set:html={st.t} />
             <div class="sub-wrap">
               <p class="sub mx-auto mt-4 max-w-[640px] text-[clamp(15px,1.4vw,18px)] text-text-2">{st.s}</p>
               {st.hint && <p class="push-hint">{st.hint} <span aria-hidden="true">↓</span></p>}
@@ -89,6 +91,15 @@ const blockers = [
             <filter id="gc-glow" x="-20%" y="-50%" width="140%" height="200%">
               <feGaussianBlur stdDeviation="6" />
             </filter>
+            <!-- Hides the breakout only where it would pass behind the beat-3 words (one soft hole per line of text,
+                 filled in by fitBreakout()), so it can still climb high through the open space beside them -->
+            <filter id="gc-soft" filterUnits="userSpaceOnUse" x="-5000" y="-5000" width="20000" height="20000">
+              <feGaussianBlur stdDeviation="7" />
+            </filter>
+            <mask id="gc-copy" maskUnits="userSpaceOnUse" x="-5000" y="-5000" width="20000" height="20000">
+              <rect x="-5000" y="-5000" width="20000" height="20000" fill="#fff" />
+              <g class="copy-holes" filter="url(#gc-soft)"></g>
+            </mask>
           </defs>
           <!-- Ceiling in two halves so it can split open at the impact point -->
           <path class="ceil ceil-l" data-d={`M0 186 L${IMPACT.x} 186`} d={`M0 186 L${IMPACT.x} 186`} />
@@ -103,8 +114,10 @@ const blockers = [
           ))}
           <path class="grey" pathLength="1" data-d="M0 236 C220 234 400 226 520 214 S600 196 640 196 C820 196 1000 197 1200 196" d="M0 236 C220 234 400 226 520 214 S600 196 640 196 C820 196 1000 197 1200 196" />
           <path class="area" mask="url(#gc-mask)" data-d="M640 196 C730 196 800 150 880 40 S1080 -260 1200 -330 L1200 420 L640 420 Z" d="M640 196 C730 196 800 150 880 40 S1080 -260 1200 -330 L1200 420 L640 420 Z" />
-          <path class="orange halo" pathLength="1" filter="url(#gc-glow)" data-d="M640 196 C730 196 800 150 880 40 S1080 -260 1200 -330" d="M640 196 C730 196 800 150 880 40 S1080 -260 1200 -330" />
-          <path class="orange" pathLength="1" data-d="M640 196 C730 196 800 150 880 40 S1080 -260 1200 -330" d="M640 196 C730 196 800 150 880 40 S1080 -260 1200 -330" />
+          <g mask="url(#gc-copy)">
+            <path class="orange halo" pathLength="1" filter="url(#gc-glow)" data-d="M640 196 C730 196 800 150 880 40 S1080 -260 1200 -330" d="M640 196 C730 196 800 150 880 40 S1080 -260 1200 -330" />
+            <path class="orange" pathLength="1" data-d="M640 196 C730 196 800 150 880 40 S1080 -260 1200 -330" d="M640 196 C730 196 800 150 880 40 S1080 -260 1200 -330" />
+          </g>
         </svg>
         <span class="tip" aria-hidden="true"></span>
         <span class="pressure" style={`left:${(IMPACT.x / 1200) * 100}%;top:${(IMPACT.y / 420) * 100}%`} aria-hidden="true"></span>
@@ -140,11 +153,8 @@ const blockers = [
   .gc-chart svg {
     position: absolute; left: 0; bottom: 0; width: 100%; height: 185%;
     overflow: visible;
-    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%), linear-gradient(transparent var(--fade-top, -9999px), #000 calc(var(--fade-top, -9999px) + 44px));
-    mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%), linear-gradient(transparent var(--fade-top, -9999px), #000 calc(var(--fade-top, -9999px) + 44px));
-    /* both fades apply: the side fade, and (only where the breakout would cross the beat-3 copy) a fade below the copy */
-    -webkit-mask-composite: source-in;
-    mask-composite: intersect;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%);
   }
   svg .ceil { fill: none; stroke: color-mix(in srgb, var(--text) 32%, transparent); stroke-width: 1; stroke-dasharray: 6 8; opacity: 0; transition: opacity .6s, transform .7s var(--ease-out-soft); }
   /* On impact the two halves spring apart and sag a touch */
@@ -303,12 +313,13 @@ const blockers = [
     fitBreakout();
   }
 
-  // Beat 3: the breakout line climbs high behind the copy. Where it would run through the words (phones, and desktop
-  // since the longer headline), it fades out just below the headline and sub-line, and the three pills move out of its
-  // path to sit around the breakthrough point: one above the ceiling left of the line, two below it, one either side
-  // (Abdullah/Tom, 31 Oct). Where the line misses the pills, they stay in their row under the sub-line. Short screens,
-  // where the copy reaches almost down to the ceiling, get the chart eased down in beat 3 for ~110px of sky.
-  let fadeTop = -Infinity; // in svg pixels from its top; -Infinity = no fade
+  // Beat 3: the breakout line climbs high through the open space beside the copy, and is hidden only where it would pass
+  // behind the words (a soft hole per line of text in the #gc-copy mask). Where it would run into the pills, the three
+  // (smaller) pills move to sit around the breakthrough point: one above the ceiling left of the line, two below it,
+  // one either side (Abdullah/Tom, 31 Oct/1 Nov). Where the line misses them, they stay in their row under the sub-line.
+  // Short screens, where the copy reaches almost down to the ceiling, get the chart eased down in beat 3 for ~110px of sky.
+  const holesBox = svg.querySelector<SVGGElement>(".copy-holes")!;
+  let holes: DOMRect[] = []; // in svg pixels
   let drop = 0; // px the chart moves down in beat 3 (short screens only)
   const pillList = steps[2].querySelector<HTMLElement>(".pills");
   const pills = pillList ? [...pillList.querySelectorAll<HTMLElement>("li")] : [];
@@ -335,8 +346,18 @@ const blockers = [
     const around = !!pillList && hit(pills.map((p) => atRest(p.getBoundingClientRect(), -slide)));
     const ceiling0 = sr.top + headroom + (svg.clientHeight - headroom) * 186 / 420;
     drop = around ? Math.max(0, Math.min(SKY - (ceiling0 - textBottom), chart.clientHeight * 0.45)) : 0;
-    fadeTop = hit(text) ? textBottom - (sr.top + drop) + 8 : -Infinity;
-    svg.style.setProperty("--fade-top", Number.isFinite(fadeTop) ? `${Math.round(fadeTop)}px` : "-9999px");
+    // one soft hole per line of the headline and sub-line, in svg pixels (the svg moves down with the drop)
+    const range = document.createRange();
+    holes = [...steps[2].querySelectorAll<HTMLElement>("h2, p")].flatMap((e) => { range.selectNodeContents(e); return [...range.getClientRects()]; })
+      .filter((r) => r.width > 2)
+      .map((r) => new DOMRect(r.left - sr.left - 24, r.top - slide - (sr.top + drop) - 16, r.width + 48, r.height + 32)); // room for the soft edge
+    holesBox.replaceChildren(...holes.map((h) => {
+      const el = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      el.setAttribute("x", String(h.x)); el.setAttribute("y", String(h.y));
+      el.setAttribute("width", String(h.width)); el.setAttribute("height", String(h.height));
+      el.setAttribute("rx", "12"); el.setAttribute("fill", "#000");
+      return el;
+    }));
     if (!around || !pillList) return;
 
     // Pills around the breakthrough point (everything on the chart shifted by the drop), each nudged until it clears
@@ -444,7 +465,8 @@ const blockers = [
     tip.style.transform = `translate(${pt.x}px, ${pt.y - headroom}px)`; // tip is placed in chart coordinates
     // Dot fades with the chart's right-edge fade, so it never sits half-cut at the screen edge
     // ...and with the fade below the beat-3 copy, so the dot never sits on the words
-    tip.style.opacity = draw > 0.01 ? String(clamp((1 - pt.x / svg.clientWidth) / 0.14) * clamp(draw / 0.2) * clamp((pt.y - fadeTop) / 44)) : "0";
+    const behindWords = holes.some((h) => pt.x > h.left && pt.x < h.right && pt.y > h.top && pt.y < h.bottom);
+    tip.style.opacity = draw > 0.01 && !behindWords ? String(clamp((1 - pt.x / svg.clientWidth) / 0.14) * clamp(draw / 0.2)) : "0";
     area.style.opacity = String(seg(p, 0.72, 0.94));
     grey.style.opacity = String(1 - 0.6 * seg(p, 0.67, 0.8));
   }
