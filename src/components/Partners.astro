@@ -250,14 +250,17 @@ const parts = (s: string) => s.split(/(\d+(?:\.\d+)?)/).map((t, i) => (i % 2 ? {
     else if (index < n) index += n;
     place(false);
   });
-  const go = (to: number) => { index = to; place(true); };
+  // (never past the last screenful of cards, so there is never a gap at either end)
+  const go = (to: number) => { index = Math.max(0, Math.min(3 * n - Math.ceil(viewport.clientWidth / step()), to)); place(true); };
   // Quick swipes, arrows or dots cut the glide short, so transitionend never fires and the row would drift on over the
-  // copies until it ran out of cards (stuck on the last copy, Abdullah 1 Nov). So before every move, if the row is on a
-  // copy, put it on the matching real card first (they look identical, so nothing visibly jumps). Returns the live position.
+  // copies until it ran out of cards (stuck on the last copy, Abdullah 1 Nov). So before every move, if the row (wherever
+  // it is mid-glide) is on a copy, it moves by one full set onto the matching real cards (they look identical, so nothing
+  // visibly jumps), and the target is kept within 2 cards of it, so rapid taps on a slow phone can't run ahead of the cards.
+  // Returns the row's live position.
   const rebase = () => {
     const s = step(), x = new DOMMatrixReadOnly(getComputedStyle(track).transform).m41, pos = -x / s;
     const shift = pos >= 2 * n ? -n : pos < n ? n : 0;
-    index += shift;
+    index = Math.max(Math.floor(pos + shift) - 2, Math.min(Math.ceil(pos + shift) + 2, index + shift));
     track.style.transition = "none";
     track.style.transform = `translateX(${x - shift * s}px)`;
     void track.offsetWidth;
