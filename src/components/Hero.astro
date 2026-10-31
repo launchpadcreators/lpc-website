@@ -12,8 +12,10 @@ const applyUrl = "https://form.typeform.com/to/yWBgS4vK";
   </div>
 
   <div class="relative z-10 mx-auto flex max-w-[1120px] flex-col items-center text-center">
-    <h1 class="h-in text-[clamp(40px,6.4vw,84px)] font-medium leading-[1.02] tracking-[-0.045em] text-text" style="--d:90ms">
-      We build and scale <span class="accent text-[1.08em] whitespace-nowrap">7 and 8 figure</span> creator businesses.
+    <!-- Phones: always 3 lines (Abdullah, 1 Nov), with a size that shrinks with the screen so "creator businesses." never
+         wraps. Tablet and desktop wrap naturally, as before. -->
+    <h1 class="hero-h1 h-in font-medium leading-[1.02] tracking-[-0.045em] text-text" style="--d:90ms">
+      We build and scale<br class="md:hidden" /> <span class="accent text-[1.08em] whitespace-nowrap">7 and 8 figure</span><br class="md:hidden" /> creator businesses.
     </h1>
 
     <p class="h-in mt-7 max-w-[640px] text-[clamp(16px,1.6vw,19px)] leading-relaxed text-text-2" style="--d:180ms">
@@ -72,6 +74,10 @@ const applyUrl = "https://form.typeform.com/to/yWBgS4vK";
   .hbtn-ghost { background: color-mix(in srgb, var(--surface) 80%, transparent); color: var(--text); border: 1px solid var(--line); }
   .hbtn-ghost:hover { border-color: color-mix(in srgb, var(--text) 25%, transparent); }
   @media (max-width: 639px) { .hbtn { width: 100%; min-width: 260px; } }
+
+  /* 40px to 84px as before; on phones never wider than the screen: "creator businesses." is ~8.5em wide (8.9 leaves a margin),
+     and the hero has 20px padding each side */
+  .hero-h1 { font-size: min(84px, max(40px, 6.4vw), calc((100vw - 40px) / 8.9)); }
 
   /* Load-in: staggered fade-up */
   .h-in { animation: h-in .9s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: var(--d); }

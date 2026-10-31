@@ -251,6 +251,19 @@ const parts = (s: string) => s.split(/(\d+(?:\.\d+)?)/).map((t, i) => (i % 2 ? {
     place(false);
   });
   const go = (to: number) => { index = to; place(true); };
+  // Quick swipes, arrows or dots cut the glide short, so transitionend never fires and the row would drift on over the
+  // copies until it ran out of cards (stuck on the last copy, Abdullah 1 Nov). So before every move, if the row is on a
+  // copy, put it on the matching real card first (they look identical, so nothing visibly jumps). Returns the live position.
+  const rebase = () => {
+    const s = step(), x = new DOMMatrixReadOnly(getComputedStyle(track).transform).m41, pos = -x / s;
+    const shift = pos >= 2 * n ? -n : pos < n ? n : 0;
+    index += shift;
+    track.style.transition = "none";
+    track.style.transform = `translateX(${x - shift * s}px)`;
+    void track.offsetWidth;
+    return x - shift * s;
+  };
+  const move = (by: number) => { rebase(); go(index + by); };
 
   // No autoplay (Tom's Loom, 3:00): the row stays put so visitors see the first partners, and moves only when they
   // use the arrows, dots, keys or a swipe. (restart() used to reset the autoplay timer; it now does nothing.)
@@ -261,18 +274,18 @@ const parts = (s: string) => s.split(/(\d+(?:\.\d+)?)/).map((t, i) => (i % 2 ? {
   real.forEach((_, k) => {
     const d = document.createElement("button");
     d.className = "dot"; d.setAttribute("role", "tab"); d.setAttribute("aria-label", `Show partner ${k + 1}`);
-    d.addEventListener("click", () => { go(n + k); restart(); });
+    d.addEventListener("click", () => { rebase(); go(n + k); restart(); });
     dotsBox.appendChild(d);
     dots.push(d);
   });
-  sec.querySelectorAll<HTMLButtonElement>(".arrow").forEach((b) => b.addEventListener("click", () => { go(index + Number(b.dataset.dir)); restart(); }));
+  sec.querySelectorAll<HTMLButtonElement>(".arrow").forEach((b) => b.addEventListener("click", () => { move(Number(b.dataset.dir)); restart(); }));
   viewport.addEventListener("mouseenter", () => (hover = true));
   viewport.addEventListener("mouseleave", () => (hover = false));
   viewport.addEventListener("focusin", () => (hover = true));
   viewport.addEventListener("focusout", () => (hover = false));
   viewport.addEventListener("keydown", (e) => {
     if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
-    go(index + (e.key === "ArrowRight" ? 1 : -1));
+    move(e.key === "ArrowRight" ? 1 : -1);
     restart();
   });
 
@@ -282,12 +295,11 @@ const parts = (s: string) => s.split(/(\d+(?:\.\d+)?)/).map((t, i) => (i % 2 ? {
   viewport.addEventListener("pointerdown", (e) => {
     if (e.pointerType === "mouse" && e.button !== 0) return;
     // catch the row where it is, even mid-glide, so a second swipe never jumps
-    const x = new DOMMatrixReadOnly(getComputedStyle(track).transform).m41;
-    if (index >= 2 * n) index -= n; else if (index < n) index += n; // stay on the real set (copies look identical)
+    const x = rebase();
     startOffset = x + index * step();
     dragging = true; moved = false; downX = lastX = e.clientX; lastT = e.timeStamp; speed = 0; offset = startOffset;
     viewport.classList.add("dragging");
-    viewport.setPointerCapture(e.pointerId);
+    try { viewport.setPointerCapture(e.pointerId); } catch {} // can fail if the pointer is already gone; the drag still works
     place(false);
   });
   viewport.addEventListener("pointermove", (e) => {

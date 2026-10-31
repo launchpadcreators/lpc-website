@@ -13,6 +13,9 @@ The update history of the Launchpad Creators website, newest first. **Add a line
 - **Access:** one shared LPC Claude account (team email) with the `launchpadcreators` GitHub account. Abdullah (`m-abdullahh`) stays a collaborator until the final deployment is done; he'll remove himself after that.
 
 ## 2026-11-01
+- Glass ceiling, beat 3: the soft holes in the line behind the words looked heavy (Abdullah). Desktop now shows the full line again; on phones, where it would run up through the copy, the line and its glow fade out smoothly before the sub-line, and the shaded area under it is left out. (GlassCeiling.astro)
+- Hero headline: always 3 lines on phones ("We build and scale" / *"7 and 8 figure"* / "creator businesses."), sized to fit the screen; tablet and desktop wrap as before. Asked by Abdullah. (Hero.astro)
+- Partner carousel: quick swipes (or quick arrow taps) could carry the row past its copies until it stuck on the last card (Chris Donnelly). Every move now first puts the row back on the real cards, so it loops forever. Spotted by Abdullah. (Partners.astro)
 - **Live site updated** (after a fresh 123reg backup by Abdullah): [launch](https://github.com/launchpadcreators/lpc-website/actions/runs/41232447092) at `0a2a99b` (Tom and Dan's 31 Oct feedback; dry-run [41232171251](https://github.com/launchpadcreators/lpc-website/actions/runs/41232171251), 6 deletions: old build files, logo-full.png, partners/avatars), then [launch](https://github.com/launchpadcreators/lpc-website/actions/runs/41233603724) at `3ff8d4f` (glass ceiling headline and line; dry-run [41233124753](https://github.com/launchpadcreators/lpc-website/actions/runs/41233124753), 3 deletions: old build files). SAFETY CHECK PASSED each time. Server checked: new pages, all pages and login 200. Asked by Abdullah.
 
 ## 2026-10-31

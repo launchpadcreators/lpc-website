@@ -78,28 +78,25 @@ const blockers = [
             <linearGradient id="gc-fade-x" x1=".533" y1="0" x2=".783" y2="0">
               <stop offset="0" stop-color="#fff" stop-opacity="0" /><stop offset="1" stop-color="#fff" stop-opacity="1" />
             </linearGradient>
-            <!-- Breakout line starts in the grey of the stalled line and warms into the accent colour; its glow fades in from nothing -->
+            <!-- Breakout line starts in the grey of the stalled line and warms into the accent colour; its glow fades in from
+                 nothing. On phones, where the line would run up through the copy, both fade out smoothly before the words
+                 (stops 3 and 4, set by fitBreakout(); desktop keeps the full line, Abdullah 1 Nov) -->
             <linearGradient id="gc-line" x1="0" y1="0" x2="1" y2="0">
               <stop offset="0" stop-color="var(--text)" stop-opacity=".3" />
               <stop offset=".38" stop-color="var(--accent)" stop-opacity="1" />
+              <stop offset="1" stop-color="var(--accent)" stop-opacity="1" />
+              <stop offset="1" stop-color="var(--accent)" stop-opacity="0" />
             </linearGradient>
             <linearGradient id="gc-halo" x1="0" y1="0" x2="1" y2="0">
               <stop offset=".08" stop-color="var(--accent)" stop-opacity="0" />
               <stop offset=".5" stop-color="var(--accent)" stop-opacity="1" />
+              <stop offset="1" stop-color="var(--accent)" stop-opacity="1" />
+              <stop offset="1" stop-color="var(--accent)" stop-opacity="0" />
             </linearGradient>
             <mask id="gc-mask"><rect width="100%" height="100%" fill="url(#gc-fade-x)" /></mask>
             <filter id="gc-glow" x="-20%" y="-50%" width="140%" height="200%">
               <feGaussianBlur stdDeviation="6" />
             </filter>
-            <!-- Hides the breakout only where it would pass behind the beat-3 words (one soft hole per line of text,
-                 filled in by fitBreakout()), so it can still climb high through the open space beside them -->
-            <filter id="gc-soft" filterUnits="userSpaceOnUse" x="-5000" y="-5000" width="20000" height="20000">
-              <feGaussianBlur stdDeviation="7" />
-            </filter>
-            <mask id="gc-copy" maskUnits="userSpaceOnUse" x="-5000" y="-5000" width="20000" height="20000">
-              <rect x="-5000" y="-5000" width="20000" height="20000" fill="#fff" />
-              <g class="copy-holes" filter="url(#gc-soft)"></g>
-            </mask>
           </defs>
           <!-- Ceiling in two halves so it can split open at the impact point -->
           <path class="ceil ceil-l" data-d={`M0 186 L${IMPACT.x} 186`} d={`M0 186 L${IMPACT.x} 186`} />
@@ -114,10 +111,8 @@ const blockers = [
           ))}
           <path class="grey" pathLength="1" data-d="M0 236 C220 234 400 226 520 214 S600 196 640 196 C820 196 1000 197 1200 196" d="M0 236 C220 234 400 226 520 214 S600 196 640 196 C820 196 1000 197 1200 196" />
           <path class="area" mask="url(#gc-mask)" data-d="M640 196 C730 196 800 150 880 40 S1080 -260 1200 -330 L1200 420 L640 420 Z" d="M640 196 C730 196 800 150 880 40 S1080 -260 1200 -330 L1200 420 L640 420 Z" />
-          <g mask="url(#gc-copy)">
-            <path class="orange halo" pathLength="1" filter="url(#gc-glow)" data-d="M640 196 C730 196 800 150 880 40 S1080 -260 1200 -330" d="M640 196 C730 196 800 150 880 40 S1080 -260 1200 -330" />
-            <path class="orange" pathLength="1" data-d="M640 196 C730 196 800 150 880 40 S1080 -260 1200 -330" d="M640 196 C730 196 800 150 880 40 S1080 -260 1200 -330" />
-          </g>
+          <path class="orange halo" pathLength="1" filter="url(#gc-glow)" data-d="M640 196 C730 196 800 150 880 40 S1080 -260 1200 -330" d="M640 196 C730 196 800 150 880 40 S1080 -260 1200 -330" />
+          <path class="orange" pathLength="1" data-d="M640 196 C730 196 800 150 880 40 S1080 -260 1200 -330" d="M640 196 C730 196 800 150 880 40 S1080 -260 1200 -330" />
         </svg>
         <span class="tip" aria-hidden="true"></span>
         <span class="pressure" style={`left:${(IMPACT.x / 1200) * 100}%;top:${(IMPACT.y / 420) * 100}%`} aria-hidden="true"></span>
@@ -313,14 +308,14 @@ const blockers = [
     fitBreakout();
   }
 
-  // Beat 3: the breakout line climbs high through the open space beside the copy, and is hidden only where it would pass
-  // behind the words (a soft hole per line of text in the #gc-copy mask). Where it would run into the pills, the three
-  // (smaller) pills move to sit around the breakthrough point: one above the ceiling left of the line, two below it,
-  // one either side (Abdullah/Tom, 31 Oct/1 Nov). Where the line misses them, they stay in their row under the sub-line.
-  // Short screens, where the copy reaches almost down to the ceiling, get the chart eased down in beat 3 for ~110px of sky.
-  const holesBox = svg.querySelector<SVGGElement>(".copy-holes")!;
-  let holes: DOMRect[] = []; // in svg pixels
+  // Beat 3: the breakout line climbs high (on phones it fades out before the copy, see below). Where it would run into
+  // the pills, the three (smaller) pills move to sit around the breakthrough point: one above the ceiling left of the
+  // line, two below it, one either side (Abdullah/Tom, 31 Oct/1 Nov). Where the line misses them, they stay in their
+  // row under the sub-line. Short screens, where the copy reaches almost down to the
+  // ceiling, get the chart eased down in beat 3 for ~110px of sky.
   let drop = 0; // px the chart moves down in beat 3 (short screens only)
+  let fading = false; // phones: the line fades before the copy
+  let fadeLen = [1, 2]; // where the line fades (phones), as a share of its length (set in fitBreakout)
   const pillList = steps[2].querySelector<HTMLElement>(".pills");
   const pills = pillList ? [...pillList.querySelectorAll<HTMLElement>("li")] : [];
   const SKY = 110;
@@ -346,18 +341,32 @@ const blockers = [
     const around = !!pillList && hit(pills.map((p) => atRest(p.getBoundingClientRect(), -slide)));
     const ceiling0 = sr.top + headroom + (svg.clientHeight - headroom) * 186 / 420;
     drop = around ? Math.max(0, Math.min(SKY - (ceiling0 - textBottom), chart.clientHeight * 0.45)) : 0;
-    // one soft hole per line of the headline and sub-line, in svg pixels (the svg moves down with the drop)
-    const range = document.createRange();
-    holes = [...steps[2].querySelectorAll<HTMLElement>("h2, p")].flatMap((e) => { range.selectNodeContents(e); return [...range.getClientRects()]; })
-      .filter((r) => r.width > 2)
-      .map((r) => new DOMRect(r.left - sr.left - 24, r.top - slide - (sr.top + drop) - 16, r.width + 48, r.height + 32)); // room for the soft edge
-    holesBox.replaceChildren(...holes.map((h) => {
-      const el = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-      el.setAttribute("x", String(h.x)); el.setAttribute("y", String(h.y));
-      el.setAttribute("width", String(h.width)); el.setAttribute("height", String(h.height));
-      el.setAttribute("rx", "12"); el.setAttribute("fill", "#000");
-      return el;
-    }));
+
+    // Phones only: the line runs off the top of the screen through the copy, so it fades out smoothly, with its glow, over a
+    // long stretch that ends just before the sub-line; the shaded area under it is left out there (it would only show as a
+    // thin upright strip). Desktop keeps the full line and area.
+    let from = 1, to = 1; // gradient offsets across the line's width (1 = no fade)
+    fadeLen = [1, 2]; // the same stretch as a share of the line's length, for the moving dot
+    const bb = orange.getBBox();
+    fading = innerWidth < 768 && hit(text);
+    if (fading) {
+      const L = orange.getTotalLength();
+      const at = (y: number) => { // where the line first climbs above y (svg pixels)
+        for (let i = 0; i <= 200; i++) {
+          const p = orange.getPointAtLength((L * i) / 200);
+          if (p.y <= y) return [(p.x - bb.x) / bb.width, i / 200];
+        }
+        return [1, 1];
+      };
+      const yb = textBottom - (sr.top + drop);
+      const b = at(yb + 8), a = at(yb + Math.max(90, (ceiling0 - textBottom) * 0.75));
+      from = Math.min(Math.max(0.42, a[0]), b[0] - 0.04); to = b[0];
+      fadeLen = [Math.min(a[1], b[1] - 0.05), b[1]];
+    }
+    for (const id of ["gc-line", "gc-halo"]) {
+      const stops = svg.querySelectorAll(`#${id} stop`);
+      stops[2].setAttribute("offset", String(from)); stops[3].setAttribute("offset", String(to));
+    }
     if (!around || !pillList) return;
 
     // Pills around the breakthrough point (everything on the chart shifted by the drop), each nudged until it clears
@@ -465,9 +474,9 @@ const blockers = [
     tip.style.transform = `translate(${pt.x}px, ${pt.y - headroom}px)`; // tip is placed in chart coordinates
     // Dot fades with the chart's right-edge fade, so it never sits half-cut at the screen edge
     // ...and with the fade below the beat-3 copy, so the dot never sits on the words
-    const behindWords = holes.some((h) => pt.x > h.left && pt.x < h.right && pt.y > h.top && pt.y < h.bottom);
-    tip.style.opacity = draw > 0.01 && !behindWords ? String(clamp((1 - pt.x / svg.clientWidth) / 0.14) * clamp(draw / 0.2)) : "0";
-    area.style.opacity = String(seg(p, 0.72, 0.94));
+    // ...and with the line's own fade on phones
+    tip.style.opacity = draw > 0.01 ? String(clamp((1 - pt.x / svg.clientWidth) / 0.14) * clamp(draw / 0.2) * clamp((fadeLen[1] - draw) / (fadeLen[1] - fadeLen[0]))) : "0";
+    area.style.opacity = fading ? "0" : String(seg(p, 0.72, 0.94));
     grey.style.opacity = String(1 - 0.6 * seg(p, 0.67, 0.8));
   }
 
