@@ -186,6 +186,9 @@ const blockers = [
     background: rgb(var(--accent-rgb) / .16); border: 1px solid rgb(var(--accent-rgb) / .45);
     box-shadow: 0 8px 24px -12px rgb(var(--accent-rgb) / .6);
   }
+  /* pills moved around the breakthrough point (fitBreakout() in the script): smaller, placed one by one */
+  .pills.around { position: absolute; inset: 0; margin: 0; pointer-events: none; }
+  .pills.around li { position: absolute; white-space: nowrap; padding: 6px 13px; font-size: clamp(12px, 1vw, 14px); }
   .push-hint {
     margin-top: 14px; font-size: 13px; font-weight: 600; color: var(--accent);
     opacity: 0; transform: translateY(6px); transition: opacity .4s, transform .4s var(--ease-out-soft);
@@ -300,33 +303,75 @@ const blockers = [
     fitBreakout();
   }
 
-  // The breakout line climbs up behind the beat-3 copy. Where the copy sits in its path (phones, Tom 31 Oct), the chart
-  // eases down a little in beat 3 to make room, and the line fades out just below the copy instead of running
-  // through the words and pills. Elsewhere (desktop) nothing changes.
+  // Beat 3: the breakout line climbs high behind the copy. Where it would run through the words (phones, and desktop
+  // since the longer headline), it fades out just below the headline and sub-line, and the three pills move out of its
+  // path to sit around the breakthrough point: one above the ceiling left of the line, two below it, one either side
+  // (Abdullah/Tom, 31 Oct). Where the line misses the pills, they stay in their row under the sub-line. Short screens,
+  // where the copy reaches almost down to the ceiling, get the chart eased down in beat 3 for ~110px of sky.
   let fadeTop = -Infinity; // in svg pixels from its top; -Infinity = no fade
-  let drop = 0; // px the chart moves down in beat 3
+  let drop = 0; // px the chart moves down in beat 3 (short screens only)
+  const pillList = steps[2].querySelector<HTMLElement>(".pills");
+  const pills = pillList ? [...pillList.querySelectorAll<HTMLElement>("li")] : [];
+  const SKY = 110;
   function fitBreakout() {
-    // measure at rest: no drop, no slide (it may be mid-transition)
+    pillList?.classList.remove("around");
+    pills.forEach((p) => { p.style.left = ""; p.style.top = ""; });
+    // measure at rest: chart not dropped, copy not mid-slide (both may be animating)
     const was = chart.style.translate;
     chart.style.transition = "none"; chart.style.translate = "";
     const sr = svg.getBoundingClientRect();
+    const rest = [...crackGroups, ceilLabel].map((e) => e.getBoundingClientRect());
     chart.style.translate = was; void chart.offsetWidth; chart.style.transition = "";
-    const top = sr.top;
-    const words = [...steps[2].querySelectorAll<HTMLElement>("h2, h3, p, .pills > *")].map((e) => e.getBoundingClientRect());
-    let hits = false;
-    for (let i = 0; i <= 120 && !hits; i++) {
-      const pt = orange.getPointAtLength((orangeLen * i) / 120);
-      const x = sr.left + pt.x, y = top + pt.y;
-      hits = words.some((w) => x > w.left - 4 && x < w.right + 4 && y > w.top - 4 && y < w.bottom + 18); // +18: the copy's slide-in
-    }
-    if (!hits) { fadeTop = -Infinity; drop = 0; }
-    else {
-      const copyBottom = Math.max(...words.map((w) => w.bottom)) + 14; // + the copy's slide-in
-      const ceiling = top + headroom + (svg.clientHeight - headroom) * 186 / 420; // the ceiling line on screen
-      drop = Math.max(0, Math.min(copyBottom + 120 - ceiling, chart.clientHeight * 0.45)); // ~120px of sky above the ceiling
-      fadeTop = copyBottom - (top + drop) + 6;
-    }
+    const slide = new DOMMatrixReadOnly(getComputedStyle(steps[2]).transform).m42; // 14px while the copy slides in
+    const atRest = (r: DOMRect, dy = 0) => new DOMRect(r.left, r.top + dy, r.width, r.height);
+    const pts = (path: SVGPathElement, n = 160) => {
+      const L = path.getTotalLength();
+      return Array.from({ length: n + 1 }, (_, i) => { const p = path.getPointAtLength((L * i) / n); return [sr.left + p.x, sr.top + p.y]; });
+    };
+    let line = pts(orange), greyLine = pts(grey);
+    const hit = (rs: DOMRect[], pad = 4) => line.some(([x, y]) => rs.some((w) => x > w.left - pad && x < w.right + pad && y > w.top - pad && y < w.bottom + pad));
+    const text = [...steps[2].querySelectorAll<HTMLElement>("h2, p")].map((e) => atRest(e.getBoundingClientRect(), -slide));
+    const textBottom = Math.max(...text.map((w) => w.bottom)) + 4;
+    const around = !!pillList && hit(pills.map((p) => atRest(p.getBoundingClientRect(), -slide)));
+    const ceiling0 = sr.top + headroom + (svg.clientHeight - headroom) * 186 / 420;
+    drop = around ? Math.max(0, Math.min(SKY - (ceiling0 - textBottom), chart.clientHeight * 0.45)) : 0;
+    fadeTop = hit(text) ? textBottom - (sr.top + drop) + 8 : -Infinity;
     svg.style.setProperty("--fade-top", Number.isFinite(fadeTop) ? `${Math.round(fadeTop)}px` : "-9999px");
+    if (!around || !pillList) return;
+
+    // Pills around the breakthrough point (everything on the chart shifted by the drop), each nudged until it clears
+    // the lines, cracks, label, copy and each other
+    pillList.classList.add("around");
+    const box = atRest(steps[2].getBoundingClientRect(), -slide); // pills are placed relative to the beat-3 copy box
+    const area = bLayer.getBoundingClientRect();
+    const minX = area.left + 16, maxX = area.right - 16;
+    const ceiling = ceiling0 + drop, bottom = sr.bottom + drop;
+    line = line.map(([x, y]) => [x, y + drop]); greyLine = greyLine.map(([x, y]) => [x, y + drop]);
+    const forkX = line[0][0];
+    const avoid = rest.map((r) => atRest(r, drop)).concat(text);
+    const placed: DOMRect[] = [];
+    const clear = (r: DOMRect) => {
+      const pad = 10;
+      if (r.top < textBottom + 10 || r.bottom > bottom - 8) return false;
+      if (r.top < ceiling + 14 && r.bottom > ceiling - 14) return false; // never straddles the ceiling
+      if ([...line, ...greyLine].some(([x, y]) => x > r.left - pad && x < r.right + pad && y > r.top - pad && y < r.bottom + pad)) return false;
+      return ![...avoid, ...placed].some((o) => o.width && r.left < o.right + 8 && r.right > o.left - 8 && r.top < o.bottom + 8 && r.bottom > o.top - 8);
+    };
+    const find = (x: number, w: number, h: number, dir: number) => {
+      let y = dir < 0 ? ceiling - 26 - h : ceiling + 22;
+      for (let k = 0; k < 80; k++, y += dir * 6) if (clear(new DOMRect(x, y, w, h))) return y;
+      return null;
+    };
+    // [side of the line, above (-1) or below (1) the ceiling]
+    const slots: [number, number][] = [[-1, -1], [1, 1], [-1, 1]];
+    pills.forEach((p, i) => {
+      const w = p.offsetWidth, h = p.offsetHeight, [side, dir] = slots[i] ?? [1, 1];
+      const x = Math.max(minX, Math.min(maxX - w, side < 0 ? forkX - 28 - w : forkX + 28));
+      const y = find(x, w, h, dir) ?? find(x, w, h, -dir) ?? ceiling + 22; // no room above: try below
+      placed.push(new DOMRect(x, y, w, h));
+      p.style.left = `${Math.round(x - box.left)}px`;
+      p.style.top = `${Math.round(y - box.top)}px`;
+    });
   }
 
   // Phones: two columns of quotes, stacked from the ceiling line by their real heights (they wrap to 2-3 lines,
