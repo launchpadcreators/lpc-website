@@ -33,6 +33,7 @@ type Partner = {
   did: { label: string; text: string }[]; results: { big: string; text: string }[];
   video?: string; // MP4 in public/lpc-site/videos/, with a poster still of the same name (.jpg) beside it
   videoIntro?: string; // the line above the video
+  quote?: { text: string; role: string; photo: string }; // testimonial card beneath the partner's panel (photo: square face crop)
 };
 const partners: Partner[] = [
   {
@@ -86,6 +87,12 @@ const partners: Partner[] = [
       { big: "$100K+", text: "revenue in the first month" },
       { big: "$83K", text: "in sales on $5.2K of ad spend — 16x ROAS, 81 customers and a 12.4% webinar conversion rate on launch." },
     ],
+    // Tom, 31 Oct: "use the same structure and exact quote" (word for word from his image)
+    quote: {
+      text: "Vital AF is my legacy, and I needed a team I could trust with it. Launchpad came in and took the whole thing on. Tom, Dan and the team are truly awesome and I’m so grateful to call them my business partners. They built it, launched it, marketed it and managed every moving piece. In no time we were up and running, and we did over $100K in our very first month. I’m so grateful for this team, and I am SO excited for what’s coming next!",
+      role: "Co-Founder, Vital AF",
+      photo: "partners/joseph-mcclendon-face.jpg", // 240px face crop of his card photo
+    },
   },
   {
     id: "jo-bird", name: "Jo Bird", product: "Personal Branding Programme", img: "partners/jo-bird.jpg", pos: "50% 50%",
@@ -192,6 +199,20 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
               </div>
             )}
           </article>
+          <!-- Testimonial beneath the panel (Tom, 31 Oct): photo, name and role, then the quote with large serif marks -->
+          {p.quote && (
+            <figure class="rs-quote" data-reveal>
+              <div class="rs-q-who">
+                <img src={asset(p.quote.photo)} alt={p.name} width="120" height="120" loading="lazy" decoding="async" draggable="false" />
+                <figcaption><strong>{p.name}</strong><span>{p.quote.role}</span></figcaption>
+              </div>
+              <blockquote class="rs-q-text">
+                <span class="rs-q-mark" aria-hidden="true">“</span>
+                <p>{p.quote.text}</p>
+                <span class="rs-q-mark rs-q-end" aria-hidden="true">”</span>
+              </blockquote>
+            </figure>
+          )}
           </Fragment>
         ))}
 
@@ -320,6 +341,41 @@ const fmt = (v: number, d: number) => v.toLocaleString("en-GB", { minimumFractio
   }
 
   .rs-words { grid-column: 1 / -1; }
+
+  /* Testimonial card beneath a partner's panel: same framed surface as the bento, photo + name on the left,
+     the quote on the right behind one large serif quote mark in the accent colour */
+  .rs-quote {
+    position: relative; overflow: hidden; isolation: isolate; margin-top: 16px;
+    display: grid; grid-template-columns: 220px 1fr; align-items: center; gap: 32px;
+    padding: clamp(24px, 3vw, 40px); border-radius: 18px; border: 1px solid var(--line);
+    background: radial-gradient(70% 90% at 100% 0%, rgb(var(--accent-rgb) / .14), transparent 60%), var(--surface);
+  }
+  .rs-quote::after { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: var(--noise); background-size: 180px; opacity: .1; mix-blend-mode: overlay; }
+  .rs-q-who { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; }
+  .rs-q-who img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 1px solid var(--line); box-shadow: 0 0 0 4px rgb(var(--accent-rgb) / .14); }
+  .rs-q-who figcaption { display: flex; flex-direction: column; gap: 4px; }
+  .rs-q-who strong { font-size: 18px; font-weight: 600; letter-spacing: -0.02em; color: var(--text); }
+  .rs-q-who span { font-size: 14px; color: var(--text-2); }
+  .rs-q-text { position: relative; padding-top: 34px; }
+  .rs-q-mark {
+    position: absolute; left: -6px; top: -22px; font-family: var(--font-serif); font-style: italic; font-size: 110px; line-height: 1;
+    color: var(--accent); opacity: .9; pointer-events: none;
+  }
+  .rs-q-text { padding-bottom: 34px; }
+  .rs-q-end { left: auto; top: auto; right: -4px; bottom: -66px; }
+  .rs-q-text p { position: relative; font-size: clamp(17px, 1.6vw, 21px); line-height: 1.55; letter-spacing: -0.01em; color: var(--text); }
+  /* tablets and phones: photo and name in a row above the quote */
+  @media (max-width: 899px) {
+    .rs-quote { grid-template-columns: 1fr; gap: 20px; }
+    .rs-q-who { flex-direction: row; text-align: left; gap: 16px; }
+    .rs-q-who img { width: 72px; height: 72px; }
+  }
+  @media (max-width: 559px) {
+    .rs-quote { padding: 22px 20px; border-radius: 16px; }
+    .rs-q-mark { font-size: 84px; top: -14px; }
+    .rs-q-end { top: auto; bottom: -50px; }
+    .rs-q-text p { font-size: 16px; }
+  }
   /* the recording has black bars baked in at the sides; the picture inside them is 16:9, so filling a 16:9 frame trims them */
   .rs-video { display: block; width: 100%; margin-top: 16px; aspect-ratio: 16 / 9; border-radius: 10px; border: 1px solid var(--line); background: #000; object-fit: cover; }
 

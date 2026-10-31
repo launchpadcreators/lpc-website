@@ -8,10 +8,10 @@
 // each push cracks the glass a little more with a thud, then it shatters and the accent-coloured line goes through.
 const steps: { t: string; s: string; long?: boolean; hint?: string; pills?: string[] }[] = [
   // Tom's homepage copy doc (29 Oct): headline and sub-line per beat, word for word
-  { t: "You've already <em class='accent'>achieved a lot.</em>", s: "You built an audience, a product people buy and a name people trust. Plenty of founders never get past that." },
-  { t: "Then you hit <em class='accent'>the glass ceiling.</em>", s: "Growth slows down, and the reasons are almost always the same:", hint: "Keep scrolling to break through" },
+  { t: "You've already<br /> <em class='accent'>achieved a lot.</em>", s: "You built an audience, a product people buy and a name people trust. Plenty of founders never get past that." },
+  { t: "Then you hit<br /> <em class='accent'>the glass ceiling.</em>", s: "Growth slows down, and the reasons are almost always the same:", hint: "Keep scrolling to break through" },
   // Tom's Loom (1:47): the three outcomes as blue pills under the sub-line
-  { t: "To build a 7 & 8 figure business you need <em class='accent'>a system.</em>", s: "A system that turns your expertise into predictable revenue, so you can scale without everything depending on you.",
+  { t: "To build a 7 & 8 figure business you need<br /> <em class='accent'>a system.</em>", s: "A system that turns your expertise into predictable revenue, so you can scale without everything depending on you.",
     pills: ["Predictable revenue.", "Products & funnels you can scale.", "A business that can run without you"] },
 ];
 // Glass breaks where the accent-coloured breakout crosses the ceiling (authored 1200x420 grid)
@@ -51,9 +51,11 @@ const blockers = [
         {steps.map((st, i) => (
           <div class="step" data-i={i}>
             <h2 class={`${st.long ? "mx-auto max-w-[980px] text-[clamp(28px,3.9vw,56px)] leading-[1.06]" : "text-[clamp(34px,5.2vw,76px)] leading-[1.02]"} font-semibold tracking-[-0.04em] text-text`} set:html={st.t} />
-            <p class="mx-auto mt-4 max-w-[640px] text-[clamp(15px,1.4vw,18px)] text-text-2">{st.s}</p>
+            <div class="sub-wrap">
+              <p class="sub mx-auto mt-4 max-w-[640px] text-[clamp(15px,1.4vw,18px)] text-text-2">{st.s}</p>
+              {st.hint && <p class="push-hint">{st.hint} <span aria-hidden="true">↓</span></p>}
+            </div>
             {st.pills && <ul class="pills">{st.pills.map((p) => <li>{p}</li>)}</ul>}
-            {st.hint && <p class="push-hint">{st.hint} <span aria-hidden="true">↓</span></p>}
           </div>
         ))}
       </div>
@@ -132,14 +134,17 @@ const blockers = [
   .step.on { opacity: 1; transform: none; }
 
   /* Full-bleed chart: runs edge to edge of the viewport and fades out at both sides, so no line ever stops at a hard edge */
-  .gc-chart { position: relative; margin-top: 2vh; min-height: 220px; width: 100vw; margin-left: calc(50% - 50vw); }
+  .gc-chart { position: relative; margin-top: 2vh; min-height: 220px; width: 100vw; margin-left: calc(50% - 50vw); transition: translate .9s var(--ease-out-soft); }
   /* The SVG reaches 85% of the chart's height above it, so the steep breakout can climb up behind the headline
      (the edge-fade mask would otherwise clip anything outside the chart's own box) */
   .gc-chart svg {
     position: absolute; left: 0; bottom: 0; width: 100%; height: 185%;
     overflow: visible;
-    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%);
-    mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%), linear-gradient(transparent var(--fade-top, -9999px), #000 calc(var(--fade-top, -9999px) + 44px));
+    mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%), linear-gradient(transparent var(--fade-top, -9999px), #000 calc(var(--fade-top, -9999px) + 44px));
+    /* both fades apply: the side fade, and (only where the breakout would cross the beat-3 copy) a fade below the copy */
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
   }
   svg .ceil { fill: none; stroke: color-mix(in srgb, var(--text) 32%, transparent); stroke-width: 1; stroke-dasharray: 6 8; opacity: 0; transition: opacity .6s, transform .7s var(--ease-out-soft); }
   /* On impact the two halves spring apart and sag a touch */
@@ -226,8 +231,13 @@ const blockers = [
   @media (max-width: 767px) {
     .gc { height: 540vh; }
     .gc-inner { padding-top: 96px; }
-    /* touch scrolling has no resistance, and the hint would sit on the quotes caption */
-    .push-hint { display: none; }
+    /* phones: no room under the sub-line (the quotes start there), so while pushing, the hint takes the sub-line's
+       place (Dan, 31 Oct); by then the quotes it introduces are all showing */
+    .sub-wrap { display: grid; }
+    .sub-wrap > * { grid-area: 1 / 1; }
+    .sub { transition: opacity .4s; }
+    .gc.pushing .sub { opacity: 0; }
+    .push-hint { margin-top: 16px; align-self: center; font-size: 14px; }
     /* two half-width columns, so a left and a right quote can never overlap; 4 above the ceiling line (~44%), 3 below */
     .blocker { white-space: normal; width: calc(50% - 14px); text-align: center; font-size: 12px; padding: 8px 12px; }
     .blocker:is([data-b="0"], [data-b="2"], [data-b="4"], [data-b="6"]) { left: 25% !important; }
@@ -287,6 +297,36 @@ const blockers = [
     });
     orangeLen = orange.getTotalLength();
     placePhoneQuotes();
+    fitBreakout();
+  }
+
+  // The breakout line climbs up behind the beat-3 copy. Where the copy sits in its path (phones, Tom 31 Oct), the chart
+  // eases down a little in beat 3 to make room, and the line fades out just below the copy instead of running
+  // through the words and pills. Elsewhere (desktop) nothing changes.
+  let fadeTop = -Infinity; // in svg pixels from its top; -Infinity = no fade
+  let drop = 0; // px the chart moves down in beat 3
+  function fitBreakout() {
+    // measure at rest: no drop, no slide (it may be mid-transition)
+    const was = chart.style.translate;
+    chart.style.transition = "none"; chart.style.translate = "";
+    const sr = svg.getBoundingClientRect();
+    chart.style.translate = was; void chart.offsetWidth; chart.style.transition = "";
+    const top = sr.top;
+    const words = [...steps[2].querySelectorAll<HTMLElement>("h2, h3, p, .pills > *")].map((e) => e.getBoundingClientRect());
+    let hits = false;
+    for (let i = 0; i <= 120 && !hits; i++) {
+      const pt = orange.getPointAtLength((orangeLen * i) / 120);
+      const x = sr.left + pt.x, y = top + pt.y;
+      hits = words.some((w) => x > w.left - 4 && x < w.right + 4 && y > w.top - 4 && y < w.bottom + 18); // +18: the copy's slide-in
+    }
+    if (!hits) { fadeTop = -Infinity; drop = 0; }
+    else {
+      const copyBottom = Math.max(...words.map((w) => w.bottom)) + 14; // + the copy's slide-in
+      const ceiling = top + headroom + (svg.clientHeight - headroom) * 186 / 420; // the ceiling line on screen
+      drop = Math.max(0, Math.min(copyBottom + 120 - ceiling, chart.clientHeight * 0.45)); // ~120px of sky above the ceiling
+      fadeTop = copyBottom - (top + drop) + 6;
+    }
+    svg.style.setProperty("--fade-top", Number.isFinite(fadeTop) ? `${Math.round(fadeTop)}px` : "-9999px");
   }
 
   // Phones: two columns of quotes, stacked from the ceiling line by their real heights (they wrap to 2-3 lines,
@@ -317,6 +357,7 @@ const blockers = [
     // Each beat animates early in its slice, then holds so the copy can be read before the next one
     const beat = p < 0.26 ? 0 : p < 0.66 ? 1 : 2;
     steps.forEach((s, i) => s.classList.toggle("on", i === beat));
+    chart.style.translate = beat === 2 && drop ? `0 ${Math.round(drop)}px` : "";
 
     grey.style.strokeDashoffset = String(1 - seg(p, 0.03, 0.42));
     const ceilOn = p > 0.28;
@@ -357,7 +398,8 @@ const blockers = [
     const pt = orange.getPointAtLength(orangeLen * draw);
     tip.style.transform = `translate(${pt.x}px, ${pt.y - headroom}px)`; // tip is placed in chart coordinates
     // Dot fades with the chart's right-edge fade, so it never sits half-cut at the screen edge
-    tip.style.opacity = draw > 0.01 ? String(clamp((1 - pt.x / svg.clientWidth) / 0.14) * clamp(draw / 0.2)) : "0";
+    // ...and with the fade below the beat-3 copy, so the dot never sits on the words
+    tip.style.opacity = draw > 0.01 ? String(clamp((1 - pt.x / svg.clientWidth) / 0.14) * clamp(draw / 0.2) * clamp((pt.y - fadeTop) / 44)) : "0";
     area.style.opacity = String(seg(p, 0.72, 0.94));
     grey.style.opacity = String(1 - 0.6 * seg(p, 0.67, 0.8));
   }
@@ -375,6 +417,7 @@ const blockers = [
 
   layout();
   new ResizeObserver(() => { layout(); render(); }).observe(svg);
+  document.fonts?.ready.then(() => { fitBreakout(); render(); }); // web fonts change the copy's size
   render();
   onScrollInView(sec, render);
 </script>

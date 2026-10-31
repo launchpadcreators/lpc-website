@@ -232,13 +232,14 @@ const parts = (s: string) => s.split(/(\d+(?:\.\d+)?)/).map((t, i) => (i % 2 ? {
   io.observe(viewport);
 
   // Position: index = first card in view (n = first real card); offset = live drag distance
-  const SLIDE = 1100, EVERY = SLIDE + 2000; // slow glide, then a 2s rest on each card
   let index = n, offset = 0;
-  const step = () => real[0].offsetWidth + 20; // card + gap
+  const step = () => real[1].offsetLeft - real[0].offsetLeft; // card + gap, measured (the gap differs by screen size)
   const dotsBox = sec.querySelector<HTMLElement>(".dots")!;
   const dots: HTMLButtonElement[] = [];
+  // Settling after a swipe, arrow or dot: a quick ease-out (the old 1.1s ease-in-out glide was made for autoplay and
+  // felt sluggish under a finger; Dan, 31 Oct)
   const place = (animate: boolean) => {
-    track.style.transition = animate ? `transform ${SLIDE}ms cubic-bezier(.65, 0, .35, 1)` : "none";
+    track.style.transition = animate ? "transform 550ms cubic-bezier(.22, 1, .36, 1)" : "none";
     track.style.transform = `translateX(${-index * step() + offset}px)`;
     const at = ((index % n) + n) % n;
     dots.forEach((d, k) => { d.classList.toggle("on", k === at); d.setAttribute("aria-selected", String(k === at)); });
@@ -276,26 +277,35 @@ const parts = (s: string) => s.split(/(\d+(?:\.\d+)?)/).map((t, i) => (i % 2 ? {
   });
 
   // Drag (mouse) and swipe (touch): the row follows the pointer, then settles on the nearest card
-  let downX = 0, moved = false;
+  let downX = 0, startOffset = 0, moved = false, lastX = 0, lastT = 0, speed = 0;
   viewport.addEventListener("dragstart", (e) => e.preventDefault()); // no "ghost" copy of the photo
   viewport.addEventListener("pointerdown", (e) => {
     if (e.pointerType === "mouse" && e.button !== 0) return;
-    dragging = true; moved = false; downX = e.clientX; offset = 0;
+    // catch the row where it is, even mid-glide, so a second swipe never jumps
+    const x = new DOMMatrixReadOnly(getComputedStyle(track).transform).m41;
+    if (index >= 2 * n) index -= n; else if (index < n) index += n; // stay on the real set (copies look identical)
+    startOffset = x + index * step();
+    dragging = true; moved = false; downX = lastX = e.clientX; lastT = e.timeStamp; speed = 0; offset = startOffset;
     viewport.classList.add("dragging");
     viewport.setPointerCapture(e.pointerId);
     place(false);
   });
   viewport.addEventListener("pointermove", (e) => {
     if (!dragging) return;
-    offset = e.clientX - downX;
-    if (Math.abs(offset) > 4) moved = true;
+    offset = startOffset + e.clientX - downX;
+    if (Math.abs(e.clientX - downX) > 4) moved = true;
+    const dt = e.timeStamp - lastT;
+    if (dt > 0) speed = 0.8 * ((e.clientX - lastX) / dt) + 0.2 * speed; // px per ms, smoothed
+    lastX = e.clientX; lastT = e.timeStamp;
     place(false);
   });
   const end = () => {
     if (!dragging) return;
     dragging = false;
     viewport.classList.remove("dragging");
-    const by = Math.round(-offset / step());
+    // nearest card; a short but quick flick (or a 40px+ drag) still moves one card in its direction
+    let by = Math.round(-offset / step());
+    if (by === 0 && (Math.abs(speed) > 0.35 || Math.abs(offset) > 40)) by = offset < 0 ? 1 : -1;
     offset = 0;
     go(index + by);
     restart();
