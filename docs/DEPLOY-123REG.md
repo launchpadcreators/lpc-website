@@ -1,6 +1,6 @@
 # 123reg hosting and the upload job
 
-Everything about the 123reg server and the GitHub job that uploads the site to it. **Read this before touching the server or running the job.** Last updated 28 Oct 2026.
+Everything about the 123reg server and the GitHub job that uploads the site to it. **Read this before touching the server or running the job.** Last updated 1 Nov 2026.
 
 > This repo is public. Logins and the SFTP address are **not** written here. They live in GitHub's encrypted secrets (see below).
 
@@ -8,7 +8,7 @@ Everything about the 123reg server and the GitHub job that uploads the site to i
 
 - **Plan:** 123reg **Managed WordPress, Basic**: 1 website, 25,000 visitors a month, SFTP access, CDN on. WordPress 7.1.3, PHP 8.2.
 - **Domain:** launchpadcreators.com. Its DNS is at 123reg; **email is Microsoft 365**, and its DNS records must never be changed.
-- **The live homepage is still the old WordPress site.** The new site so far lives only in the hidden **`lpc-preview`** folder: https://launchpadcreators.com/lpc-preview/ (marked noindex).
+- **The live site is the new site** (since 30 Oct 2026), served beside WordPress, which stays installed underneath (section 9). Changes are tried first in the hidden **`lpc-preview`** folder: https://launchpadcreators.com/lpc-preview/ (marked noindex).
 - The new site **doesn't need WordPress**. 123reg serves it as plain files. This was tested on 28 Oct 2026.
 - **Temporary addresses:** 123reg also gives the site `….myftpupload.com` addresses, listed under Domains on the Settings page. They're just extra addresses for the same site, not FTP. (Not written here, because they reveal the SFTP address.)
 
@@ -63,7 +63,7 @@ If the SFTP login is ever recreated in 123reg, update `SFTP_USER` and `SFTP_PASS
 
 ## 5. The upload job: "Preview to 123reg"
 
-File: `.github/workflows/preview-123reg.yml`. Manual only: **Actions → Preview to 123reg → Run workflow → pick a mode**. It builds the site for the `/lpc-preview/` address (noindex), logs in, goes into `SFTP_ROOT` (`html`), and then:
+File: `.github/workflows/preview-123reg.yml`. Manual only: **Actions → Preview to 123reg → Run workflow → pick a mode**. The preview modes build the site for the `/lpc-preview/` address (noindex); the `launch-*` modes build it for the real domain. It logs in, goes into `SFTP_ROOT` (`html`), and then:
 
 | Mode | What it does | Changes the server? |
 |---|---|---|
@@ -72,6 +72,10 @@ File: `.github/workflows/preview-123reg.yml`. Manual only: **Actions → Preview
 | `dry-run` (default) | Lists exactly what `full` would upload or delete | **No** (read-only) |
 | `one-file-test` | Uploads only `lpc-preview/deploy-test.txt` (time and commit) | Yes: one file only |
 | `full` | Makes `lpc-preview` match the new build: uploads new and changed files, deletes ones no longer used | Yes: **inside `lpc-preview` only** |
+| `index-test` | Test from launch prep (which index file the server shows first) | Yes: a test folder inside `lpc-preview`, deleted again |
+| `launch-dry-run` | **Live site:** lists what `launch` would upload or delete, with its own safety check | **No** (read-only) |
+| `launch` | **Live site:** builds for the real domain and updates our 5 names in `html/` (deletes only inside our folders) | Yes: **our 5 names only** (section 9) |
+| `launch-switch` / `launch-undo` | **Live site:** uploads / deletes the one mu-plugin that shows our homepage at `/` | Yes: that one file only |
 
 **Safety built into the job:**
 - It **stops unless the `lpc-preview` folder already exists** in `SFTP_ROOT`. It never creates folders and never works anywhere else.

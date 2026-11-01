@@ -75,7 +75,7 @@ There are **two previews**. Always say which one you mean:
 ## If you're running in Claude Code on the web
 
 - **If you can't open the site in a browser,** run the build, double-check the code, and **say clearly that you couldn't view it**. Ask the person to check the 123reg preview on desktop and phone.
-- **If an attached image can't be saved into the repo,** ask the person to upload it on GitHub instead: open the repo on GitHub, switch to your branch, go to the right folder (for example `public/partners/`), then **Add file → Upload files**. Or ask for a link.
+- **If an attached image can't be saved into the repo,** ask the person to upload it on GitHub instead: open the repo on GitHub, switch to your branch, go to the right folder (for example `public/lpc-site/partners/`), then **Add file → Upload files**. Or ask for a link.
 - **You can't reach 123reg** (dashboard, backups or File Browser). Anything there is done by the person, following docs/DEPLOY-123REG.md.
 
 ## How the site is built
