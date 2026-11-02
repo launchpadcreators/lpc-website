@@ -4,9 +4,10 @@
 // on press; hands back to the native text cursor over text fields, and to the native cursor over embeds (iframes such as
 // the Results page video), where the page stops getting mouse moves and the mark would freeze at the edge. Put
 // data-native-cursor on the box around an embed so the hand-off happens before the mouse reaches it. Mouse/trackpad only.
+import { MARK, MARK_W, MARK_H } from "../config/mark";
 ---
 <div id="cursor" aria-hidden="true">
-  <svg viewBox="0 0 372 324" shape-rendering="geometricPrecision"><path d="M168.26 10.0056C175.957 -3.33512 195.211 -3.33512 202.908 10.0056L368.812 297.573C377.101 311.941 362.012 328.46 346.955 321.5L203.626 255.25C192.18 249.959 178.988 249.959 167.543 255.25L24.2135 321.5C9.15635 328.46 -5.93323 311.941 2.35608 297.573L168.26 10.0056ZM191.854 106.978C189.069 102.15 182.101 102.15 179.315 106.978L119.273 211.051C116.273 216.25 121.734 222.228 127.183 219.71L179.054 195.733C183.197 193.819 187.971 193.819 192.113 195.733L243.985 219.71C249.434 222.228 254.895 216.25 251.895 211.051L191.854 106.978Z" /></svg>
+  <svg viewBox={`0 0 ${MARK_W} ${MARK_H}`} shape-rendering="geometricPrecision"><path d={MARK} fill-rule="evenodd" /></svg>
 </div>
 
 <style is:global>

@@ -3,6 +3,7 @@
 // TODO: company number [CONFIRM].
 import { applyUrl } from "../data/growth-stages";
 import { url, asset } from "../config/paths";
+import { MARK, MARK_W, MARK_H } from "../config/mark"; // the rocket mark (same as the cursor)
 // Section links scroll on the homepage; from other pages (e.g. /results) they go to the homepage section
 const onHome = Astro.url.pathname.replace(/\/$/, "") === url("/").replace(/\/$/, "");
 const to = (hash: string) => (onHome ? hash : `${url("/")}${hash}`);
@@ -11,8 +12,6 @@ const nav = [
   { href: to("#results"), label: "Results" },
   { href: to("#about"), label: "About" },
 ];
-// The logo's rocket mark (same as the cursor)
-const mark = "M168.26 10.0056C175.957 -3.33512 195.211 -3.33512 202.908 10.0056L368.812 297.573C377.101 311.941 362.012 328.46 346.955 321.5L203.626 255.25C192.18 249.959 178.988 249.959 167.543 255.25L24.2135 321.5C9.15635 328.46 -5.93323 311.941 2.35608 297.573L168.26 10.0056ZM191.854 106.978C189.069 102.15 182.101 102.15 179.315 106.978L119.273 211.051C116.273 216.25 121.734 222.228 127.183 219.71L179.054 195.733C183.197 193.819 187.971 193.819 192.113 195.733L243.985 219.71C249.434 222.228 254.895 216.25 251.895 211.051L191.854 106.978Z";
 ---
 <footer class="ft relative z-10">
   <div class="mx-auto w-full max-w-[1080px] px-6">
@@ -43,7 +42,7 @@ const mark = "M168.26 10.0056C175.957 -3.33512 195.211 -3.33512 202.908 10.0056L
     <div class="rocket" aria-hidden="true">
         <span class="trail"></span>
         <span class="flame"></span>
-        <svg viewBox="0 0 372 324"><path d={mark} /></svg>
+        <svg viewBox={`0 0 ${MARK_W} ${MARK_H}`}><path d={MARK} fill-rule="evenodd" /></svg>
     </div>
   </div>
 </footer>
@@ -65,14 +64,14 @@ const mark = "M168.26 10.0056C175.957 -3.33512 195.211 -3.33512 202.908 10.0056L
 
   /* Fixed to the screen and parked just below its bottom edge; the script lifts it into view with the scroll */
   .rocket {
-    position: fixed; left: 50%; top: 100%; pointer-events: none; visibility: hidden; width: clamp(130px, 13vw, 210px); aspect-ratio: 372 / 324; margin-left: calc(clamp(130px, 13vw, 210px) / -2);
+    position: fixed; left: 50%; top: 100%; pointer-events: none; visibility: hidden; width: clamp(130px, 13vw, 210px); aspect-ratio: 680 / 589; margin-left: calc(clamp(130px, 13vw, 210px) / -2);
     will-change: transform, opacity;
   }
   /* solid white with a gentle blue-white glow */
   .rocket svg { position: relative; z-index: 1; display: block; width: 100%; height: 100%; fill: #fff; filter: drop-shadow(0 0 18px rgb(150 190 255 / .25)); }
   /* white-blue engine flame out of the notch at the bottom of the mark; grows as it climbs */
   .flame {
-    position: absolute; left: 50%; top: 82%; width: 22%; height: 52%; margin-left: -11%; transform-origin: 50% 0;
+    position: absolute; left: 50%; top: 80%; width: 22%; height: 52%; margin-left: -11%; transform-origin: 50% 0;
     border-radius: 50% 50% 50% 50% / 28% 28% 72% 72%;
     background: radial-gradient(50% 60% at 50% 22%, #fff 0%, #d6e6ff 34%, rgb(110 160 255 / .7) 66%, transparent 100%);
     filter: blur(1px); transform: scaleY(0); opacity: 0;
@@ -81,7 +80,7 @@ const mark = "M168.26 10.0056C175.957 -3.33512 195.211 -3.33512 202.908 10.0056L
   @keyframes lp-flicker { 50% { scale: .88 1.14; } }
   /* faded blue exhaust trail hanging from the engine, lengthening with the climb */
   .trail {
-    position: absolute; left: 50%; top: 86%; width: 12%; height: 520%; margin-left: -6%; border-radius: 99px;
+    position: absolute; left: 50%; top: 84%; width: 12%; height: 520%; margin-left: -6%; border-radius: 99px;
     transform-origin: 50% 0; transform: scaleY(0); opacity: 0; filter: blur(4px);
     background: linear-gradient(to bottom, rgb(185 212 255 / .55), rgb(120 165 255 / .2) 35%, rgb(255 255 255 / .04) 70%, transparent);
   }
