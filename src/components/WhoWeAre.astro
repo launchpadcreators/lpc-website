@@ -56,6 +56,8 @@ const tick = "M3.5 8.5l3 3 6-7";
 
 <style>
   .wa { padding: clamp(96px, 14vh, 160px) 0; }
+  /* phones: tighter, so the gap between sections is about half what it was (Abdullah, 2 Nov) */
+  @media (max-width: 767px) { .wa { padding: 64px 0; } }
 
   /* Story card spans both rows on the left; founders sit side by side; team card runs underneath them */
   .grid3 {
@@ -72,7 +74,8 @@ const tick = "M3.5 8.5l3 3 6-7";
     background: var(--surface); border: 1px solid var(--line);
     transition: translate .8s var(--ease-out-soft) var(--d), opacity .8s var(--ease-out-soft) var(--d), border-color .3s, transform .4s var(--ease-out-soft);
   }
-  :global(.reveal-ready) .card { opacity: 0; translate: 0 24px; }
+  /* Our story is simply there, no fade: on phones the tall stacked grid made it appear late, like a lag (Abdullah, 2 Nov) */
+  :global(.reveal-ready) .card:not(.story) { opacity: 0; translate: 0 24px; }
   :global(.reveal-ready) .grid3.in .card { opacity: 1; translate: 0 0; }
   .card:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
   .card::after { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: var(--noise); background-size: 180px; opacity: .1; mix-blend-mode: overlay; }

@@ -147,6 +147,8 @@ const tick = "M3.5 8.5l3 3 6-7";
 
 <style>
   .wd { padding: clamp(96px, 14vh, 160px) 0; }
+  /* phones: tighter, so the gap between sections is about half what it was (Abdullah, 2 Nov) */
+  @media (max-width: 767px) { .wd { padding: 64px 0; } }
 
   /* Framed panel holding a 4-column grid (Agnos: 20px padding + gaps, 16px frame / 8px tile radii) */
   .bento {

@@ -23,6 +23,8 @@ import { applyUrl } from "../data/growth-stages";
 
 <style>
   .cl { padding: clamp(80px, 12vh, 140px) 0 clamp(64px, 10vh, 110px); }
+  /* phones: tighter, so the gap between sections is about half what it was (Abdullah, 2 Nov) */
+  @media (max-width: 767px) { .cl { padding: 64px 0 56px; } }
 
   /* Framed panel (same treatment as the What we do bento) */
   .frame { padding: 20px; border-radius: 22px; background: color-mix(in srgb, var(--surface) 55%, var(--bg)); border: 1px solid var(--line); }

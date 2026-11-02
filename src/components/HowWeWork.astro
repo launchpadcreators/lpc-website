@@ -63,6 +63,8 @@ const models = [
 
 <style>
   .hw { padding: clamp(96px, 14vh, 160px) 0; }
+  /* phones: tighter, so the gap between sections is about half what it was (Abdullah, 2 Nov) */
+  @media (max-width: 767px) { .hw { padding: 64px 0; } }
 
   /* Subgrid: each card spans 6 shared rows (head + 5 rows), so "Who it's for", "What we do"… line up across both cards */
   .cards { margin-top: clamp(40px, 6vh, 64px); display: grid; grid-template-columns: 1fr 1fr; column-gap: 20px; row-gap: 0; }
