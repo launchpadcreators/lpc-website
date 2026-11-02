@@ -111,7 +111,7 @@ Actions → **Preview to 123reg** → **Run workflow** → under **"Use workflow
 3. **Check results more than once, from more than one angle:**
    - the job log (success, and every full path inside `lpc-preview`);
    - the preview URL loads (https://launchpadcreators.com/lpc-preview/), with no failed files;
-   - **the live site is unchanged** after a preview upload (`/`, `/results/`, `/privacy-policy/`, `/terms-of-use/` and `/wp-login.php` all respond as before), or, after a `launch`, shows the new version and `/wp-login.php` still works.
+   - **the live site is unchanged** after a preview upload (`/`, the hidden partner results page in `/p/`, `/privacy-policy/`, `/terms-of-use/` and `/wp-login.php` all respond as before), or, after a `launch`, shows the new version and `/wp-login.php` still works.
 4. **Sanity-check your own checks.** If a check reports something surprising (everything failed, or nothing matched), the check may be wrong; verify it another way before reporting.
 5. **Take a backup** (123reg Backups tab) before the first change of the day to the server, and always before launch.
 6. **One small, verified step at a time.** Say what each step can and can't affect before running it.
@@ -138,17 +138,19 @@ Actions → **Preview to 123reg** → **Run workflow** → under **"Use workflow
 
 launchpadcreators.com now serves the new site **beside** WordPress, which stays installed underneath (login, admin and its other pages still work).
 
-**What's ours in `html/`:** `index.html`, `lpc-site/` (all images, video, CSS, JS, fonts, favicons), `results/`, `privacy-policy/`, `terms-of-use/`, plus **one file inside WordPress's folders**: `wp-content/mu-plugins/lpc-homepage.php` (source: `server/lpc-homepage.php`). It's needed because the server shows `index.php` before `index.html` and 123reg locks `index.php`. It shows our `index.html` at `/` only; every other address is WordPress as before. It also adds a rule to the `robots.txt` that WordPress (Yoast) builds, keeping AI crawlers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended and others) off `/results/`; Google and Bing are kept out by that page's own noindex tag. WordPress updates don't touch mu-plugins. **After changing `server/lpc-homepage.php`, upload it with `launch-switch`** (it checks the file for PHP errors first; an error in this file would take the whole WordPress site down), then check `/`, `/robots.txt` and `/wp-login.php`.
+**What's ours in `html/`:** `index.html`, `lpc-site/` (all images, video, CSS, JS, fonts, favicons), `p/` (hidden pages: the partner results page, file `src/pages/p/`), `privacy-policy/`, `terms-of-use/`, plus **one file inside WordPress's folders**: `wp-content/mu-plugins/lpc-homepage.php` (source: `server/lpc-homepage.php`). It's needed because the server shows `index.php` before `index.html` and 123reg locks `index.php`. It shows our `index.html` at `/` only; every other address is WordPress as before. It also adds a rule to the `robots.txt` that WordPress (Yoast) builds, keeping AI crawlers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended and others) out of the `/p/` folder. **Only the folder is named, never a page, because robots.txt is public.** Google and Bing are kept out by each hidden page's own noindex tag, and hidden pages are never linked or put in the sitemap. WordPress updates don't touch mu-plugins. **After changing `server/lpc-homepage.php`, upload it with `launch-switch`** (it checks the file for PHP errors first; an error in this file would take the whole WordPress site down), then check `/`, `/robots.txt` and `/wp-login.php`.
 
 **Updating the live site** (Actions → Preview to 123reg → Run workflow):
 1. Backup first if it's the first server change of the day.
 2. `launch-dry-run`: read the log. It must say **"SAFETY CHECK PASSED"**. It writes only our 5 names and deletes only inside our 4 folders; any WordPress name stops it.
 3. `launch`: uploads (our folders first, `index.html` last).
-4. **Flush Cache** in 123reg, then check the plain addresses (`/`, `/results/`, `/privacy-policy/`, `/terms-of-use/`) and that `/wp-login.php` still works.
+4. **Flush Cache** in 123reg, then check the plain addresses (`/`, the partner results page in `/p/`, `/privacy-policy/`, `/terms-of-use/`) and that `/wp-login.php` still works.
 5. Log it in CHANGELOG.md.
 
 Try changes on the preview first (`dry-run` / `full` → `/lpc-preview/`), as before.
 
-**Undo (bring back the WordPress homepage):** `launch-undo` deletes only `lpc-homepage.php`; then Flush Cache. Our pages at /results/, /privacy-policy/ and /terms-of-use/ stay unless removed by hand in the File Browser (deleting `results/`, `privacy-policy/` and `terms-of-use/` brings back WordPress's versions of the last two).
+**Undo (bring back the WordPress homepage):** `launch-undo` deletes only `lpc-homepage.php`; then Flush Cache. Our pages in /p/, /privacy-policy/ and /terms-of-use/ stay unless removed by hand in the File Browser (deleting `p/`, `privacy-policy/` and `terms-of-use/` brings back WordPress's versions of the last two).
+
+**Retired folders:** a top-level folder we no longer build (for example `results/`, after the page moved to `p/` on 2 Nov 2026) isn't removed by the normal mirror. List its exact name in `RETIRED` in the job; `launch-dry-run` then shows it as "Retired folder to delete", and `launch` deletes it last. Only names in that list, not in the current build and not WordPress names, can be deleted this way.
 
 **Never:** rename or edit WordPress's own files (they're locked anyway), touch `.htaccess`, `platform/` or DNS.

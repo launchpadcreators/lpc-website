@@ -1,18 +1,20 @@
 ---
-// Results & Proof (/results): one straight scroll through the partners and what we did for them, then the team and
+// Results & Proof (/p/partner-results/): one straight scroll through the partners and what we did for them, then the team and
 // founders (Tom, Loom 29 Oct 2026: "same design as the home page", "not too many interactive elements").
 // Copy is word for word from Tom's "Launchpad Creators — Results & Proof" doc (19 Oct 2026). Placeholders in the doc
 // ("[Testimonial … to be added]", the empty 4th stat, Jo's empty "In her words") aren't shown until the content exists.
-// Hidden page: noindex and not linked from the homepage (proof page in the brief).
-import Base from "../layouts/Base.astro";
-import Starfield from "../components/Starfield.astro";
-import Navbar from "../components/Navbar.astro";
-import Close from "../components/Close.astro";
-import Footer from "../components/Footer.astro";
-import { asset } from "../config/paths";
-import { applyUrl } from "../data/growth-stages";
+// Hidden page (proof page in the brief): noindex, not linked from anywhere, not in the sitemap, and in the /p/ folder,
+// which robots.txt closes to AI crawlers without naming the page (server/lpc-homepage.php). Moved from /results/ on
+// 2 Nov 2026, because robots.txt is public and listing /results/ there revealed the page.
+import Base from "../../layouts/Base.astro";
+import Starfield from "../../components/Starfield.astro";
+import Navbar from "../../components/Navbar.astro";
+import Close from "../../components/Close.astro";
+import Footer from "../../components/Footer.astro";
+import { asset } from "../../config/paths";
+import { applyUrl } from "../../data/growth-stages";
 // Founder cards match the homepage's (Tom, 30 Oct)
-import { founders, liIcon } from "../data/founders";
+import { founders, liIcon } from "../../data/founders";
 
 const intro =
   "Launchpad Creators is a growth partner for creator-led businesses. We take ownership of the marketing, sales and product engine behind an expert's audience, and scale it alongside them.";

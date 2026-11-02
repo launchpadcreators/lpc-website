@@ -11,7 +11,7 @@
 #   launch-switch:     LIVE SITE: uploads wp-content/mu-plugins/lpc-homepage.php, which shows our index.html at /
 #   launch-undo:       LIVE SITE: deletes that one plugin file, so WordPress's homepage shows again
 # The preview modes only ever work inside the lpc-preview folder (which must already exist).
-# The launch modes only write the site's own names in html/ (index.html, lpc-site/, results/, privacy-policy/,
+# The launch modes only write the site's own names in html/ (index.html, lpc-site/, p/, privacy-policy/,
 # terms-of-use/), delete only inside those folders, and stop if any WordPress name is involved.
 # Needs the repo secrets SFTP_HOST, SFTP_USER, SFTP_PASSWORD and SFTP_ROOT (= html, the website folder under the
 # login's home). Full details: docs/DEPLOY-123REG.md.
@@ -159,6 +159,19 @@ jobs:
             DIRS=$(cd dist && find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n')
             FILES=$(cd dist && find . -mindepth 1 -maxdepth 1 -type f -printf '%f\n')
             [ "$FILES" = "index.html" ] || { echo "!! SAFETY CHECK FAILED: expected index.html as the only top-level file, got: $FILES"; exit 1; }
+            # Folders we used to upload and have since retired: only these exact names can be deleted whole, only when
+            # they aren't in the current build, and never a WordPress/123reg name. (results/: the partner results page
+            # moved to p/ on 2 Nov 2026, so robots.txt can close the folder without naming the page.)
+            RETIRED="results"
+            GONE=""
+            for r in $RETIRED; do
+              case "$r" in index.php|wp-*|xmlrpc.php|platform|.wp-cli|.htaccess|license.txt|readme.html|plat-cron.php|lpc-preview|.wp-config*|""|.|..)
+                echo "!! SAFETY CHECK FAILED: '$r' can't be a retired folder. Nothing was uploaded."; exit 1 ;;
+              esac
+              case " $(echo $DIRS) " in *" $r "*) continue ;; esac
+              grep -qx "$r/\?" top.txt && GONE="$GONE $r"
+            done
+            for r in $GONE; do echo "== Retired folder to delete: $r/ ($(lftp_run "cd \"$ROOT\"; find $r/" | wc -l) items)"; done
             # plan: each of our folders is mirrored on its own (--delete only reaches inside that folder)
             : > plan.txt
             for d in $DIRS; do lftp_run "cd \"$ROOT\"; mirror --reverse --delete --verbose --dry-run dist/$d/ $d/" | tee -a plan.txt; done
@@ -171,6 +184,7 @@ jobs:
               for d in $DIRS; do lftp_run "cd \"$ROOT\"; mirror --reverse --delete --verbose --parallel=4 dist/$d/ $d/"; done
               # index.html last, so the homepage only switches once everything it needs is in place
               lftp_run "cd \"$ROOT\"; put dist/index.html -o index.html; cls -l index.html"
+              for r in $GONE; do lftp_run "cd \"$ROOT\"; rm -r $r/"; echo "== Deleted retired folder: $r/"; done
               echo "== LAUNCH UPLOAD FINISHED. Flush the cache in 123reg next."
             fi
             exit 0 ;;

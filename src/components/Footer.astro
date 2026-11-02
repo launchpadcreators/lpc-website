@@ -4,7 +4,7 @@
 import { applyUrl } from "../data/growth-stages";
 import { url, asset } from "../config/paths";
 import { MARK, MARK_W, MARK_H } from "../config/mark"; // the rocket mark (same as the cursor)
-// Section links scroll on the homepage; from other pages (e.g. /results) they go to the homepage section
+// Section links scroll on the homepage; from other pages (e.g. the hidden partner results page) they go to the homepage section
 const onHome = Astro.url.pathname.replace(/\/$/, "") === url("/").replace(/\/$/, "");
 const to = (hash: string) => (onHome ? hash : `${url("/")}${hash}`);
 const nav = [

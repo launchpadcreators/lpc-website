@@ -5,7 +5,7 @@
 // Mobile: the island is just the burger; the menu drops down as its own glass panel.
 import { url, asset } from "../config/paths";
 import NewsletterDialog from "./NewsletterDialog.astro";
-// Section links scroll on the homepage; from other pages (e.g. /results) they go to the homepage section
+// Section links scroll on the homepage; from other pages (e.g. the hidden partner results page) they go to the homepage section
 const onHome = Astro.url.pathname.replace(/\/$/, "") === url("/").replace(/\/$/, "");
 const to = (hash: string) => (onHome ? hash : `${url("/")}${hash}`);
 // Other pages get a Home link first; "Join Newsletter" opens the mailing-list pop-up (Tom, 30 Oct)
