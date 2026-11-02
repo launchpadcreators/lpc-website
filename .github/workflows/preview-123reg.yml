@@ -49,6 +49,9 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+      # Netlify-only files: on 123reg WordPress makes robots.txt, the sitemap and the "not found" page, so leave them
+      # out (the launch safety check expects index.html as the only top-level file)
+      - run: rm -f dist/robots.txt dist/sitemap.xml dist/404.html
 
       - name: Install lftp
         run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp

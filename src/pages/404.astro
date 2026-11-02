@@ -1,0 +1,31 @@
+---
+// Netlify shows this page for any address that doesn't exist (with a 404 status). On 123reg WordPress shows its own,
+// so the upload job leaves this file out. Wording is a placeholder until Tom or Dan confirm it.
+import Base from "../layouts/Base.astro";
+import Starfield from "../components/Starfield.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+import { url } from "../config/paths";
+---
+<Base title="Page not found | Launchpad Creators" description="Page not found." noindex>
+  <Starfield />
+  <Navbar />
+  <main id="top" class="relative z-10">
+    <section class="nf mx-auto flex w-full max-w-[760px] flex-col items-center px-6 text-center">
+      <h1 class="text-[clamp(36px,4.6vw,60px)] font-medium leading-[1.04] tracking-[-0.045em] text-text">Page not found</h1>
+      <a class="nf-btn" href={url("/")}>Back to homepage</a>
+    </section>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .nf { padding: clamp(160px, 24vh, 240px) 24px clamp(96px, 16vh, 180px); }
+  .nf-btn {
+    display: inline-flex; align-items: center; justify-content: center; margin-top: 36px;
+    height: 52px; padding: 0 26px; border-radius: 12px; font-size: 16px; font-weight: 600;
+    background: var(--accent-grad); color: var(--accent-ink);
+    transition: transform .2s var(--ease-out-soft), filter .2s;
+  }
+  .nf-btn:hover { transform: translateY(-1px); filter: brightness(1.08); }
+</style>

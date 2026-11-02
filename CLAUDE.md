@@ -24,6 +24,7 @@ There are **two previews**. Always say which one you mean:
 - **GitHub preview:** https://launchpadcreators.github.io/lpc-website/. It **updates automatically whenever something is merged into `main`.** It's a public address (anyone with the link can see it), but hidden from Google.
 - **123reg preview:** https://launchpadcreators.com/lpc-preview/. It only updates when someone runs the GitHub job "Preview to 123reg", and it can show any branch. See [docs/DEPLOY-123REG.md](docs/DEPLOY-123REG.md).
 - **The live site** (launchpadcreators.com) has shown the new site since 30 Oct 2026, beside WordPress, which stays installed underneath (see docs/DEPLOY-123REG.md, section 9). **Changes go to a preview first**; the live site is only updated when Tom or Dan clearly asks, with `launch-dry-run` → `launch`, then Flush Cache.
+- **Moving to Netlify (in progress):** a Netlify copy at https://preeminent-seahorse-1bf8ea.netlify.app updates by itself from `main`. The live site stays on 123reg until switch day. Plan and checklist: [docs/DEPLOY-NETLIFY.md](docs/DEPLOY-NETLIFY.md). **Never change the domain's name servers or use "Set up Netlify DNS"**: that would break the Microsoft 365 email.
 
 ## Who does what, and how a change reaches the preview
 
@@ -80,7 +81,7 @@ There are **two previews**. Always say which one you mean:
 
 ## How the site is built
 
-- Astro 7 + Tailwind v4, with Lenis smooth scroll. Homepage: `src/pages/index.astro`; hidden partner results page: `src/pages/p/partner-results.astro` (never link it, never list it in robots.txt or a sitemap; the `/p/` folder is closed to AI crawlers and the page has a noindex tag). Homepage sections are in `src/components/`, in page order: Hero, Stats, GlassCeiling, GrowthSystem, Partners, WhatWeDo, HowWeWork, WhoWeAre, Close, Footer.
+- Astro 7 + Tailwind v4, with Lenis smooth scroll. Homepage: `src/pages/index.astro`; hidden partner results page: `src/pages/p/partner-results.astro` (never link it, never list it in robots.txt or a sitemap; the `/p/` folder is closed to AI crawlers and the page has a noindex tag). robots.txt lives in two places, keep them the same: `public/robots.txt` (Netlify) and `server/lpc-homepage.php` (123reg). `/sitemap.xml` lists new pages by itself and always leaves out `/p/`. Homepage sections are in `src/components/`, in page order: Hero, Stats, GlassCeiling, GrowthSystem, Partners, WhatWeDo, HowWeWork, WhoWeAre, Close, Footer.
 - **Growth System:** `GrowthSystem` (Tom's pick, 29 Oct; signed off with Dan before launch). The other two versions, `GrowthEclipse` and `GrowthFunnel`, are off the page but their files stay in case one is wanted back.
 - The Typeform "Work with us" link is in `src/data/growth-stages.ts` (`applyUrl`). The mailing list posts to Kit form 10103548, in the "Join Newsletter" pop-up `src/components/NewsletterDialog.astro` (opened by any link to `#join-newsletter`: the nav and the hero button). Tom and Dan's co-founder cards come from `src/data/founders.ts`, shared by both pages.
 - **New page:** add a file in `src/pages/` (for example `src/pages/proof.astro` gives `/proof/`) that uses the `Base` layout and the existing components.

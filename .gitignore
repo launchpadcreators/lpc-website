@@ -26,3 +26,6 @@ pnpm-debug.log*
 
 # local backups of earlier section versions
 *.bak
+
+# Local Netlify folder
+.netlify

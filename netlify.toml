@@ -1,8 +1,71 @@
-# Netlify build settings (trial of Netlify hosting, Nov 2026). Without this file Netlify published the repo
-# as it is (README.md, package.json) instead of building the site, so every page was "Page not found".
+# Netlify: builds the site from main and serves it. Switch-over steps and checks: docs/DEPLOY-NETLIFY.md.
+# Without the build settings Netlify published the repo files as they are, so every page was "Page not found".
 [build]
   command = "npm run build"
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "24" # Astro 7 needs Node >= 22.23.4, same as the GitHub workflows
+  SITE_URL = "https://launchpadcreators.com" # canonical links and the sitemap use the real domain
+
+# Pull request previews and branch builds stay out of search engines (Netlify also sends a noindex header on them)
+[context.deploy-preview.environment]
+  PUBLIC_NOINDEX = "true"
+[context.branch-deploy.environment]
+  PUBLIC_NOINDEX = "true"
+
+# Headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "SAMEORIGIN"
+
+# Hidden pages: a noindex header as well as the page's own noindex tag
+[[headers]]
+  for = "/p/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+# Build files have a fingerprint in their name, so browsers can keep them for a year
+[[headers]]
+  for = "/lpc-site/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Old WordPress addresses (from its sitemap, 2 Nov 2026) and the old 123reg preview go to the new pages.
+# /privacy-policy/ and /terms-of-use/ kept their addresses. /results/ stays "not found" on purpose (hidden page moved).
+[[redirects]]
+  from = "/home"
+  to = "/"
+  status = 301
+[[redirects]]
+  from = "/home/*"
+  to = "/"
+  status = 301
+[[redirects]]
+  from = "/sitemap_index.xml"
+  to = "/sitemap.xml"
+  status = 301
+[[redirects]]
+  from = "/page-sitemap.xml"
+  to = "/sitemap.xml"
+  status = 301
+[[redirects]]
+  from = "/feed/*"
+  to = "/"
+  status = 301
+[[redirects]]
+  from = "/lpc-preview/*"
+  to = "/"
+  status = 301
+
+# SWITCH DAY, step 4 (docs/DEPLOY-NETLIFY.md): once launchpadcreators.com shows this site with https, remove the #
+# from the 5 lines below, so the Netlify address sends everyone to the real domain. Not before: until then it's
+# the only way to check this site.
+# [[redirects]]
+#   from = "https://preeminent-seahorse-1bf8ea.netlify.app/*"
+#   to = "https://launchpadcreators.com/:splat"
+#   status = 301
+#   force = true

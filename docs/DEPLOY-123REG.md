@@ -151,6 +151,8 @@ Try changes on the preview first (`dry-run` / `full` → `/lpc-preview/`), as be
 
 **Undo (bring back the WordPress homepage):** `launch-undo` deletes only `lpc-homepage.php`; then Flush Cache. Our pages in /p/, /privacy-policy/ and /terms-of-use/ stay unless removed by hand in the File Browser (deleting `p/`, `privacy-policy/` and `terms-of-use/` brings back WordPress's versions of the last two).
 
+**Netlify-only files:** the build also makes `robots.txt`, `sitemap.xml` and `404.html` for Netlify (see docs/DEPLOY-NETLIFY.md). The job deletes them from the build before uploading, because on 123reg WordPress makes its own. Keep the AI crawler list in `public/robots.txt` and `server/lpc-homepage.php` the same.
+
 **Retired folders:** a top-level folder we no longer build (for example `results/`, after the page moved to `p/` on 2 Nov 2026) isn't removed by the normal mirror. List its exact name in `RETIRED` in the job; `launch-dry-run` then shows it as "Retired folder to delete", and `launch` deletes it last. Only names in that list, not in the current build and not WordPress names, can be deleted this way.
 
 **Never:** rename or edit WordPress's own files (they're locked anyway), touch `.htaccess`, `platform/` or DNS.
