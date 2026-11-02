@@ -1,0 +1,8 @@
+# Netlify build settings (trial of Netlify hosting, Nov 2026). Without this file Netlify published the repo
+# as it is (README.md, package.json) instead of building the site, so every page was "Page not found".
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "24" # Astro 7 needs Node >= 22.23.4, same as the GitHub workflows
