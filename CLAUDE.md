@@ -51,7 +51,7 @@ There are **two previews**. Always say which one you mean:
 
 ## Design rules
 
-- Colours only come from the CSS variables in `src/styles/themes.css`; never hard-code colours. The accent is **Blue Flame #168CFF** (Tom and Dan, 3 Nov 2026); buttons and fills behind white text use a deeper Blue Flame (#0573E0) so the text stays readable. It switches in `src/config/theme.ts` (the earlier electric blue and orange are kept there).
+- Colours only come from the CSS variables in `src/styles/themes.css`; never hard-code colours. The accent is **Blue Flame #168CFF** (Tom and Dan, 3 Nov 2026), used as the main blue everywhere: text, buttons, card fills, pills, glows and stars. It switches in `src/config/theme.ts` (the earlier electric blue and orange are kept there).
 - Fonts: Plus Jakarta Sans for everything, and Instrument Serif italic (class `accent`) for **one** phrase per headline.
 - Section headings are centred, on mobile too.
 - **Avoid:** small eyebrow labels above headlines, pill or chip lists, "SaaS-looking" template cards, text-heavy layouts, uneven card sizes, content spilling out of its container, tiny uppercase "AI look" labels.

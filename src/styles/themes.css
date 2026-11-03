@@ -72,20 +72,20 @@
   --hero-glow-inner: conic-gradient(#DCE6FF 0deg, #0052FF 180deg, #8FB0FF 360deg);
 }
 
-/* Blue Flame #168CFF (Tom and Dan's pick, 3 Nov 2026): highlights in Blue Flame itself. Buttons and fills behind
-   white text use a deeper Blue Flame (#0573E0, 4.6:1 with white; Blue Flame itself is only 3.4:1) */
+/* Blue Flame #168CFF (Tom and Dan's pick, 3 Nov 2026), used as the main blue everywhere: text, lines, buttons,
+   card fills and glows. The button and card gradients only shade Blue Flame lighter and darker at the corners */
 :root[data-accent="flame"] {
   --accent: #168CFF;
-  --accent-fill: #0573E0;
+  --accent-fill: #168CFF;
   --accent-ink: #FFFFFF;
   --accent-rgb: 22 140 255;
   --accent-soft-rgb: 100 175 255;
   --accent-pale-rgb: 225 240 255;
   --accent-light: #8CC8FF;
-  --accent-grad: linear-gradient(135deg, #3A9BFF 0%, #0573E0 52%, #0052B0 100%);
-  --accent-card: radial-gradient(110% 120% at 0% 0%, #3A9BFF 0%, #0573E0 48%, #0052B0 100%);
+  --accent-grad: linear-gradient(135deg, #4AA6FF 0%, #168CFF 52%, #0B72DB 100%);
+  --accent-card: radial-gradient(110% 120% at 0% 0%, #4AA6FF 0%, #168CFF 48%, #0B72DB 100%);
   --glow-warm: #168CFF;
-  --star-accent: 60 160 255;
+  --star-accent: 22 140 255;
   --hero-glow-outer: conic-gradient(#168CFF 0deg, #2E8FFF 55deg, #9CCBFF 107deg, #4FA6FF 162deg, #003F8A 252deg, #3399FF 306deg, #168CFF 360deg);
   --hero-glow-inner: conic-gradient(#DCEEFF 0deg, #168CFF 180deg, #9CCBFF 360deg);
 }
