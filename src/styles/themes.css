@@ -73,7 +73,8 @@
 }
 
 /* Blue Flame #168CFF (Tom and Dan's pick, 3 Nov 2026), used as the main blue everywhere: text, lines, buttons,
-   card fills and glows. The button and card gradients only shade Blue Flame lighter and darker at the corners */
+   card fills and glows. Buttons and the closing card are flat Blue Flame (no gradient); the other blues (glows,
+   tints) are lighter or darker shades of the same hue */
 :root[data-accent="flame"] {
   --accent: #168CFF;
   --accent-fill: #168CFF;
@@ -82,8 +83,8 @@
   --accent-soft-rgb: 100 175 255;
   --accent-pale-rgb: 225 240 255;
   --accent-light: #8CC8FF;
-  --accent-grad: linear-gradient(135deg, #4AA6FF 0%, #168CFF 52%, #0B72DB 100%);
-  --accent-card: radial-gradient(110% 120% at 0% 0%, #4AA6FF 0%, #168CFF 48%, #0B72DB 100%);
+  --accent-grad: #168CFF;
+  --accent-card: #168CFF;
   --glow-warm: #168CFF;
   --star-accent: 22 140 255;
   --hero-glow-outer: conic-gradient(#168CFF 0deg, #2E8FFF 55deg, #9CCBFF 107deg, #4FA6FF 162deg, #003F8A 252deg, #3399FF 306deg, #168CFF 360deg);
