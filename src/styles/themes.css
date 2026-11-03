@@ -2,7 +2,7 @@
   LPC themes. Every colour on the site comes from these variables.
   To add a theme: copy a block, rename data-theme, change the values,
   then add its name to src/config/theme.ts.
-  The accent colour (orange or electric blue) is a separate switch: ACCENT in src/config/theme.ts.
+  The accent colour (Blue Flame, electric blue or orange) is a separate switch: ACCENT in src/config/theme.ts.
 */
 
 /* Charcoal (current default) */
@@ -70,4 +70,22 @@
   --star-accent: 60 150 255;
   --hero-glow-outer: conic-gradient(#0052FF 0deg, #1F5BFF 55deg, #8FB0FF 107deg, #3D74FF 162deg, #001E7A 252deg, #2A63FF 306deg, #0052FF 360deg);
   --hero-glow-inner: conic-gradient(#DCE6FF 0deg, #0052FF 180deg, #8FB0FF 360deg);
+}
+
+/* Blue Flame #168CFF (Tom and Dan's pick, 3 Nov 2026): highlights in Blue Flame itself. Buttons and fills behind
+   white text use a deeper Blue Flame (#0573E0, 4.6:1 with white; Blue Flame itself is only 3.4:1) */
+:root[data-accent="flame"] {
+  --accent: #168CFF;
+  --accent-fill: #0573E0;
+  --accent-ink: #FFFFFF;
+  --accent-rgb: 22 140 255;
+  --accent-soft-rgb: 100 175 255;
+  --accent-pale-rgb: 225 240 255;
+  --accent-light: #8CC8FF;
+  --accent-grad: linear-gradient(135deg, #3A9BFF 0%, #0573E0 52%, #0052B0 100%);
+  --accent-card: radial-gradient(110% 120% at 0% 0%, #3A9BFF 0%, #0573E0 48%, #0052B0 100%);
+  --glow-warm: #168CFF;
+  --star-accent: 60 160 255;
+  --hero-glow-outer: conic-gradient(#168CFF 0deg, #2E8FFF 55deg, #9CCBFF 107deg, #4FA6FF 162deg, #003F8A 252deg, #3399FF 306deg, #168CFF 360deg);
+  --hero-glow-inner: conic-gradient(#DCEEFF 0deg, #168CFF 180deg, #9CCBFF 360deg);
 }

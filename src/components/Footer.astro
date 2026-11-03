@@ -67,13 +67,13 @@ const nav = [
     position: fixed; left: 50%; top: 100%; pointer-events: none; visibility: hidden; width: clamp(130px, 13vw, 210px); aspect-ratio: 680 / 589; margin-left: calc(clamp(130px, 13vw, 210px) / -2);
     will-change: transform, opacity;
   }
-  /* solid white with a gentle blue-white glow */
-  .rocket svg { position: relative; z-index: 1; display: block; width: 100%; height: 100%; fill: #fff; filter: drop-shadow(0 0 18px rgb(150 190 255 / .25)); }
+  /* solid white with a gentle glow in the accent's tint (flame and trail follow the accent too) */
+  .rocket svg { position: relative; z-index: 1; display: block; width: 100%; height: 100%; fill: #fff; filter: drop-shadow(0 0 18px rgb(var(--accent-soft-rgb) / .25)); }
   /* white-blue engine flame out of the notch at the bottom of the mark; grows as it climbs */
   .flame {
     position: absolute; left: 50%; top: 80%; width: 22%; height: 52%; margin-left: -11%; transform-origin: 50% 0;
     border-radius: 50% 50% 50% 50% / 28% 28% 72% 72%;
-    background: radial-gradient(50% 60% at 50% 22%, #fff 0%, #d6e6ff 34%, rgb(110 160 255 / .7) 66%, transparent 100%);
+    background: radial-gradient(50% 60% at 50% 22%, #fff 0%, rgb(var(--accent-pale-rgb)) 34%, rgb(var(--accent-soft-rgb) / .7) 66%, transparent 100%);
     filter: blur(1px); transform: scaleY(0); opacity: 0;
   }
   .flame.lit { animation: lp-flicker .1s steps(2) infinite; }
@@ -82,7 +82,7 @@ const nav = [
   .trail {
     position: absolute; left: 50%; top: 84%; width: 12%; height: 520%; margin-left: -6%; border-radius: 99px;
     transform-origin: 50% 0; transform: scaleY(0); opacity: 0; filter: blur(4px);
-    background: linear-gradient(to bottom, rgb(185 212 255 / .55), rgb(120 165 255 / .2) 35%, rgb(255 255 255 / .04) 70%, transparent);
+    background: linear-gradient(to bottom, rgb(var(--accent-pale-rgb) / .55), rgb(var(--accent-soft-rgb) / .2) 35%, rgb(255 255 255 / .04) 70%, transparent);
   }
 </style>
 
