@@ -1,6 +1,6 @@
 # Moving the website to Netlify
 
-Tom and Dan asked for the most reliable hosting that's easy to update (2 Nov 2026). Netlify was chosen. This file is the plan and the switch-day checklist. Until switch day, **the live site stays on 123reg** (docs/DEPLOY-123REG.md) and nothing here changes it.
+Tom and Dan asked for the most reliable hosting that's easy to update (2 Nov 2026). Netlify was chosen. **Done: the live site moved to Netlify on 5 Nov 2026** (details in CHANGELOG.md). Sections 2 and 3 are kept as the record of how it was done, and section 4 is what's left.
 
 ## 1. How it works
 
@@ -35,7 +35,9 @@ Tom and Dan asked for the most reliable hosting that's easy to update (2 Nov 202
    - https://launchpadcreators.com, http:// (goes to https), www (goes to the main address), on a computer and a phone.
    - `/robots.txt` (AI crawlers kept out of `/p/` only), `/sitemap.xml` (3 pages, no `/p/`), `/home/` (goes to the homepage), `/p/partner-results/` (loads, noindex tag and header), a made-up address (the "Page not found" page).
    - **Email:** send a message to and from team@launchpadcreators.com.
-4. Uncomment the last redirect in netlify.toml (the Netlify address then sends everyone to launchpadcreators.com) and merge.
+4. Uncomment the last redirect in netlify.toml (the Netlify address then sends everyone to launchpadcreators.com) and merge. (Done 5 Nov.)
+
+   On 5 Nov the certificate took about 40 minutes after the DNS change, because the records had a 1-hour TTL and Netlify waited for every DNS cache to expire. Next time, lower the TTL to 5 minutes a day before.
 5. Google Search Console: submit `https://launchpadcreators.com/sitemap.xml`. The verification record stays in DNS, so nothing else is needed.
 6. Log it in CHANGELOG.md.
 

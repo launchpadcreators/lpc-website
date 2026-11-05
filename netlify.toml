@@ -61,11 +61,10 @@
   to = "/"
   status = 301
 
-# SWITCH DAY, step 4 (docs/DEPLOY-NETLIFY.md): once launchpadcreators.com shows this site with https, remove the #
-# from the 5 lines below, so the Netlify address sends everyone to the real domain. Not before: until then it's
-# the only way to check this site.
-# [[redirects]]
-#   from = "https://preeminent-seahorse-1bf8ea.netlify.app/*"
-#   to = "https://launchpadcreators.com/:splat"
-#   status = 301
-#   force = true
+# The Netlify address sends everyone to the real domain (switched on 5 Nov 2026, once launchpadcreators.com had https).
+# Pull request previews use other addresses, so they still work.
+[[redirects]]
+  from = "https://preeminent-seahorse-1bf8ea.netlify.app/*"
+  to = "https://launchpadcreators.com/:splat"
+  status = 301
+  force = true

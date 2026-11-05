@@ -6,7 +6,15 @@ The website for Launchpad Creators (LPC), launchpadcreators.com. Changes are req
 
 **Before doing anything, read [CHANGELOG.md](CHANGELOG.md).** It's the update history and current status. **After every change, add an entry to it** (see the bottom of this file).
 
-## ⚠ Critical rules (the server)
+## ⚠ Hosting: Netlify since 5 Nov 2026
+
+**The live site is on Netlify** (project preeminent-seahorse-1bf8ea, team login). **Merging into `main` publishes the live site within about a minute.** No upload job, no Flush Cache. Read [docs/DEPLOY-NETLIFY.md](docs/DEPLOY-NETLIFY.md).
+- **Never merge or push to `main` without a clear "merge it" / "push it"**, after the change was checked on its pull request preview.
+- **Never change the domain's name servers or use "Set up Netlify DNS".** DNS and the Microsoft 365 and Kit email records stay at 123reg; only the A @ and CNAME www rows point to Netlify.
+- **Undo a bad update:** Netlify → Deploys → open the previous deploy → **Publish deploy**. Then check auto-publishing is still on.
+- The old 123reg copy stays as a fallback for now; the rules below apply only if someone uses it.
+
+## Critical rules (the old 123reg server, fallback only)
 
 Anything touching the 123reg server (the upload job, the File Browser, SFTP, DNS) follows **[docs/DEPLOY-123REG.md](docs/DEPLOY-123REG.md)**. Read it first. In short:
 1. **Only write where docs/DEPLOY-123REG.md says:** previews go to `html/lpc-preview/` (`dry-run`, `full`); the live site is updated only with the `launch-dry-run` → `launch` modes (section 9). Never touch WordPress's own files, `.htaccess`, `platform/` or DNS.
@@ -20,22 +28,18 @@ Anything touching the 123reg server (the upload job, the File Browser, SFTP, DNS
 
 ## Where things stand
 
-There are **two previews**. Always say which one you mean:
-- **GitHub preview:** https://launchpadcreators.github.io/lpc-website/. It **updates automatically whenever something is merged into `main`.** It's a public address (anyone with the link can see it), but hidden from Google.
-- **123reg preview:** https://launchpadcreators.com/lpc-preview/. It only updates when someone runs the GitHub job "Preview to 123reg", and it can show any branch. See [docs/DEPLOY-123REG.md](docs/DEPLOY-123REG.md).
-- **The live site** (launchpadcreators.com) has shown the new site since 30 Oct 2026, beside WordPress, which stays installed underneath (see docs/DEPLOY-123REG.md, section 9). **Changes go to a preview first**; the live site is only updated when Tom or Dan clearly asks, with `launch-dry-run` → `launch`, then Flush Cache.
-- **Moving to Netlify (in progress):** a Netlify copy at https://preeminent-seahorse-1bf8ea.netlify.app updates by itself from `main`. The live site stays on 123reg until switch day. Plan and checklist: [docs/DEPLOY-NETLIFY.md](docs/DEPLOY-NETLIFY.md). **Never change the domain's name servers or use "Set up Netlify DNS"**: that would break the Microsoft 365 email.
+- **The live site** (launchpadcreators.com) is served by **Netlify** from `main` (since 5 Nov 2026). Merging into `main` = live in about a minute.
+- **Pull request previews:** Netlify builds every pull request and posts its own preview link on the pull request (hidden from Google). That's where changes are checked before they're merged.
+- **GitHub preview:** https://launchpadcreators.github.io/lpc-website/, still updated from `main`; no longer needed.
+- **Old 123reg copy** (WordPress plus our files, and https://launchpadcreators.com/lpc-preview/ is no longer reachable there): kept as a fallback only. See [docs/DEPLOY-123REG.md](docs/DEPLOY-123REG.md).
 
-## Who does what, and how a change reaches the preview
+## Who does what, and how a change goes live
 
-**Tom or Dan** (through the LPC team account) can ask for changes, approve (merge) them, and run the 123reg preview job, always following the rules here and in docs/DEPLOY-123REG.md. They're non-technical, so explain each step in plain English and give exact clicks.
+**Tom or Dan** (through the LPC team account) can ask for changes and approve (merge) them. They're non-technical, so explain each step in plain English and give exact clicks.
 
 1. **Make the change on a new branch and open a pull request.** Don't merge it, and don't push to `main`, unless the person asking clearly says "merge it" or "push it".
-2. **Preview it before it's approved:** in GitHub, **Actions → Preview to 123reg → Run workflow**. Under **"Use workflow from"**, pick the branch, then run `dry-run`.
-   - The log must say **"SAFETY CHECK PASSED"**. Then run `full`, and check https://launchpadcreators.com/lpc-preview/ on a computer and a phone.
-   - There's **one** 123reg preview, so it always shows the last branch uploaded. Before uploading, check nobody else is mid-review, and say which branch is on it in the pull request.
-   - If you can't run the job yourself, give the person these exact clicks.
-3. **Approve:** when someone says "merge it", **first confirm which pull request** (name it back to them) and **that it was checked on a preview**. Then merge. `main` updates the GitHub preview automatically, in about a minute.
+2. **Preview it before it's approved:** Netlify builds the pull request and adds a **Deploy Preview** link to it within a minute or two. Check that link on a computer and a phone, and give it to the person asking.
+3. **Approve:** when someone says "merge it", **first confirm which pull request** (name it back to them) and **that it was checked on its preview**. Remind them that merging publishes the live site straight away. Then merge, and check https://launchpadcreators.com a minute later.
 4. **Log it** in CHANGELOG.md, as part of the same pull request.
 
 **Trust note:** on a shared account you can't verify who's typing. For anything important (numbers, merging, server uploads, anything public), repeat back what you're about to do and get a clear "yes" first.
