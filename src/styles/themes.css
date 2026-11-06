@@ -85,6 +85,7 @@
   --star-accent: 22 140 255;
   /* The brand glow (brand guidelines, "The glow", Nov 2026): one pure Blue Flame light rising from the bottom centre,
      a #3FA0FF core into Blue Flame, fading to black. See-through Blue Flame, so on the #0E0E10 background it gives the
-     same colours as the brand's example background (sampled from it) */
-  --hero-glow: radial-gradient(ellipse 50% 100% at 50% 100%, rgb(55 156 255 / .97) 0%, rgb(52 154 255 / .96) 4.5%, rgb(46 152 255 / .925) 10%, rgb(40 149 255 / .855) 16%, rgb(30 143 255 / .7) 24%, rgb(22 140 255 / .41) 38%, rgb(22 140 255 / .2) 52%, rgb(22 140 255 / .09) 66%, rgb(22 140 255 / .038) 80%, rgb(22 140 255 / 0) 100%);
+     same colours as the brand's example background. The fade is a smooth bell curve fitted to the colours sampled from
+     it (strength .97 * e^-(d/.415)^2, in 21 even steps), so it has no visible rings */
+  --hero-glow: radial-gradient(ellipse 50% 100% at 50% 100%, rgb(55 156 255 / .971) 0%, rgb(54 156 255 / .958) 5%, rgb(52 154 255 / .918) 10%, rgb(48 153 255 / .854) 15%, rgb(43 150 255 / .772) 20%, rgb(39 148 255 / .678) 25%, rgb(34 146 255 / .578) 30%, rgb(29 143 255 / .478) 35%, rgb(25 142 255 / .384) 40%, rgb(23 140 255 / .299) 45%, rgb(22 140 255 / .226) 50%, rgb(22 140 255 / .166) 55%, rgb(22 140 255 / .118) 60%, rgb(22 140 255 / .082) 65%, rgb(22 140 255 / .055) 70%, rgb(22 140 255 / .036) 75%, rgb(22 140 255 / .022) 80%, rgb(22 140 255 / .014) 85%, rgb(22 140 255 / .008) 90%, rgb(22 140 255 / .005) 95%, rgb(22 140 255 / 0) 100%);
 }
