@@ -36,9 +36,9 @@ const applyUrl = "https://form.typeform.com/to/yWBgS4vK";
     background: var(--hero-glow, radial-gradient(ellipse 50% 100% at 50% 100%, rgb(var(--accent-rgb)) 0%, rgb(var(--accent-rgb) / .3) 30%, transparent 80%));
   }
   /* the grain only where the glow is (same ellipse, fading out), so it never shows the box's edges.
-     144px tile and 40% opacity: grains 20% smaller and 20% lighter than the first version (Abdullah, 6 Nov) */
+     144px tile and 44% opacity: grains 20% smaller than the first version, a little lighter (Abdullah, 6 Nov) */
   .glow::after {
-    content: ""; position: absolute; inset: 0; background-image: var(--noise-dark); background-size: 144px; opacity: .4;
+    content: ""; position: absolute; inset: 0; background-image: var(--noise-dark); background-size: 144px; opacity: .44;
     -webkit-mask-image: radial-gradient(ellipse 50% 100% at 50% 100%, #000 0%, #000 35%, transparent 80%);
             mask-image: radial-gradient(ellipse 50% 100% at 50% 100%, #000 0%, #000 35%, transparent 80%);
   }
