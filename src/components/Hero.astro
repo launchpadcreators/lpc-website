@@ -4,12 +4,8 @@
 const applyUrl = "https://form.typeform.com/to/yWBgS4vK";
 ---
 <section id="top" class="hero relative flex min-h-svh flex-col items-center justify-center overflow-hidden px-5 pt-[104px] pb-[56px]">
-  <!-- Glow (Conversion-template style): stacked blurred conic gradients, clipped in a box below the CTAs -->
-  <div class="glow-box" aria-hidden="true">
-    <div class="g g-outer"></div>
-    <div class="g g-inner"></div>
-    <div class="g g-inner g-blend"></div>
-  </div>
+  <!-- The brand glow: one Blue Flame light rising from the bottom centre (brand guidelines, Nov 2026) -->
+  <div class="glow" aria-hidden="true"></div>
 
   <div class="relative z-10 mx-auto flex max-w-[1120px] flex-col items-center text-center">
     <!-- Phones: always 3 lines (Abdullah, 1 Nov), with a size that shrinks with the screen so "creator businesses." never
@@ -18,7 +14,8 @@ const applyUrl = "https://form.typeform.com/to/yWBgS4vK";
       We build and scale<br class="md:hidden" /> <span class="accent text-[1.08em] whitespace-nowrap">7 and 8 figure</span><br class="md:hidden" /> creator businesses.
     </h1>
 
-    <p class="h-in mt-7 max-w-[640px] text-[clamp(16px,1.6vw,19px)] leading-relaxed text-text-2" style="--d:180ms">
+    <!-- white (was grey) since the brand glow is darker (Tom, 6 Nov) -->
+    <p class="h-in mt-7 max-w-[640px] text-[clamp(16px,1.6vw,19px)] leading-relaxed text-text" style="--d:180ms">
       Growth partners for founders, experts and creators to monetise their audience and expertise, and scale to 7 and 8 figures.
     </p>
 
@@ -30,37 +27,15 @@ const applyUrl = "https://form.typeform.com/to/yWBgS4vK";
 </section>
 
 <style>
-  /* Glow box sits behind the CTAs; overflow hidden like the template */
-  .glow-box {
-    position: absolute; left: 50%; top: 42%; transform: translateX(-50%); opacity: 1;
-    width: min(1600px, 140vw); height: 1100px; overflow: hidden; pointer-events: none;
-    /* soft fade at the edges so it never shows a box outline */
-    -webkit-mask-image: radial-gradient(closest-side, #000 35%, transparent), linear-gradient(to bottom, #000 40%, transparent 75%);
-    -webkit-mask-composite: source-in;
-            mask-image: radial-gradient(closest-side, #000 35%, transparent), linear-gradient(to bottom, #000 40%, transparent 75%);
-            mask-composite: intersect;
+  /* The brand glow (Nov 2026, replacing the spinning conic glow): a wide half-ellipse sitting on the bottom edge, as in
+     the brand's example backgrounds (about 1.65 times as wide as it is tall). Still, no movement. The gradient comes
+     from themes.css. A fine black grain on top (Abdullah, 6 Nov) keeps it from looking flat. */
+  .glow {
+    position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); pointer-events: none;
+    width: clamp(720px, 100vw, 1800px); height: clamp(280px, 30vw, 545px);
+    background: var(--hero-glow, radial-gradient(ellipse 50% 100% at 50% 100%, rgb(var(--accent-rgb)) 0%, rgb(var(--accent-rgb) / .3) 30%, transparent 80%));
   }
-  /* will-change keeps each blurred layer on its own GPU layer, so spinning it doesn't redo the blur;
-     the spin pauses while the hero is off screen */
-  .g { position: absolute; left: 50%; top: 50%; border-radius: 50%; will-change: transform; animation-play-state: paused; }
-  .hero.inview .g { animation-play-state: running; }
-  /* heavy grain over the glow for a textured, premium look */
-  .glow-box::after { content: ""; position: absolute; inset: 0; background-image: var(--noise); background-size: 180px; opacity: .55; mix-blend-mode: overlay; }
-  /* Outer: big multi-tone conic in the accent colour (themes.css), heavy blur */
-  .g-outer {
-    width: 760px; height: 560px; margin: -280px 0 0 -380px; filter: blur(110px);
-    background: var(--hero-glow-outer);
-    animation: spin 18s linear infinite;
-  }
-  /* Inner: hot core */
-  .g-inner {
-    width: 440px; height: 340px; margin: -170px 0 0 -220px; filter: blur(70px);
-    background: var(--hero-glow-inner);
-    animation: spin 12s linear infinite reverse;
-  }
-  .g-blend { mix-blend-mode: overlay; animation-duration: 9s; animation-direction: normal; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  @media (max-width: 639px) { .g-outer { width: 460px; height: 420px; margin: -210px 0 0 -230px; } .g-inner { width: 280px; height: 260px; margin: -130px 0 0 -140px; } }
+  .glow::after { content: ""; position: absolute; inset: 0; background-image: var(--noise-dark); background-size: 180px; opacity: .5; }
 
   .hbtn {
     display: inline-flex; align-items: center; justify-content: center;
@@ -83,8 +58,3 @@ const applyUrl = "https://form.typeform.com/to/yWBgS4vK";
   .h-in { animation: h-in .9s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: var(--d); }
   @keyframes h-in { from { opacity: 0; transform: translateY(18px); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
 </style>
-
-<script>
-  import { markInView } from "../lib/scroll";
-  markInView(document.getElementById("top")!);
-</script>

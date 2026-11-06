@@ -50,8 +50,6 @@
   --accent-card: radial-gradient(110% 120% at 0% 0%, #FF7A45 0%, #FF3D00 48%, #B82A00 100%); /* closing card */
   --glow-warm: #FF3D00;       /* hero / CTA glow */
   --star-accent: 255 100 50;  /* starfield accent colour (r g b) */
-  --hero-glow-outer: conic-gradient(#FF3D00 0deg, #FF2A10 55deg, #FF9A6A 107deg, #FF6A2E 162deg, #8A1E00 252deg, #FF5A1A 306deg, #FF3D00 360deg);
-  --hero-glow-inner: conic-gradient(#FFE2C2 0deg, #FF3D00 180deg, #FF9A6A 360deg);
 }
 
 /* Electric blue (Tom, review 2: "spaceship engine" blue). Electric #0052FF buttons and glow,
@@ -68,8 +66,6 @@
   --accent-card: radial-gradient(110% 120% at 0% 0%, #5A8BFF 0%, #0052FF 48%, #0039B3 100%);
   --glow-warm: #0052FF;
   --star-accent: 60 150 255;
-  --hero-glow-outer: conic-gradient(#0052FF 0deg, #1F5BFF 55deg, #8FB0FF 107deg, #3D74FF 162deg, #001E7A 252deg, #2A63FF 306deg, #0052FF 360deg);
-  --hero-glow-inner: conic-gradient(#DCE6FF 0deg, #0052FF 180deg, #8FB0FF 360deg);
 }
 
 /* Blue Flame #168CFF (Tom and Dan's pick, 3 Nov 2026), used as the main blue everywhere: text, lines, buttons,
@@ -87,6 +83,8 @@
   --accent-card: #168CFF;
   --glow-warm: #168CFF;
   --star-accent: 22 140 255;
-  --hero-glow-outer: conic-gradient(#168CFF 0deg, #2E8FFF 55deg, #9CCBFF 107deg, #4FA6FF 162deg, #003F8A 252deg, #3399FF 306deg, #168CFF 360deg);
-  --hero-glow-inner: conic-gradient(#DCEEFF 0deg, #168CFF 180deg, #9CCBFF 360deg);
+  /* The brand glow (brand guidelines, "The glow", Nov 2026): one pure Blue Flame light rising from the bottom centre,
+     a #3FA0FF core into Blue Flame, fading to black. See-through Blue Flame, so on the #0E0E10 background it gives the
+     same colours as the brand's example background (sampled from it) */
+  --hero-glow: radial-gradient(ellipse 50% 100% at 50% 100%, rgb(55 156 255 / .97) 0%, rgb(52 154 255 / .96) 4.5%, rgb(46 152 255 / .925) 10%, rgb(40 149 255 / .855) 16%, rgb(30 143 255 / .7) 24%, rgb(22 140 255 / .41) 38%, rgb(22 140 255 / .2) 52%, rgb(22 140 255 / .09) 66%, rgb(22 140 255 / .038) 80%, rgb(22 140 255 / 0) 100%);
 }
