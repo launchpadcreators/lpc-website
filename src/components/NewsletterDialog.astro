@@ -87,6 +87,13 @@ const kitAction = "https://app.kit.com/forms/10103548/subscriptions";
     e.preventDefault();
     open();
   });
+  // arriving on a link that ends in #join-newsletter (e.g. shared after a webinar, or /newsletter, which redirects
+  // here) opens it straight away, once the page's scripts (smooth scroll) are ready
+  const fromLink = () => { if (location.hash === "#join-newsletter") open(); };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fromLink); else fromLink();
+  window.addEventListener("hashchange", fromLink);
+  // closing drops the #join-newsletter from the address, so a refresh doesn't reopen it
+  dlg.addEventListener("close", () => { if (location.hash === "#join-newsletter") history.replaceState(null, "", location.pathname + location.search); });
   dlg.querySelector(".x")!.addEventListener("click", close);
   // click on the dimmed backdrop (outside the card) closes it
   dlg.addEventListener("click", (e) => { if (e.target === dlg) close(); });

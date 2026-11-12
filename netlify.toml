@@ -34,6 +34,13 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+# Short link for the mailing list (Tom, 12 Nov 2026): opens the homepage with the sign-up pop-up already open.
+# 302 so browsers don't remember it, in case it ever points somewhere else.
+[[redirects]]
+  from = "/newsletter"
+  to = "/#join-newsletter"
+  status = 302
+
 # Old WordPress addresses (from its sitemap, 2 Nov 2026) and the old 123reg preview go to the new pages.
 # /privacy-policy/ and /terms-of-use/ kept their addresses. /results/ stays "not found" on purpose (hidden page moved).
 [[redirects]]

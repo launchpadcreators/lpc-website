@@ -12,6 +12,9 @@ The update history of the Launchpad Creators website, newest first. **Add a line
 - **Still to do:** SEO basics (share image, sitemap, robots.txt, structured data); what happens to the old WordPress page addresses; an automatic upload to 123reg (the job is run by hand); making this repo private (note: on GitHub's free plan that switches off the GitHub preview, so do it once the 123reg preview is in regular use).
 - **Access:** one shared LPC Claude account (team email) with the `launchpadcreators` GitHub account. Abdullah (`m-abdullahh`) stays a collaborator until the final deployment is done; he'll remove himself after that.
 
+## 2026-11-12
+- Mailing list link for Dan's webinar: opening launchpadcreators.com/#join-newsletter now opens the "Join Newsletter" pop-up straight away (before, it only opened when the link was clicked on the page), and a short link, launchpadcreators.com/newsletter, forwards there. Closing the pop-up drops #join-newsletter from the address so a refresh doesn't reopen it. Same Kit sign-up form as before. Tested on desktop and phone in Netlify's local server. Asked by Tom (via Abdullah). (NewsletterDialog.astro, netlify.toml)
+
 ## 2026-11-06
 - Hero glow matched to the new brand guidelines ("The glow": one pure Blue Flame light rising from the bottom centre, a #3FA0FF core into #168CFF, fading to black) and Tom's example background, whose colours it was sampled from. It replaces the spinning conic glow behind the buttons: a still, wide half-ellipse on the bottom edge of the hero; its fade is a smooth bell curve fitted to the example (no rings). A fine black grain sits only inside the glow (Abdullah: 1 layer of detail, 144px tile, 44% opacity), so no box edge shows. The hero sub-line is now white instead of grey, since the new glow is darker. Nothing else changed: buttons, text and the Blue Flame stars stay as they were. Asked by Tom (via Abdullah). (Hero.astro, styles/themes.css, styles/global.css)
 
