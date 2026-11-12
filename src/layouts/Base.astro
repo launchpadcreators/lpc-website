@@ -14,6 +14,9 @@ const { title, description, noindex = false } = Astro.props;
 const hidden = noindex || import.meta.env.PUBLIC_NOINDEX === "true";
 // The page's one official address (SITE_URL), so search engines ignore copies at www or the Netlify address
 const canonical = Astro.site && !hidden ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+// Link-preview picture (Slack, WhatsApp, LinkedIn, iMessage): the logo on the brand glow, 1200x630. Previews need a
+// full address, so it uses SITE_URL; hidden pages get it too, since their links are shared directly.
+const shareImage = Astro.site ? new URL(asset("share.png"), Astro.site).href : asset("share.png");
 ---
 <!doctype html>
 <html lang="en-GB" data-theme={THEME} data-accent={ACCENT}>
@@ -39,6 +42,14 @@ const canonical = Astro.site && !hidden ? new URL(Astro.url.pathname, Astro.site
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     {canonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Launchpad Creators" />
+    <meta property="og:image" content={shareImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Launchpad Creators" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={shareImage} />
   </head>
   <body>
     <slot />
