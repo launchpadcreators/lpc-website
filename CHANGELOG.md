@@ -13,6 +13,7 @@ The update history of the Launchpad Creators website, newest first. **Add a line
 - **Access:** one shared LPC Claude account (team email) with the `launchpadcreators` GitHub account. Abdullah (`m-abdullahh`) stays a collaborator until the final deployment is done; he'll remove himself after that.
 
 ## 2026-11-12
+- Newsletter pop-up: no white focus outline round the box when it opens from a link (the browser focused the box itself). The fields and buttons keep their focus styles. Found by Abdullah. (NewsletterDialog.astro)
 - Mailing list link for Dan's webinar: opening launchpadcreators.com/#join-newsletter now opens the "Join Newsletter" pop-up straight away (before, it only opened when the link was clicked on the page), and a short link, launchpadcreators.com/newsletter, forwards there. Closing the pop-up drops #join-newsletter from the address so a refresh doesn't reopen it. Same Kit sign-up form as before. Tested on desktop and phone in Netlify's local server. Asked by Tom (via Abdullah). (NewsletterDialog.astro, netlify.toml)
 
 ## 2026-11-06
